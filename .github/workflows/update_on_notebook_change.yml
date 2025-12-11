@@ -1,0 +1,50 @@
+name: Updates on notebook change
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'notebooks/**/*.ipynb'
+      - 'notebooks/notebook_latest_versions.yaml'
+  workflow_dispatch:
+
+jobs:
+  updates-version_change:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install requirements
+        run: pip install -r .tools/requirements.txt
+          
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            notebooks/**/*.ipynb
+            notebooks/notebook_latest_versions.yaml
+          
+      - name: Update manifests and changelogs
+        run: |
+          set -euxo pipefail
+          python .tools/python/sync_notebook_versions.py
+          python .tools/python/update_changelog.py notebooks/notebook_latest_versions.yaml
+          python .tools/python/update_version_last_commit.py notebooks/notebook_latest_versions.yaml
+          python app/python_scripts/hide_code_cells.py .
+
+      - name: Commit updated changelog
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: GitHub Action - Update changelog
+          file_pattern: notebooks/**/*.ipynb notebooks/*/*/CHANGELOG.md notebooks/*/*/version_last_commit.yaml notebooks/notebook_latest_versions.yaml

@@ -1,0 +1,95 @@
+"""Utility to hide code cells in Jupyter notebooks by updating metadata."""
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+from typing import Iterable
+
+import nbformat
+
+# Metadata values required to hide code cells in supported viewers.
+CELL_VIEW_VALUE = "form"
+COLLAPSED_VALUE = False
+SOURCE_HIDDEN_VALUE = True
+
+
+def collect_notebooks(root: Path) -> Iterable[Path]:
+    """Yield every notebook under root (recursively for directories)."""
+    if root.is_file():
+        if root.suffix == ".ipynb":
+            yield root
+        return
+
+    for path in root.rglob("*.ipynb"):
+        if path.is_file():
+            yield path
+
+
+def hide_code_cells(notebook_path: Path) -> bool:
+    """Apply metadata updates to every code cell in the given notebook."""
+    notebook = nbformat.read(notebook_path, as_version=nbformat.NO_CONVERT)
+    changed = False
+
+    for cell in notebook.cells:
+        if cell.get("cell_type") != "code":
+            continue
+
+        # Remove saved output
+        if cell.get("outputs"):
+            cell["outputs"] = []
+            changed = True
+        if cell.get("execution_count") is not None:
+            cell["execution_count"] = None
+            changed = True
+            
+        metadata = cell.setdefault("metadata", {})
+
+        if metadata.get("cellView") != CELL_VIEW_VALUE:
+            metadata["cellView"] = CELL_VIEW_VALUE
+            changed = True
+
+        if metadata.get("collapsed") != COLLAPSED_VALUE:
+            metadata["collapsed"] = COLLAPSED_VALUE
+            changed = True
+
+        jupyter_meta = metadata.get("jupyter") if isinstance(metadata.get("jupyter"), dict) else {}
+        if jupyter_meta.get("source_hidden") != SOURCE_HIDDEN_VALUE:
+            jupyter_meta["source_hidden"] = SOURCE_HIDDEN_VALUE
+            metadata["jupyter"] = jupyter_meta
+            changed = True
+            
+        labchronicle_meta = metadata.get("labchronicleHideCode") if isinstance(metadata.get("labchronicleHideCode"), dict) else {}
+        if labchronicle_meta.get("locked") != True:
+            labchronicle_meta["locked"] = True
+            metadata["labchronicleHideCode"] = labchronicle_meta
+            changed = True
+
+    if changed:
+        nbformat.write(notebook, notebook_path)
+
+    return changed
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Hide the code cells in notebooks under the given path.")
+    parser.add_argument("path", type=Path, help="File or directory to process for Jupyter notebooks")
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    notebooks = list(collect_notebooks(args.path))
+
+    if not notebooks:
+        print("No notebooks found.")
+        return
+
+    for notebook_path in notebooks:
+        if hide_code_cells(notebook_path):
+            print(f"Updated {notebook_path}")
+        else:
+            print(f"No changes needed for {notebook_path}")
+
+
+if __name__ == "__main__":
+    main()

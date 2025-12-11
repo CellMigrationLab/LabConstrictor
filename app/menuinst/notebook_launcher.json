@@ -1,0 +1,31 @@
+{ 
+"$schema": "https://schemas.conda.org/menuinst/menuinst-1-1-0.schema.json", 
+"menu_name": "PROJECT_NAME", 
+"menu_items": [ { 
+    "name": "PROJECT_NAME", 
+    "icon": "BASE_PATH_KEYWORD/PROJECT_NAME/logo.ico",
+    "command": [
+                "echo", "Starting Jupyter Lab, please wait a moment...", "&",
+                "python.exe", "-m", "jupyterlab", "BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb", "--ServerApp.shutdown_no_activity_timeout=30", "--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks", "&",
+                "exit"
+               ], 
+    "activate": true, 
+    "terminal": true,
+    "platforms": { "win": {},
+                   "linux": {
+                        "command": [
+                                    "echo", "Starting Jupyter Lab, please wait a moment...", "&&",
+                                    "python", "-m", "jupyterlab", "BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb", "--ServerApp.shutdown_no_activity_timeout=30", "--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks", "&",
+                                    "exit"
+                                   ]
+                    }, 
+                   "osx": {
+                        "command": [
+                                    "echo", "Starting Jupyter Lab, please wait a moment...", "&&",
+                                    "python", "-m", "jupyterlab", "BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb", "--ServerApp.shutdown_no_activity_timeout=30", "--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks", "&",
+                                    "exit"
+                                   ]
+                        } 
+                 }
+    } ] 
+}

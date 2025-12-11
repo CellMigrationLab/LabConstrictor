@@ -1,0 +1,12 @@
+name: LOWER_PROJ_NAME
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - conda
+  - git
+  - pip
+  - jupyterlab=4.5.0
+  - notebook=7.5.0
+  - matplotlib=3.7.1

@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+echo "Running post_install" > "$PREFIX/menuinst_debug.log"
+"$PREFIX/bin/python" -m pip install -r "$PREFIX/PROJECT_NAME/requirements.txt"
+"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/PROJECT_NAME/notebook_launcher.json" --keyword "BASE_PATH_KEYWORD"
+"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/app/pre_uninstall.sh" --keyword "BASE_PATH"
+"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/uninstall.sh" --keyword "BASE_PATH"
+"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/hide_code_cells.py" "$PREFIX/PROJECT_NAME"
+"$PREFIX/bin/python" -c "import os, sys; print('Python:', sys.executable); print('Prefix:', os.environ.get('PREFIX'))" >> "$PREFIX/menuinst_debug.log"
+"$PREFIX/bin/python" -c "from menuinst.api import install; import os; print(install(os.path.join('$PREFIX', 'PROJECT_NAME', 'notebook_launcher.json')))" >> "$PREFIX/menuinst_debug.log" 2>&1
+
+if [ -t 0 ]; then
+    echo
+    read -rp "Press Enter to close the installer..." _
+fi

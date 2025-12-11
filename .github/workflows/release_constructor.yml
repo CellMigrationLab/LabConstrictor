@@ -1,0 +1,114 @@
+name: Build Release Installers
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to package (e.g. 0.0.4). Defaults to release tag when empty."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  bump-version:
+    name: Bump version on main branch
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine release version
+        id: version
+        run: |
+          set -euxo pipefail
+          RAW="${{ github.event.release.tag_name }}"
+          RAW="${RAW#v}"
+          echo "release_version=$RAW" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$RAW" >> "$GITHUB_ENV"
+
+      - name: Sync versioned files
+        run: |
+          set -euxo pipefail
+          python .tools/python/bump_version.py "${RELEASE_VERSION}"
+
+      - name: Commit updated versioned files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: main
+          commit_message: GitHub Action - Update version to ${RELEASE_VERSION}
+  build-installers:
+    name: Build installers (${{ matrix.os_name }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os_name: linux
+            runner: ubuntu-latest
+          - os_name: macos
+            runner: macos-latest
+          - os_name: windows
+            runner: windows-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      CONSTRUCTOR_ENV: constructor-env
+      OUTPUT_DIR: dist/${{ matrix.os_name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine release version
+        id: version
+        run: |
+          set -euxo pipefail
+          if [ "${{ github.event_name }}" = "release" ]; then
+            RAW="${{ github.event.release.tag_name }}"
+          else
+            RAW="${{ inputs.version }}"
+          fi
+
+          if [ -z "$RAW" ]; then
+            echo "Version is required when running manually." >&2
+            exit 1
+          fi
+
+          RAW="${RAW#v}"
+          echo "release_version=$RAW" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$RAW" >> "$GITHUB_ENV"
+
+      - name: Sync versioned files
+        run: |
+          set -euxo pipefail
+          python .tools/python/bump_version.py "${RELEASE_VERSION}"
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-activate-base: true
+          miniforge-version: latest
+          installer-type: Miniforge3
+          use-mamba: true
+
+      - name: Create constructor environment
+        run: |
+          set -euxo pipefail
+          conda create -y -n "${CONSTRUCTOR_ENV}" -c conda-forge -c defaults python=3.11 constructor
+
+      - name: Build installer with constructor
+        run: |
+          set -euxo pipefail
+          mkdir -p "${OUTPUT_DIR}"
+          conda run -n "${CONSTRUCTOR_ENV}" constructor . --output-dir "${OUTPUT_DIR}"
+
+      - name: Upload installers to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/${{ matrix.os_name }}/*
+          fail_on_unmatched_files: true
