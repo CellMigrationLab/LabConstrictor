@@ -11,6 +11,7 @@ keep_pkgs: false
 register_python: false
 initialize_conda: false
 extra_files:
+- notebooks/notebook_latest_versions.yaml: PROJECT_NAME/notebook_latest_versions.yaml
 - app/menuinst/Welcome.ipynb: PROJECT_NAME/notebooks/Welcome.ipynb
 - app/menuinst/notebook_launcher.json: PROJECT_NAME/notebook_launcher.json
 - app/python_scripts/hide_code_cells.py: PROJECT_NAME/hide_code_cells.py

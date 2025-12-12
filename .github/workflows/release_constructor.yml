@@ -87,7 +87,8 @@ jobs:
         run: |
           set -euxo pipefail
           python .tools/python/bump_version.py "${RELEASE_VERSION}"
-          python .tools/python/populate_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
+          python .tools/python/bump_notebook_constructor.py
+          python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
 
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3

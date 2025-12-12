@@ -44,7 +44,7 @@ jobs:
           python .tools/python/update_changelog.py notebooks/notebook_latest_versions.yaml
           python .tools/python/update_version_last_commit.py notebooks/notebook_latest_versions.yaml
           python app/python_scripts/hide_code_cells.py .
-          python .tools/python/generate_notebook_README.py ${{ steps.changed-files.outputs.all_changed_files }}
+          python .tools/python/bump_notebook_README.py ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Commit updated changelog
         if: steps.changed-files.outputs.any_changed == 'true'
