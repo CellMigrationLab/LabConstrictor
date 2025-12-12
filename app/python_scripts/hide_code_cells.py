@@ -58,10 +58,10 @@ def hide_code_cells(notebook_path: Path) -> bool:
             metadata["jupyter"] = jupyter_meta
             changed = True
             
-        labchronicle_meta = metadata.get("labchronicleHideCode") if isinstance(metadata.get("labchronicleHideCode"), dict) else {}
-        if labchronicle_meta.get("locked") != True:
-            labchronicle_meta["locked"] = True
-            metadata["labchronicleHideCode"] = labchronicle_meta
+        jupyterlab_meta = metadata.get("jupyterlabHideCode") if isinstance(metadata.get("jupyterlabHideCode"), dict) else {}
+        if jupyterlab_meta.get("locked") != True:
+            jupyterlab_meta["locked"] = True
+            metadata["jupyterlabHideCode"] = jupyterlab_meta
             changed = True
 
     if changed:
