@@ -6,7 +6,7 @@ license_file: LICENSE.txt
 welcome_image: WELCOME_IMAGE
 header_image: HEADER_IMAGE
 icon_image: ICON_IMAGE
-conclusion_text: 'Thank you! You have successfully installed PROJECT_NAME vVERSION_NUMBER.'
+conclusion_text: 'Thank you! You have successfully installed PROJECT_NAME VERSION_NUMBER.'
 keep_pkgs: false
 register_python: false
 initialize_conda: false

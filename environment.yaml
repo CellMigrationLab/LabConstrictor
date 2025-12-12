@@ -3,10 +3,10 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.11
+  - python=PYTHON_VERSION
   - conda
   - git
   - pip
-  - jupyterlab=4.5.0
-  - notebook=7.5.0
-  - matplotlib=3.7.1
+  - jupyterlab=JUPYTERLAB_VERSION
+  - notebook=NOTEBOOK_VERSION
+  - matplotlib=MATPLOTLIB_VERSION
