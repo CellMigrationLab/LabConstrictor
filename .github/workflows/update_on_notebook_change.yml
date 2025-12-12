@@ -46,6 +46,7 @@ jobs:
           python app/python_scripts/hide_code_cells.py .
 
       - name: Commit updated changelog
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Update changelog
