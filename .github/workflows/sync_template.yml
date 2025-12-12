@@ -26,7 +26,7 @@ jobs:
 
       - name: Add upstream remote
         run: |
-          git remote add upstream https://github.com/TemplateOwner/TemplateRepo.git
+          git remote add upstream https://github.com/CellMigrationLab/LabConstrictor.git
 
       - name: Fetch upstream changes
         run: |
