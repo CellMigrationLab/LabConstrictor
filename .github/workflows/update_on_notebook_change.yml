@@ -6,6 +6,7 @@ on:
     paths:
       - 'notebooks/**/*.ipynb'
       - 'notebooks/notebook_latest_versions.yaml'
+      - 'notebooks/**/requirements.txt'
   workflow_dispatch:
 
 jobs:
@@ -35,9 +36,10 @@ jobs:
           files: |
             notebooks/**/*.ipynb
             notebooks/notebook_latest_versions.yaml
+            'notebooks/**/requirements.txt'
           
       - name: Update manifests and changelogs
-        if: steps.changed-files.outputs.any_changed == 'true'
+        if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           set -euxo pipefail
           python .tools/python/sync_notebook_versions.py ${{ steps.changed-files.outputs.all_changed_files }}
@@ -46,9 +48,38 @@ jobs:
           python app/python_scripts/hide_code_cells.py .
           python .tools/python/bump_notebook_README.py
 
+      - name: Run merge script
+        if: contains(steps.changed-files.outputs.all_changed_files, 'requirements.txt')
+        run: |
+          python .tools/python/merge_requirements.py --source-dir notebooks --output requirements.txt
+
+      # - name: Test environment (create venv and pip install)
+      #   if : contains(steps.changed-files.outputs.all_changed_files, 'requirements.txt')
+      #   run: |
+      #     set -e
+      #     python -V
+      #     python -m venv .venv
+      #     # shellcheck disable=SC1091
+      #     . .venv/bin/activate
+      #     pip install --upgrade pip setuptools wheel
+      #     if [ -f requirements.txt ] && [ -s requirements.txt ]; then
+      #       # prefer binary wheels for speed when available
+      #       pip install --prefer-binary -r requirements.txt
+      #     else
+      #       echo "No requirements.txt or file empty, skipping pip install"
+      #     fi
+      #   shell: bash
+
       - name: Commit updated changelog
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Update changelog
-          file_pattern: notebooks/**/*.ipynb notebooks/*/*/CHANGELOG.md notebooks/*/*/version_last_commit.yaml notebooks/notebook_latest_versions.yaml notebooks/README.md
+          file_pattern: |
+            requirements.txt
+            notebooks/**/*.ipynb
+            notebooks/*/*/CHANGELOG.md
+            notebooks/*/*/version_last_commit.yaml
+            notebooks/notebook_latest_versions.yaml
+            notebooks/README.md
+          branch: main
