@@ -83,10 +83,11 @@ jobs:
           echo "release_version=$RAW" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=$RAW" >> "$GITHUB_ENV"
 
-      - name: Sync versioned files
+      - name: Sync versioned files and populate Welcome notebook
         run: |
           set -euxo pipefail
           python .tools/python/bump_version.py "${RELEASE_VERSION}"
+          python .tools/python/populate_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
 
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3
