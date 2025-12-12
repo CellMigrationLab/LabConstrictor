@@ -10,6 +10,7 @@ on:
 
 jobs:
   updates-version_change:
+    name: Upon notebook change, update manifests and changelogs
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -36,9 +37,10 @@ jobs:
             notebooks/notebook_latest_versions.yaml
           
       - name: Update manifests and changelogs
+        if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           set -euxo pipefail
-          python .tools/python/sync_notebook_versions.py
+          python .tools/python/sync_notebook_versions.py ${{ steps.changed-files.outputs.all_changed_files }}
           python .tools/python/update_changelog.py notebooks/notebook_latest_versions.yaml
           python .tools/python/update_version_last_commit.py notebooks/notebook_latest_versions.yaml
           python app/python_scripts/hide_code_cells.py .

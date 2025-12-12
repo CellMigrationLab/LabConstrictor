@@ -67,6 +67,7 @@ def extract_current_version(nb_path: Path) -> str | None:
         try:
             module = ast.parse(source)
         except SyntaxError:
+            print(f"Your notebook {nb_path} contains invalid syntax. Skipping.")
             continue
 
         for node in module.body:
@@ -78,7 +79,7 @@ def extract_current_version(nb_path: Path) -> str | None:
                     value = node.value
                     if isinstance(value, ast.Constant) and isinstance(value.value, str):
                         return value.value
-    return None
+    return "0.0.0"
 
 
 def discover_versions(paths: Iterable[Path] | None) -> tuple[list[NotebookVersion], list[str]]:
@@ -87,6 +88,10 @@ def discover_versions(paths: Iterable[Path] | None) -> tuple[list[NotebookVersio
     missing: list[str] = []
 
     for nb_path in iter_notebooks(paths):
+        # Check if its a .ipynb file
+        if nb_path.suffix != ".ipynb":
+            continue
+
         try:
             relative = nb_path.relative_to(NOTEBOOKS_DIR)
         except ValueError:
