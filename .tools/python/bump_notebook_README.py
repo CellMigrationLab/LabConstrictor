@@ -1,88 +1,56 @@
+from collections import defaultdict
 from pathlib import Path
 import sys
-import os
-
-def list_notebooks(base_dir: Path):
-	for p in base_dir.rglob("*.ipynb"):
-		yield p
 
 
-def notebooks_from_changed_files(changed_files: list[str], base_dir: Path):
-	result = []
-	for f in changed_files:
-		fp = (base_dir / f).resolve() if not f.startswith(str(base_dir)) else Path(f).resolve()
-		if fp.suffix == ".ipynb" and base_dir in fp.parents:
-			result.append(fp)
-	return result
+NOTEBOOK_DIR = Path("notebooks").resolve()
+README_PATH = NOTEBOOK_DIR / "README.md"
 
 
-def build_readme_content(notebook_path: Path) -> str:
-	rel = notebook_path.relative_to(notebook_path.parents[1]) if len(notebook_path.parts) > 2 else notebook_path.name
-	title = notebook_path.stem.replace("_", " ")
-	lines = [
-		f"# {title}",
-		"",
-		"This folder contains a Jupyter notebook.",
-		"",
-		"## Notebook",
-		f"- File: {notebook_path.name}",
-	]
-	return "\n".join(lines) + "\n"
+def discover_notebooks(directory: Path) -> list[Path]:
+	return sorted(
+		(path.relative_to(directory) for path in directory.rglob("*.ipynb")),
+		key=lambda p: p.as_posix(),
+	)
 
 
-def write_readme_for_notebook(notebook_path: Path):
-	folder = notebook_path.parent
-	readme_path = folder / "README.md"
-	content = build_readme_content(notebook_path)
-	readme_path.write_text(content, encoding="utf-8")
+def build_readme_content(notebooks: list[Path]) -> str:
+	lines = ["# Notebooks", ""]
+	if not notebooks:
+		lines.append("No notebooks found in this folder.")
+		lines.append("")
+		return "\n".join(lines)
+
+	lines.append("Indexed list of folders and notebooks:")
+	lines.append("")
+
+	grouped: dict[Path, list[Path]] = defaultdict(list)
+	for notebook in notebooks:
+		grouped[notebook.parent].append(notebook)
+
+	for folder, files in grouped.items():
+		files.sort(key=lambda p: p.name.lower())
+
+	for folder in sorted(grouped.keys(), key=lambda p: p.as_posix()):
+		folder_label = "." if folder == Path(".") else folder.as_posix()
+		lines.append(f"- [{folder_label}]({folder_label}):")
+		for notebook in grouped[folder]:
+			lines.append(f"    - [{notebook.name}]({notebook.as_posix()})")
+		lines.append("")
+
+	return "\n".join(lines).rstrip() + "\n"
 
 
 def main():
-	base_dir = Path("notebooks").resolve()
-	if not base_dir.exists():
-		print("notebooks directory not found", file=sys.stderr)
+	if not NOTEBOOK_DIR.exists():
+		print("notebooks directory not found.", file=sys.stderr)
 		sys.exit(1)
 
-	# Accept changed files via CLI args or env var
-	changed_arg = sys.argv[1:]  # list of paths
-	changed_env = os.environ.get("CHANGED_NOTEBOOKS", "")
-	changed_files = []
-	if changed_arg:
-		changed_files = changed_arg
-	elif changed_env:
-		# Split on newlines or spaces
-		if "\n" in changed_env:
-			changed_files = [s for s in changed_env.split("\n") if s.strip()]
-		else:
-			changed_files = [s for s in changed_env.split(" ") if s.strip()]
-
-	if changed_files:
-		print(f"Received changed files ({len(changed_files)}):")
-		for f in changed_files:
-			print(f"  - {f}")
-		notebooks = notebooks_from_changed_files(changed_files, base_dir)
-		print(f"Filtered to notebooks in '{base_dir.name}' ({len(notebooks)}):")
-		for nb in notebooks:
-			print(f"  - {nb}")
-	else:
-		print("No changed files provided; scanning all notebooks...")
-		notebooks = list(list_notebooks(base_dir))
-		print(f"Found {len(notebooks)} notebooks under '{base_dir}':")
-		for nb in notebooks:
-			print(f"  - {nb}")
-
-	# Deduplicate
-	notebooks = sorted(set(notebooks))
-
-	updated = 0
-	for nb in notebooks:
-		write_readme_for_notebook(nb)
-		updated += 1
-		print(f"Updated README: {nb.parent / 'README.md'}")
-
-	print(f"Completed README generation for {updated} notebook(s).")
+	notebooks = discover_notebooks(NOTEBOOK_DIR)
+	content = build_readme_content(notebooks)
+	README_PATH.write_text(content, encoding="utf-8")
+	print(f"Wrote {README_PATH} with {len(notebooks)} notebook(s).")
 
 
 if __name__ == "__main__":
 	main()
-
