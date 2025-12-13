@@ -11,7 +11,7 @@
     "activate": true, 
     "terminal": true,
     "platforms": { "win": {
-                        "icon": "ICON_ICO_IMAGE_PATH"
+                        "icon": "ICON_IMAGE_PATH"
                     },
                    "linux": {
                         "icon": "ICON_ICO_IMAGE_PATH",
