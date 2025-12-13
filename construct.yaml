@@ -2,7 +2,7 @@ name: PROJECT_NAME
 version: VERSION_NUMBER
 environment_file: environment.yaml
 installer_type: all
-license_file: LICENSE.txt
+license_file: LICENSE
 welcome_image: WELCOME_IMAGE
 header_image: HEADER_IMAGE
 icon_image: ICON_IMAGE

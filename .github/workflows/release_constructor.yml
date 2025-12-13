@@ -31,6 +31,14 @@ jobs:
           echo "release_version=$RAW" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=$RAW" >> "$GITHUB_ENV"
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install requirements
+        run: pip install -r .tools/requirements.txt
+
       - name: Sync versioned files
         run: |
           set -euxo pipefail
@@ -41,6 +49,7 @@ jobs:
         with:
           branch: main
           commit_message: GitHub Action - Update version to ${RELEASE_VERSION}
+
   build-installers:
     name: Build installers (${{ matrix.os_name }})
     runs-on: ${{ matrix.runner }}
@@ -83,6 +92,14 @@ jobs:
           echo "release_version=$RAW" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=$RAW" >> "$GITHUB_ENV"
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install requirements
+        run: pip install -r .tools/requirements.txt
+        
       - name: Sync versioned files and populate Welcome notebook
         run: |
           set -euxo pipefail
