@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 PREFIX="BASE_PATH"
 echo "Uninstalling PROJECT_NAME from $PREFIX"
-if [ -f "$PREFIX/app/pre_uninstall.sh" ]; then
-    bash "$PREFIX/app/pre_uninstall.sh"
+if [ -f "$PREFIX/pre_uninstall.sh" ]; then
+    bash "$PREFIX/pre_uninstall.sh"
 fi
 rm -rf "$PREFIX"
 

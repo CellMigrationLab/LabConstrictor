@@ -2,7 +2,6 @@ from collections import defaultdict
 from pathlib import Path
 import sys
 
-
 NOTEBOOK_DIR = Path("notebooks").resolve()
 README_PATH = NOTEBOOK_DIR / "README.md"
 

@@ -230,6 +230,17 @@ def main():
         pkg_order.append("ipywidgets")
         print(f"Added ipywidgets=={ipyw_version} (resolved from environment)")
 
+    # Ensure jl-hideocode is present with a pinned version
+    if "jl-hideocode" not in pkgs:
+        pkgs["jl-hideocode"] = {
+            "name": "jl-hideocode",
+            "pinned": True,
+            "ver": "0.0.1",
+            "marker": ""
+        }
+        pkg_order.append("jl-hideocode")
+        print("Added jl-hideocode==0.0.1 (enforced)")
+
     # collect package lines
     if args.sort:
         pkg_keys = sorted(pkg_order, key=str.casefold)
