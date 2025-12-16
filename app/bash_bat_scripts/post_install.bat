@@ -14,7 +14,7 @@ IF NOT DEFINED PKG_VERSION (
     SET "PKG_VERSION=VERSION_NUMBER"
 )
 SET "DISPLAY_VERSION=%PKG_VERSION%"
-SET "PUBLISHER=Cell Migration Lab"
+SET "PUBLISHER=GITHUB_OWNER"
 echo Registering PROJECT_NAME in Windows Apps list >> "%PREFIX%\menuinst_debug.log"
 reg add "%ARP_KEY%" /v DisplayName /d "PROJECT_NAME" /f >> "%PREFIX%\menuinst_debug.log" 2>&1
 reg add "%ARP_KEY%" /v DisplayVersion /d "%DISPLAY_VERSION%" /f >> "%PREFIX%\menuinst_debug.log" 2>&1
