@@ -1,14 +1,32 @@
 import sys
 from pathlib import Path
 import yaml
+import re
 
 
 def load_construct(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
-
-def save_construct(path: Path, data: dict):
-    path.write_text(yaml.dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
+def save_construct_surgical(path: Path, data: dict, original_text: str) -> str:
+    """Update only extra_files section while preserving the rest of the file structure."""
+    # Convert updated extra_files back to YAML string
+    extra_files = data.get("extra_files", [])
+    extra_files_yaml = "extra_files:\n"
+    for item in extra_files:
+        if isinstance(item, dict):
+            for src, dst in item.items():
+                extra_files_yaml += f"- {src}: {dst}\n"
+        else:
+            extra_files_yaml += f"- {item}\n"
+    
+    # Find and replace the extra_files section in the original text
+    pattern = r"extra_files:\n((?:- .+\n)*)"
+    if re.search(pattern, original_text):
+        updated = re.sub(pattern, extra_files_yaml, original_text)
+        path.write_text(updated, encoding="utf-8")
+    else:
+        # Fallback: if no extra_files found, use standard dump
+        path.write_text(yaml.dump(data, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
 
 def extract_project_folder(extra_files: list) -> str:
@@ -88,9 +106,14 @@ def main():
         print(f"construct.yaml not found at: {construct_path}", file=sys.stderr)
         sys.exit(1)
 
+    # Read original text to preserve formatting
+    original_text = construct_path.read_text(encoding="utf-8")
+    
     data = load_construct(construct_path)
     added = ensure_notebooks_in_extra_files(data, notebooks_root)
-    save_construct(construct_path, data)
+    
+    # Write using surgical update to preserve platform-specific scripts
+    save_construct_surgical(construct_path, data, original_text)
     print(f"Added {added} notebook(s) to extra_files.")
 
 

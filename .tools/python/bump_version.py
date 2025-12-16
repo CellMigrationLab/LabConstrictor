@@ -4,37 +4,48 @@ import pathlib
 import re
 import sys
 import textwrap
-import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CONSTRUCT = ROOT / "construct.yaml"
 
-VERSION_RE = re.compile(r'^version:\s*"(?P<version>\d+\.\d+\.\d+)"\s*$', re.MULTILINE)
+# Match version line with optional quotes and optional trailing comment
+VERSION_LINE_RE = re.compile(
+    r'^(version:\s*)(?P<quote>["\']?)(?P<version>\d+\.\d+\.\d+)(?P=quote)(?P<trailing>\s*(?:#.*)?)$',
+    re.MULTILINE,
+)
+THANKS_LINE_RE = re.compile(r'(Thank you for installing[^\n]* v)(\d+\.\d+\.\d+)(!)')
+
 
 def read_current_version() -> tuple[str, str]:
-    # Read construct.yaml to find the current version
-    with CONSTRUCT.open(encoding="utf-8") as f:
-        data = yaml.safe_load(f)
-    if "version" in data:
-        return data, data["version"]
-    else:
+    """Read construct.yaml as text and extract current SemVer.
+
+    Returns (file_text, version_string). Exits if not found.
+    """
+    text = CONSTRUCT.read_text(encoding="utf-8")
+    m = VERSION_LINE_RE.search(text)
+    if not m:
         sys.exit("Could not find version in construct.yaml")
-
-def write(path: pathlib.Path, text: str) -> None:
-    path.write_text(text, encoding="utf-8")
-    print(f"updated {path.relative_to(ROOT)}")
+    return text, m.group("version")
 
 
-def bump_construct(data, old_version, new_version):
-    data['version'] = new_version
-    if "conclusion_text" in data:
-        data["conclusion_text"] = re.sub(
-            rf'(Thank you for installing PROJECT_NAME v){re.escape(old_version)}(!)',
-            rf'\g<1>{new_version}\g<2>',  # Use named groups to avoid ambiguity
-            data["conclusion_text"],
-            count=1,
-        )
-    return data
+def bump_construct_text(text: str, old_version: str, new_version: str) -> str:
+    """Return updated file text with bumped version, preserving YAML structure/comments.
+
+    - Updates the `version: "X.Y.Z"` line.
+    - Updates the version inside the 'Thank you for installing ... vX.Y.Z!' line
+      within `conclusion_text` if present.
+    """
+    # 1) Update the explicit version line
+    def _repl_version(m: re.Match) -> str:
+        # Preserve original quoting and trailing comment/whitespace
+        return f"{m.group(1)}{m.group('quote')}{new_version}{m.group('quote')}{m.group('trailing')}"
+
+    text = VERSION_LINE_RE.sub(_repl_version, text, count=1)
+
+    # 2) Update the thank-you line version (only first occurrence)
+    text = THANKS_LINE_RE.sub(lambda m: f"{m.group(1)}{new_version}{m.group(3)}", text, count=1)
+    return text
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -53,16 +64,14 @@ def main() -> None:
     if not re.fullmatch(r"\d+\.\d+\.\d+", args.new_version):
         sys.exit("Version must look like X.Y.Z")
 
-    construct_text, current = read_current_version()
+    text, current = read_current_version()
     if args.new_version == current:
         print(f"Version already at {current}; nothing to update.")
         return
 
-    updated_construct = bump_construct(construct_text, current, args.new_version)
+    updated_text = bump_construct_text(text, current, args.new_version)
 
-    # Write construct.yaml
-    with CONSTRUCT.open("w", encoding="utf-8") as f:
-        yaml.dump(updated_construct, f, sort_keys=False)
+    CONSTRUCT.write_text(updated_text, encoding="utf-8")
     print(f"Bumped {current} -> {args.new_version}")
 
 
