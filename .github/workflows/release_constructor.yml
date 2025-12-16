@@ -43,6 +43,9 @@ jobs:
         run: |
           set -euxo pipefail
           python .tools/python/bump_version.py "${RELEASE_VERSION}"
+          python .tools/python/bump_notebook_constructor.py
+          python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
+
 
       - name: Commit updated versioned files
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -106,12 +109,6 @@ jobs:
           python .tools/python/bump_version.py "${RELEASE_VERSION}"
           python .tools/python/bump_notebook_constructor.py
           python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
-
-      - name: Commit updated versioned files and notebooks
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: main
-          commit_message: GitHub Action - Update version to "${RELEASE_VERSION}""
 
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3
