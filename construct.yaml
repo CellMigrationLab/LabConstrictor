@@ -1,4 +1,4 @@
-name: PROJECT_NAME
+name: UNDERSCORED_PROJECT_NAME
 version: VERSION_NUMBER
 
 environment_file: environment.yaml
