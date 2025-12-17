@@ -115,9 +115,6 @@ def discover_versions(paths: Iterable[Path] | None) -> tuple[list[NotebookVersio
         name = nb_path.stem
         results.append(NotebookVersion(category, name, version, nb_path))
 
-    if not results:
-        raise SystemExit("No notebooks processed.")
-
     return results, missing
 
 

@@ -51,7 +51,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
-          commit_message: GitHub Action - Update version to ${RELEASE_VERSION}
+          commit_message: GitHub Action - Update version to "${RELEASE_VERSION}"
 
   build-installers:
     name: Build installers (${{ matrix.os_name }})
