@@ -10,10 +10,7 @@ echo Running post_install > "%PREFIX%\menuinst_debug.log"
 SET "ARP_KEY=HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\UNDERSCORED_PROJECT_NAME"
 SET "UNINSTALL_EXE=%PREFIX%\Uninstall-UNDERSCORED_PROJECT_NAME.exe"
 SET "DISPLAY_ICON=%PREFIX%\PROJECT_NAME\logo.ico"
-IF NOT DEFINED PKG_VERSION (
-    SET "PKG_VERSION=VERSION_NUMBER"
-)
-SET "DISPLAY_VERSION=%PKG_VERSION%"
+SET "DISPLAY_VERSION=VERSION_NUMBER"
 SET "PUBLISHER=GITHUB_OWNER"
 echo Registering PROJECT_NAME in Windows Apps list >> "%PREFIX%\menuinst_debug.log"
 reg add "%ARP_KEY%" /v DisplayName /d "PROJECT_NAME" /f >> "%PREFIX%\menuinst_debug.log" 2>&1
