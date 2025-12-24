@@ -24,6 +24,7 @@ extra_files:
 - app/python_scripts/include_path.py: PROJECT_NAME/include_path.py
 - notebooks/notebook_latest_versions.yaml: PROJECT_NAME/notebook_latest_versions.yaml
 - requirements.txt: PROJECT_NAME/requirements.txt
+- construct.yaml: PROJECT_NAME/construct.yaml
 
 post_install: app/bash_bat_scripts/post_install.bat # [win]
 post_install: app/bash_bat_scripts/post_install.sh # [unix]
