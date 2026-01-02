@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Merge requirements files under a directory (e.g. notebooks/*) into a single root requirements file.
+"""Merge requirements files under a directory (e.g. notebooks/*) into a single
+root requirements file.
 
-This updated script resolves simple version conflicts by choosing the newest version seen
-for a given package (and emits a pinned `pkg==<newest>`). It still preserves
+The script now supports both classic requirements.txt files and the new
+requirements.yaml format used by notebooks. For YAML files, it merges the
+`python_version` (picking the newest) and the `dependencies` list while
+discarding per-notebook descriptions.
+
+It resolves simple version conflicts by choosing the newest version seen for a
+given package (and emits a pinned `pkg==<newest>`). It still preserves
 non-package lines (pip options, VCS/URLs) and supports simple `-r` includes.
 
 It also automatically adds ipywidgets if missing, with a version determined by
@@ -15,6 +21,10 @@ from collections import OrderedDict
 from datetime import datetime
 import re
 import yaml
+
+
+# Regex to capture name, optional extras, operator and version, and optional markers
+pkg_re = re.compile(r"^(?P<name>[A-Za-z0-9_.+-]+)(?P<extras>\[[^\]]+\])?\s*(?P<op>==|>=|<=|~=|!=|>|<)\s*(?P<ver>[^;\s]+)(?P<marker>\s*;.*)?$")
 
 
 def normalize_line(line: str) -> str:
@@ -61,76 +71,113 @@ except Exception:
         return parse_version(a) > parse_version(b)
 
 
+def merge_python_version(current: str | None, candidate: str | None):
+    """Pick the newest python_version string, if provided."""
+    if not candidate:
+        return current
+    if current is None:
+        return candidate
+    try:
+        return candidate if is_version_greater(candidate, current) else current
+    except Exception:
+        return max(str(current), str(candidate))
+
+
+def process_requirement_line(line: str, pkg_order: list, pkgs: dict, other_lines: OrderedDict, base_dir: Path | None = None):
+    """Handle a single requirement line (shared between txt and yaml inputs)."""
+    if not line:
+        return
+
+    parts = line.split(maxsplit=1)
+    if parts[0] in ("-r", "--requirement") and len(parts) == 2:
+        include_path = Path(parts[1]) if base_dir is None else (base_dir / parts[1])
+        include = include_path.resolve()
+        if include.exists():
+            read_requirements_file(include, pkg_order, pkgs, other_lines)
+        return
+
+    # Keep pip option lines (indexes, find-links, etc.) as-is
+    if line.startswith("--") or line.startswith("-f ") or line.startswith("-i ") or line.startswith("-e "):
+        other_lines.setdefault(line, None)
+        return
+
+    # VCS or URL lines (git+, http(s)://, file:) keep as-is
+    if any(line.startswith(prefix) for prefix in ("git+", "http://", "https://", "file:", "ssh://")):
+        other_lines.setdefault(line, None)
+        return
+
+    m = pkg_re.match(line)
+    if not m:
+        # plain package (unpinned) or marker-only spec
+        key = line.split(";", 1)[0].strip().lower()
+        if key not in pkgs:
+            pkgs[key] = {"name": line, "pinned": False, "ver": None}
+            pkg_order.append(key)
+        return
+
+    name = m.group("name")
+    extras = m.group("extras") or ""
+    ver = m.group("ver")
+    marker = m.group("marker") or ""
+
+    base = name.lower()
+    if base not in pkgs:
+        pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
+        pkg_order.append(base)
+    else:
+        existing = pkgs[base]
+        if not existing.get("pinned"):
+            pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
+        else:
+            try:
+                if is_version_greater(ver, existing.get("ver")):
+                    pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
+            except Exception:
+                if str(ver) > str(existing.get("ver")):
+                    pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
+
+
 def read_requirements_file(path: Path, pkg_order: list, pkgs: dict, other_lines: OrderedDict):
     try:
         text = path.read_text(encoding="utf-8")
     except Exception:
         return
 
-    # Regex to capture name, optional extras, operator and version, and optional markers
-    pkg_re = re.compile(r"^(?P<name>[A-Za-z0-9_.+-]+)(?P<extras>\[[^\]]+\])?\s*(?P<op>==|>=|<=|~=|!=|>|<)\s*(?P<ver>[^;\s]+)(?P<marker>\s*;.*)?$")
-
     for raw in text.splitlines():
         line = normalize_line(raw)
-        if not line:
-            continue
-
-        parts = line.split(maxsplit=1)
-        if parts[0] in ("-r", "--requirement") and len(parts) == 2:
-            include = (path.parent / parts[1]).resolve()
-            if include.exists():
-                read_requirements_file(include, pkg_order, pkgs, other_lines)
-            continue
-
-        # Keep pip option lines (indexes, find-links, etc.) as-is
-        if line.startswith("--") or line.startswith("-f ") or line.startswith("-i ") or line.startswith("-e "):
-            other_lines.setdefault(line, None)
-            continue
-
-        # VCS or URL lines (git+, http(s)://, file:) keep as-is
-        if any(line.startswith(prefix) for prefix in ("git+", "http://", "https://", "file:", "ssh://")):
-            other_lines.setdefault(line, None)
-            continue
-
-        m = pkg_re.match(line)
-        if not m:
-            # plain package (unpinned) or marker-only spec
-            key = line.split(";", 1)[0].strip().lower()
-            if key not in pkgs:
-                # record unpinned form
-                pkgs[key] = {"name": line, "pinned": False, "ver": None}
-                pkg_order.append(key)
-            continue
-
-        name = m.group("name")
-        extras = m.group("extras") or ""
-        ver = m.group("ver")
-        marker = m.group("marker") or ""
-
-        base = name.lower()
-        if base not in pkgs:
-            pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
-            pkg_order.append(base)
-        else:
-            existing = pkgs[base]
-            if not existing.get("pinned"):
-                # prefer pinned if we see a pinned one
-                pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
-            else:
-                # both pinned: pick the newest version
-                try:
-                    if is_version_greater(ver, existing.get("ver")):
-                        pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
-                except Exception:
-                    # fallback: prefer lexicographically greater
-                    if str(ver) > str(existing.get("ver")):
-                        pkgs[base] = {"name": name + (extras or ""), "pinned": True, "ver": ver, "marker": marker}
+        process_requirement_line(line, pkg_order, pkgs, other_lines, base_dir=path.parent)
 
 
-def find_requirements_files(source_dir: Path):
+def read_requirements_yaml(path: Path, pkg_order: list, pkgs: dict, other_lines: OrderedDict) -> str | None:
+    """Read requirements.yaml and return its python_version if present."""
+    try:
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return None
+
+    python_version = data.get("python_version")
+    dependencies = data.get("dependencies", []) or []
+
+    for dep in dependencies:
+        line = normalize_line(str(dep))
+        process_requirement_line(line, pkg_order, pkgs, other_lines, base_dir=path.parent)
+
+    return python_version
+
+
+def find_requirements_files(source_dir: Path, output: Path):
     if not source_dir.exists():
         return []
-    return sorted(source_dir.rglob("requirements*.txt"))
+
+    if output.suffix.lower() in {".yaml", ".yml"}:
+        patterns = ["requirements.yaml", "requirements.yml"]
+    else:
+        patterns = ["requirements*.txt"]
+
+    files = []
+    for pattern in patterns:
+        files.extend(source_dir.rglob(pattern))
+    return sorted({f.resolve() for f in files})
 
 
 def read_environment_yaml(env_path: Path) -> dict:
@@ -178,7 +225,7 @@ def resolve_ipywidgets_version(env_versions: dict) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Merge multiple requirements.txt files into one.")
+    parser = argparse.ArgumentParser(description="Merge multiple requirements files (txt or yaml) into one.")
     parser.add_argument("--source-dir", default="notebooks", help="Directory to scan for requirements files")
     parser.add_argument("--output", default="requirements.txt", help="Output requirements file to write")
     parser.add_argument("--sort", action="store_true", help="Sort final requirements alphabetically")
@@ -188,21 +235,35 @@ def main():
 
     source = Path(args.source_dir)
     output = Path(args.output)
+    yaml_mode = output.suffix.lower() in {".yaml", ".yml"}
 
-    files = find_requirements_files(source)
+    files = find_requirements_files(source, output)
     if not files:
         print(f"No requirements files found under {source}, writing empty {output}")
-        output.write_text("# Generated requirements (none found)\n", encoding="utf-8")
+        if yaml_mode:
+            empty_data = {
+                "description": "Generated requirements (none found)",
+                "python_version": "unspecified",
+                "dependencies": [],
+            }
+            output.write_text(yaml.safe_dump(empty_data, sort_keys=False), encoding="utf-8")
+        else:
+            output.write_text("# Generated requirements (none found)\n", encoding="utf-8")
         return 0
 
     pkg_order = []
     pkgs = {}  # base -> {name, pinned, ver, marker}
     other_lines = OrderedDict()
+    python_version = None
 
     for f in files:
         if f.resolve() == output.resolve():
             continue
-        read_requirements_file(f, pkg_order, pkgs, other_lines)
+        if yaml_mode:
+            candidate_py = read_requirements_yaml(f, pkg_order, pkgs, other_lines)
+            python_version = merge_python_version(python_version, candidate_py)
+        else:
+            read_requirements_file(f, pkg_order, pkgs, other_lines)
 
     # Build final list preserving first-seen package order
     final_lines = []
@@ -256,17 +317,26 @@ def main():
         else:
             final_lines.append(info["name"])
 
-    header = (
-        f"# Generated by .tools/python/merge_requirements.py on {datetime.utcnow().isoformat()}Z\n"
-        f"# Source files: {', '.join(str(p) for p in files)}\n"
-        "# ---\n"
-    )
-    content = header + "\n".join(final_lines) + ("\n" if final_lines and not final_lines[-1].endswith("\n") else "")
-    output.write_text(content, encoding="utf-8")
-    print(f"Wrote {output} with {len(final_lines)} entries (from {len(files)} files)")
+    if yaml_mode:
+        merged_data = OrderedDict()
+        merged_data["description"] = f"Merged requirements from {len(files)} files on {datetime.utcnow().isoformat()}Z"
+        merged_data["python_version"] = str(python_version or "unspecified")
+        merged_data["dependencies"] = final_lines
+
+        output.write_text(yaml.safe_dump(merged_data, sort_keys=False), encoding="utf-8")
+        print(f"Wrote {output} with {len(final_lines)} dependencies (from {len(files)} files)")
+    else:
+        header = (
+            f"# Generated by .tools/python/merge_requirements.py on {datetime.utcnow().isoformat()}Z\n"
+            f"# Source files: {', '.join(str(p) for p in files)}\n"
+            "# ---\n"
+        )
+        content = header + "\n".join(final_lines) + ("\n" if final_lines and not final_lines[-1].endswith("\n") else "")
+        output.write_text(content, encoding="utf-8")
+        print(f"Wrote {output} with {len(final_lines)} entries (from {len(files)} files)")
 
     # Optionally write a conda environment.yml that starts with the requested header
-    if args.generate_env:
+    if args.generate_env and not yaml_mode:
         env_path = Path(args.env_output)
         # Required starting block per user request
         env_header = [
@@ -284,7 +354,6 @@ def main():
         # For simplicity place all merged requirements under pip: (preserve order)
         pip_block = ["  - pip:"]
         for line in final_lines:
-            # indent pip entries
             pip_block.append(f"    - {line}")
 
         env_content = "\n".join(env_header + pip_block) + "\n"

@@ -6,7 +6,7 @@ on:
     paths:
       - 'notebooks/**/*.ipynb'
       - 'notebooks/notebook_latest_versions.yaml'
-      - 'notebooks/**/requirements.txt'
+      - 'notebooks/**/requirements.yaml'
   workflow_dispatch:
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
           files: |
             notebooks/**/*.ipynb
             notebooks/notebook_latest_versions.yaml
-            notebooks/**/requirements.txt
+            notebooks/**/requirements.yaml
           
       - name: Update manifests and changelogs
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
@@ -49,7 +49,7 @@ jobs:
           python .tools/python/bump_notebook_README.py
 
       - name: Run merge script
-        if: contains(steps.changed-files.outputs.all_changed_files, 'requirements.txt')
+        if: contains(steps.changed-files.outputs.all_changed_files, 'requirements.yaml')
         run: |
           python .tools/python/merge_requirements.py --source-dir notebooks --output requirements.txt
 
