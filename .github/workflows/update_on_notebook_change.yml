@@ -49,7 +49,7 @@ jobs:
           python .tools/python/bump_notebook_README.py
 
       - name: Run merge script
-        if: contains(steps.changed-files.outputs.all_changed_files, 'requirements.yaml')
+        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-files.outputs.all_changed_files, 'requirements.yaml')
         run: |
           python .tools/python/merge_requirements.py --source-dir notebooks --output requirements.txt
 
@@ -83,4 +83,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Updated files because of notebook and/or requirements changes
-          file_pattern: requirements.txt notebooks/*
+          file_pattern: requirements.txt environment.yaml notebooks/*

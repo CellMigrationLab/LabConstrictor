@@ -165,14 +165,11 @@ def read_requirements_yaml(path: Path, pkg_order: list, pkgs: dict, other_lines:
     return python_version
 
 
-def find_requirements_files(source_dir: Path, output: Path):
+def find_requirements_files(source_dir):
     if not source_dir.exists():
         return []
 
-    if output.suffix.lower() in {".yaml", ".yml"}:
-        patterns = ["requirements.yaml", "requirements.yml"]
-    else:
-        patterns = ["requirements*.txt"]
+    patterns = ["requirements.yaml", "requirements.yml", "requirements*.txt"]
 
     files = []
     for pattern in patterns:
@@ -180,39 +177,16 @@ def find_requirements_files(source_dir: Path, output: Path):
     return sorted({f.resolve() for f in files})
 
 
-def read_environment_yaml(env_path: Path) -> dict:
-    """Read environment.yaml and extract Python, JupyterLab, matplotlib versions."""
-    if not env_path.exists():
-        return {}
-    try:
-        data = yaml.safe_load(env_path.read_text(encoding="utf-8"))
-        versions = {}
-        for dep in data.get("dependencies", []):
-            if isinstance(dep, str):
-                if dep.startswith("python="):
-                    versions["python"] = dep.split("=")[-1]
-                elif dep.startswith("jupyterlab="):
-                    versions["jupyterlab"] = dep.split("=")[-1]
-                elif dep.startswith("matplotlib="):
-                    versions["matplotlib"] = dep.split("=")[-1]
-        return versions
-    except Exception:
-        return {}
-
-
-def resolve_ipywidgets_version(env_versions: dict) -> str:
-    """Resolve ipywidgets version based on Python, JupyterLab, matplotlib versions.
+def resolve_ipywidgets_version(py_version, jl_version):
+    """Resolve ipywidgets version based on Python, JupyterLab versions.
     
     Returns a version spec string like ">=7.0.0,<8.0.0" or a pinned version.
     """
-    py_ver = env_versions.get("python", "3.11")
-    jl_ver = env_versions.get("jupyterlab", "4.0")
-    mpl_ver = env_versions.get("matplotlib", "3.0")
     
     # Simple heuristic: ipywidgets 8.x for modern stacks, 7.x for older
     try:
-        py_major, py_minor = map(int, py_ver.split(".")[:2])
-        jl_major = int(jl_ver.split(".")[0])
+        py_major, py_minor = map(int, py_version.split(".")[:2])
+        jl_major = int(jl_version.split(".")[0])
         
         if jl_major >= 4 and py_major >= 3 and py_minor >= 9:
             return "8.1.1"  # Latest stable for modern Python + JupyterLab 4
@@ -229,26 +203,15 @@ def main():
     parser.add_argument("--source-dir", default="notebooks", help="Directory to scan for requirements files")
     parser.add_argument("--output", default="requirements.txt", help="Output requirements file to write")
     parser.add_argument("--sort", action="store_true", help="Sort final requirements alphabetically")
-    parser.add_argument("--generate-env", action="store_true", help="Also generate a conda environment.yml with a pip: section")
-    parser.add_argument("--env-output", default="environment.yml", help="Output environment.yml path")
     args = parser.parse_args()
 
     source = Path(args.source_dir)
     output = Path(args.output)
-    yaml_mode = output.suffix.lower() in {".yaml", ".yml"}
 
-    files = find_requirements_files(source, output)
+    files = find_requirements_files(source)
     if not files:
         print(f"No requirements files found under {source}, writing empty {output}")
-        if yaml_mode:
-            empty_data = {
-                "description": "Generated requirements (none found)",
-                "python_version": "unspecified",
-                "dependencies": [],
-            }
-            output.write_text(yaml.safe_dump(empty_data, sort_keys=False), encoding="utf-8")
-        else:
-            output.write_text("# Generated requirements (none found)\n", encoding="utf-8")
+        output.write_text("# Generated requirements (none found)\n", encoding="utf-8")
         return 0
 
     pkg_order = []
@@ -259,7 +222,7 @@ def main():
     for f in files:
         if f.resolve() == output.resolve():
             continue
-        if yaml_mode:
+        if f.suffix.lower() in {".yaml", ".yml"}:
             candidate_py = read_requirements_yaml(f, pkg_order, pkgs, other_lines)
             python_version = merge_python_version(python_version, candidate_py)
         else:
@@ -271,25 +234,6 @@ def main():
     # include other lines first (preserve order seen)
     for ol in other_lines.keys():
         final_lines.append(ol)
-
-    # Check if ipywidgets is already present
-    has_ipywidgets = "ipywidgets" in pkgs
-    
-    # If not, resolve and add it based on environment.yaml
-    if not has_ipywidgets:
-        env_path = Path(args.env_output) if args.generate_env else Path("environment.yaml")
-        env_versions = read_environment_yaml(env_path)
-        ipyw_version = resolve_ipywidgets_version(env_versions)
-        
-        # Add to pkgs and pkg_order
-        pkgs["ipywidgets"] = {
-            "name": "ipywidgets",
-            "pinned": True,
-            "ver": ipyw_version,
-            "marker": ""
-        }
-        pkg_order.append("ipywidgets")
-        print(f"Added ipywidgets=={ipyw_version} (resolved from environment)")
 
     # Ensure jl-hidecode is present with a pinned version
     if "jl-hidecode" not in pkgs:
@@ -308,57 +252,67 @@ def main():
     else:
         pkg_keys = pkg_order
 
+    # Check if ipywidgets is present; if not, add it with resolved version
+    if "jupyterlab" not in pkgs:
+        jl_ver = "4.0.5"
+
+    # Check if ipywidgets is present; if not, add it to the packages
+    if "ipywidgets" not in pkgs:
+        iw_version = resolve_ipywidgets_version(python_version, jl_ver)
+        pkgs["ipywidgets"] = {
+            "name": "ipywidgets",
+            "pinned": True,
+            "ver": iw_version,
+            "marker": ""
+        }
+        pkg_order.append("ipywidgets")
+        print(f"Added ipywidgets=={iw_version} (resolved)")
+
     for key in pkg_keys:
         info = pkgs.get(key)
         if not info:
             continue
+
+        # Check if jupyterlab is present:
+        if key == "jupyterlab":
+            jl_info = pkgs.get(key)
+            if jl_info and jl_info.get("pinned") and jl_info.get("ver"):
+                jl_ver = jl_info["ver"]
+            else:
+                jl_ver = "4.0.5"
+
         if info.get("pinned") and info.get("ver"):
             final_lines.append(f"{info['name']}=={info['ver']}{info.get('marker','')}")
         else:
             final_lines.append(info["name"])
 
-    if yaml_mode:
-        merged_data = OrderedDict()
-        merged_data["description"] = f"Merged requirements from {len(files)} files on {datetime.utcnow().isoformat()}Z"
-        merged_data["python_version"] = str(python_version or "unspecified")
-        merged_data["dependencies"] = final_lines
+    header = (
+        f"# Generated by .tools/python/merge_requirements.py on {datetime.utcnow().isoformat()}Z\n"
+        f"# Source files: {', '.join(str(p) for p in files)}\n"
+        "# ---\n"
+    )
+    content = header + "\n".join(final_lines) + ("\n" if final_lines and not final_lines[-1].endswith("\n") else "")
+    output.write_text(content, encoding="utf-8")
+    print(f"Wrote {output} with {len(final_lines)} entries (from {len(files)} files)")
 
-        output.write_text(yaml.safe_dump(merged_data, sort_keys=False), encoding="utf-8")
-        print(f"Wrote {output} with {len(final_lines)} dependencies (from {len(files)} files)")
+    # Create the environment.yaml if not present
+    env_path = Path("environment.yaml")
+    if not env_path.exists():
+        print(f"{env_path} not found, please be sure to create one.")
+        return 1
     else:
-        header = (
-            f"# Generated by .tools/python/merge_requirements.py on {datetime.utcnow().isoformat()}Z\n"
-            f"# Source files: {', '.join(str(p) for p in files)}\n"
-            "# ---\n"
-        )
-        content = header + "\n".join(final_lines) + ("\n" if final_lines and not final_lines[-1].endswith("\n") else "")
-        output.write_text(content, encoding="utf-8")
-        print(f"Wrote {output} with {len(final_lines)} entries (from {len(files)} files)")
+        data = yaml.safe_load(env_path.read_text(encoding="utf-8"))
+        dependencies = data.get("dependencies", [])
+        for i, dep in enumerate(dependencies):
+            if isinstance(dep, str):
+                if dep.startswith("python="):
+                    dependencies[i] = f"python={python_version}"
+                elif dep.startswith("jupyterlab="):
+                    dependencies[i] = f"jupyterlab={jl_ver}"
+        data["dependencies"] = dependencies
+        env_path.write_text(yaml.dump(data, sort_keys=False), encoding="utf-8")
+        print(f"Updated {env_path} with python={python_version} and jupyterlab={jl_ver}")
 
-    # Optionally write a conda environment.yml that starts with the requested header
-    if args.generate_env and not yaml_mode:
-        env_path = Path(args.env_output)
-        # Required starting block per user request
-        env_header = [
-            "name: PROJECT_NAME",
-            "channels:",
-            "  - conda-forge",
-            "  - defaults",
-            "dependencies:",
-            "  - python=3.11",
-            "  - pip",
-            "  - jupyterlab=4.0.12",
-            "  - notebook=7.0.8",
-        ]
-
-        # For simplicity place all merged requirements under pip: (preserve order)
-        pip_block = ["  - pip:"]
-        for line in final_lines:
-            pip_block.append(f"    - {line}")
-
-        env_content = "\n".join(env_header + pip_block) + "\n"
-        env_path.write_text(env_content, encoding="utf-8")
-        print(f"Wrote environment file to {env_path}")
     return 0
 
 

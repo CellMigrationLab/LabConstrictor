@@ -8,5 +8,3 @@ dependencies:
   - git
   - pip
   - jupyterlab=JUPYTERLAB_VERSION
-  - notebook=NOTEBOOK_VERSION
-  - matplotlib=MATPLOTLIB_VERSION
