@@ -41,10 +41,21 @@ jobs:
 
       - name: Sync versioned files
         run: |
-          set -euxo pipefail
-          python .tools/python/bump_version.py "${RELEASE_VERSION}"
-          python .tools/python/bump_notebook_constructor.py
-          python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
+          bash .tools/scripts/run_with_context.sh \
+            artifacts/bump_version_main.log \
+            "bump_version.py" \
+            .tools/python/bump_version.py \
+            python .tools/python/bump_version.py "${RELEASE_VERSION}"
+          bash .tools/scripts/run_with_context.sh \
+            artifacts/bump_notebook_constructor_main.log \
+            "bump_notebook_constructor.py" \
+            .tools/python/bump_notebook_constructor.py \
+            python .tools/python/bump_notebook_constructor.py
+          bash .tools/scripts/run_with_context.sh \
+            artifacts/bump_Welcome_notebook_main.log \
+            "bump_Welcome_notebook.py" \
+            .tools/python/bump_Welcome_notebook.py \
+            python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
 
 
       - name: Commit updated versioned files
@@ -52,6 +63,14 @@ jobs:
         with:
           branch: main
           commit_message: GitHub Action - Update version to "${RELEASE_VERSION}"
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bump-version-logs
+          path: artifacts/*.log
+          if-no-files-found: ignore
 
   build-installers:
     name: Build installers (${{ matrix.os_name }})
@@ -105,10 +124,21 @@ jobs:
         
       - name: Sync versioned files and populate Welcome notebook
         run: |
-          set -euxo pipefail
-          python .tools/python/bump_version.py "${RELEASE_VERSION}"
-          python .tools/python/bump_notebook_constructor.py
-          python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
+          bash .tools/scripts/run_with_context.sh \
+            "artifacts/${{ matrix.os_name }}-bump_version.log" \
+            "bump_version.py" \
+            .tools/python/bump_version.py \
+            python .tools/python/bump_version.py "${RELEASE_VERSION}"
+          bash .tools/scripts/run_with_context.sh \
+            "artifacts/${{ matrix.os_name }}-bump_notebook_constructor.log" \
+            "bump_notebook_constructor.py" \
+            .tools/python/bump_notebook_constructor.py \
+            python .tools/python/bump_notebook_constructor.py
+          bash .tools/scripts/run_with_context.sh \
+            "artifacts/${{ matrix.os_name }}-bump_Welcome_notebook.log" \
+            "bump_Welcome_notebook.py" \
+            .tools/python/bump_Welcome_notebook.py \
+            python .tools/python/bump_Welcome_notebook.py "${{ github.repository_owner }}" "${{ github.event.repository.name }}"
 
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3
@@ -129,6 +159,13 @@ jobs:
           mkdir -p "${OUTPUT_DIR}"
           conda run -n "${CONSTRUCTOR_ENV}" constructor . --output-dir "${OUTPUT_DIR}"
 
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-installers-${{ matrix.os_name }}-logs
+          path: artifacts/*.log
+          if-no-files-found: ignore
       - name: Upload installers to release
         uses: softprops/action-gh-release@v2
         with:
