@@ -77,10 +77,10 @@ def merge_python_version(current: str | None, candidate: str | None):
         return current
     if current is None:
         return candidate
-    try:
-        return candidate if is_version_greater(candidate, current) else current
-    except Exception:
-        return max(str(current), str(candidate))
+    if current == candidate:
+        return current
+    else:
+        raise ValueError(f"Conflicting python_version: {current} vs {candidate}")
 
 
 def process_requirement_line(line: str, pkg_order: list, pkgs: dict, other_lines: OrderedDict, base_dir: Path | None = None):
@@ -299,7 +299,7 @@ def main():
     env_path = Path("environment.yaml")
     if not env_path.exists():
         print(f"{env_path} not found, please be sure to create one.")
-        return 1
+        raise FileNotFoundError(f"{env_path} not found.")
     else:
         data = yaml.safe_load(env_path.read_text(encoding="utf-8"))
         dependencies = data.get("dependencies", [])
