@@ -41,17 +41,17 @@ jobs:
 
       - name: Sync versioned files
         run: |
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             artifacts/bump_version_main.log \
             "bump_version.py" \
             .tools/python/bump_version.py \
             python .tools/python/bump_version.py "${RELEASE_VERSION}"
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             artifacts/bump_notebook_constructor_main.log \
             "bump_notebook_constructor.py" \
             .tools/python/bump_notebook_constructor.py \
             python .tools/python/bump_notebook_constructor.py
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             artifacts/bump_Welcome_notebook_main.log \
             "bump_Welcome_notebook.py" \
             .tools/python/bump_Welcome_notebook.py \
@@ -124,17 +124,17 @@ jobs:
         
       - name: Sync versioned files and populate Welcome notebook
         run: |
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             "artifacts/${{ matrix.os_name }}-bump_version.log" \
             "bump_version.py" \
             .tools/python/bump_version.py \
             python .tools/python/bump_version.py "${RELEASE_VERSION}"
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             "artifacts/${{ matrix.os_name }}-bump_notebook_constructor.log" \
             "bump_notebook_constructor.py" \
             .tools/python/bump_notebook_constructor.py \
             python .tools/python/bump_notebook_constructor.py
-          bash .tools/scripts/run_with_context.sh \
+          bash .tools/bash/run_with_context.sh \
             "artifacts/${{ matrix.os_name }}-bump_Welcome_notebook.log" \
             "bump_Welcome_notebook.py" \
             .tools/python/bump_Welcome_notebook.py \
