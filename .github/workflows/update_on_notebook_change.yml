@@ -101,16 +101,8 @@ jobs:
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit updated files
-        id: auto-commit
-        if: steps.check-changes.outputs.has_changes == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: GitHub Action - Updated files because of notebook and/or requirements changes
-          file_pattern: requirements.txt environment.yaml notebooks/*
-
       - name: Set up Miniconda for requirements test
-        if: steps.auto-commit.outputs.changes_detected == 'true'
+        if: steps.check-changes.outputs.has_changes == 'true'
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-activate-base: true
@@ -119,7 +111,8 @@ jobs:
           use-mamba: true
 
       - name: Verify merged requirements inside conda
-        if: steps.auto-commit.outputs.changes_detected == 'true'
+        id: test-conda-env
+        if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           bash .tools/bash/run_with_context.sh \
             artifacts/test_conda_env.log \
@@ -135,15 +128,13 @@ jobs:
           path: artifacts/*.log
           if-no-files-found: ignore
 
-      - name: Revert automation commit when checks fail
-        if: failure() && steps.auto-commit.outputs.changes_detected == 'true' && steps.auto-commit.outputs.commit_hash != ''
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git reset --hard
-          git clean -fd
-          git revert "${{ steps.auto-commit.outputs.commit_hash }}" --no-edit
-          git push origin HEAD:${{ github.ref_name }}
+      - name: Commit updated files
+        id: auto-commit
+        if: steps.check-changes.outputs.has_changes == 'true' && steps.test-conda-env.outcome == 'success'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: GitHub Action - Updated files because of notebook and/or requirements changes
+          file_pattern: requirements.txt environment.yaml notebooks/*
 
       - name: Revert user commit that broke requirements
         if: failure() && github.event_name == 'push'
@@ -152,5 +143,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git reset --hard
           git clean -fd
-          git revert "${{ github.sha }}" --no-edit
+          git revert "${{ github.sha }}" -m 1 --no-edit
           git push origin HEAD:${{ github.ref_name }}
