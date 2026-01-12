@@ -140,6 +140,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git reset --hard
+          git clean -fd
           git revert "${{ steps.auto-commit.outputs.commit_hash }}" --no-edit
           git push origin HEAD:${{ github.ref_name }}
 
@@ -148,5 +150,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git reset --hard
+          git clean -fd
           git revert "${{ github.sha }}" --no-edit
           git push origin HEAD:${{ github.ref_name }}
