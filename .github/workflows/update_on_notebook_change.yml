@@ -109,14 +109,6 @@ jobs:
       #     fi
       #   shell: bash
 
-      - name: Upload diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: notebook-debug-bundle
-          path: artifacts/*.log
-          if-no-files-found: ignore
-
       - name: Check for changes
         id: check-changes
         run: |
@@ -127,8 +119,51 @@ jobs:
           fi
 
       - name: Commit updated files
+        id: auto-commit
         if: steps.check-changes.outputs.has_changes == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Updated files because of notebook and/or requirements changes
           file_pattern: requirements.txt environment.yaml notebooks/*
+
+      - name: Set up Miniconda for requirements test
+        if: steps.auto-commit.outputs.changes_detected == 'true'
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-activate-base: true
+          miniforge-version: latest
+          installer-type: Miniforge3
+          use-mamba: true
+
+      - name: Verify merged requirements inside conda
+        if: steps.auto-commit.outputs.changes_detected == 'true'
+        run: |
+          bash .tools/bash/run_with_context.sh \
+            artifacts/test_conda_env.log \
+            "test_conda_environment.sh" \
+            .tools/bash/test_conda_environment.sh \
+            bash .tools/bash/test_conda_environment.sh
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notebook-debug-bundle
+          path: artifacts/*.log
+          if-no-files-found: ignore
+
+      - name: Revert automation commit when checks fail
+        if: failure() && steps.auto-commit.outputs.changes_detected == 'true' && steps.auto-commit.outputs.commit_hash != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git revert "${{ steps.auto-commit.outputs.commit_hash }}" --no-edit
+          git push origin HEAD:${{ github.ref_name }}
+
+      # - name: Revert user commit that broke requirements
+      #   if: failure() && github.event_name == 'push'
+      #   run: |
+      #     git config user.name "github-actions[bot]"
+      #     git config user.email "github-actions[bot]@users.noreply.github.com"
+      #     git revert "${{ github.sha }}" --no-edit
+      #     git push origin HEAD:${{ github.ref_name }}
