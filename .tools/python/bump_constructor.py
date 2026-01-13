@@ -85,6 +85,15 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         normalized_items.append({src: dst})
         added += 1
 
+    # First get the name of the package from setup.py
+    setup_path = repo_root / "setup.py"
+    project_name = "PROJECT_NAME"
+    if setup_path.exists():
+        setup_text = setup_path.read_text(encoding="utf-8")
+        name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', setup_text)
+        if name_match:
+            project_name = name_match.group(1)
+
     # Include all the Python scripts under src/ directory
     src_root = Path("src").resolve()
     included_src_flag = False
@@ -93,7 +102,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         if not rel.startswith("src/"):
             continue
         src = rel
-        dst = f"{project_folder}/{rel}"
+        dst = f"{project_folder}/{project_name}/{rel}"
 
         if src in existing_sources or dst in existing_dests:
             continue
