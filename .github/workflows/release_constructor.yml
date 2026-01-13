@@ -79,10 +79,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os_name: linux
-            runner: ubuntu-latest
-          - os_name: macos
-            runner: macos-latest
+          # - os_name: linux
+          #   runner: ubuntu-latest
+          # - os_name: macos-arm64
+          #   runner: macos-15
+          # - os_name: macos-intel
+          #   runner: macos-15-intel
           - os_name: windows
             runner: windows-latest
     defaults:
