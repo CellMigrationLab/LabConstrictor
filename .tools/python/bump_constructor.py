@@ -93,7 +93,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         if not rel.startswith("src/"):
             continue
         src = rel
-        dst = f"{project_folder}/src/{rel}"
+        dst = f"{project_folder}/{rel}"
 
         if src in existing_sources or dst in existing_dests:
             continue
