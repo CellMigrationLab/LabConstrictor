@@ -2,6 +2,13 @@
 set -e
 echo "Running post_install" > "$PREFIX/menuinst_debug.log"
 "$PREFIX/bin/python" -m pip install -r "$PREFIX/PROJECT_NAME/requirements.txt"
+PROJECT_ROOT="$PREFIX/PROJECT_NAME"
+if [ -f "$PROJECT_ROOT/setup.py" ]; then
+    echo "Found setup.py, installing PROJECT_NAME package locally" >> "$PREFIX/menuinst_debug.log"
+    "$PREFIX/bin/python" -m pip install "$PROJECT_ROOT"
+else
+    echo "No setup.py detected, skipping local pip install" >> "$PREFIX/menuinst_debug.log"
+fi
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/PROJECT_NAME/notebook_launcher.json" --keyword "BASE_PATH_KEYWORD"
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/app/pre_uninstall.sh" --keyword "BASE_PATH"
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/uninstall.sh" --keyword "BASE_PATH"

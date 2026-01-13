@@ -71,6 +71,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
     added = 0
     repo_root = Path(".").resolve()
 
+    # Include all notebooks under notebooks/ directory
     for ipynb in notebooks_root.rglob("*.ipynb"):
         rel = ipynb.relative_to(repo_root).as_posix()
         if not rel.startswith("notebooks/"):
@@ -83,6 +84,31 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
 
         normalized_items.append({src: dst})
         added += 1
+
+    # Include all the Python scripts under src/ directory
+    src_root = Path("src").resolve()
+    included_src_flag = False
+    for py_file in src_root.rglob("*.py"):
+        rel = py_file.relative_to(repo_root).as_posix()
+        if not rel.startswith("src/"):
+            continue
+        src = rel
+        dst = f"{project_folder}/src/{rel}"
+
+        if src in existing_sources or dst in existing_dests:
+            continue
+
+        normalized_items.append({src: dst})
+        included_src_flag = True
+        added += 1
+
+    if included_src_flag:
+        # Also include the setup.py file at the root if not already included
+        setup_src = "setup.py"
+        setup_dst = f"{project_folder}/setup.py"
+        if setup_src not in existing_sources and setup_dst not in existing_dests:
+            normalized_items.append({setup_src: setup_dst})
+            added += 1
 
     # Optionally sort entries (dicts by their single key) for determinism
     def sort_key(item):

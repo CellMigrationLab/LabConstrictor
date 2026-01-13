@@ -47,10 +47,10 @@ jobs:
             .tools/python/bump_version.py \
             python .tools/python/bump_version.py "${RELEASE_VERSION}"
           bash .tools/bash/run_with_context.sh \
-            artifacts/bump_notebook_constructor_main.log \
-            "bump_notebook_constructor.py" \
-            .tools/python/bump_notebook_constructor.py \
-            python .tools/python/bump_notebook_constructor.py
+            artifacts/bump_constructor_main.log \
+            "bump_constructor.py" \
+            .tools/python/bump_constructor.py \
+            python .tools/python/bump_constructor.py
           bash .tools/bash/run_with_context.sh \
             artifacts/bump_Welcome_notebook_main.log \
             "bump_Welcome_notebook.py" \
@@ -130,10 +130,10 @@ jobs:
             .tools/python/bump_version.py \
             python .tools/python/bump_version.py "${RELEASE_VERSION}"
           bash .tools/bash/run_with_context.sh \
-            "artifacts/${{ matrix.os_name }}-bump_notebook_constructor.log" \
-            "bump_notebook_constructor.py" \
-            .tools/python/bump_notebook_constructor.py \
-            python .tools/python/bump_notebook_constructor.py
+            "artifacts/${{ matrix.os_name }}-bump_constructor.log" \
+            "bump_constructor.py" \
+            .tools/python/bump_constructor.py \
+            python .tools/python/bump_constructor.py
           bash .tools/bash/run_with_context.sh \
             "artifacts/${{ matrix.os_name }}-bump_Welcome_notebook.log" \
             "bump_Welcome_notebook.py" \
