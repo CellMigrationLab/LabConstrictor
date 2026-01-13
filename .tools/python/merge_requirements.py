@@ -313,6 +313,14 @@ def main():
         env_path.write_text(yaml.dump(data, sort_keys=False), encoding="utf-8")
         print(f"Updated {env_path} with python={python_version} and jupyterlab={jl_ver}")
 
+    # Replace on setup.py the Python version
+    setup_path = Path("setup.py")
+    if setup_path.exists():
+        setup_text = setup_path.read_text(encoding="utf-8")
+        new_setup_text = re.sub(r'python_requires\s*=\s*"[>=<\.\d]+"', f'python_requires=">={python_version}"', setup_text)
+        setup_path.write_text(new_setup_text, encoding="utf-8")
+        print(f"Updated {setup_path} with python_requires>={python_version}")
+
     return 0
 
 
