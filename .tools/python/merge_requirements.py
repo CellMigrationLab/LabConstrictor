@@ -317,7 +317,8 @@ def main():
     setup_path = Path("setup.py")
     if setup_path.exists():
         setup_text = setup_path.read_text(encoding="utf-8")
-        new_setup_text = re.sub(r'python_requires\s*=\s*"[>=<\.\d]+"', f'python_requires=">={python_version}"', setup_text)
+        pattern = r'python_requires\s*=\s*["\'][><=\.0-9 ]+(PYTHON\_VERSION)?["\']'
+        new_setup_text = re.sub(pattern, f'python_requires=">={python_version}"', setup_text)
         setup_path.write_text(new_setup_text, encoding="utf-8")
         print(f"Updated {setup_path} with python_requires>={python_version}")
 
