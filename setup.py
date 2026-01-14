@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="LOWER_PROJ_NAME",
+    name="PYTHON_PROJ_NAME",
     version="VERSION_NUMBER",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
