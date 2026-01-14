@@ -68,7 +68,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
             # If strings are present, keep them
             normalized_items.append(item)
 
-    added = 0
+    ntbk_added = 0
     repo_root = Path(".").resolve()
 
     # Include all notebooks under notebooks/ directory
@@ -83,7 +83,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
             continue
 
         normalized_items.append({src: dst})
-        added += 1
+        ntbk_added += 1
 
     # First get the name of the package from setup.py
     setup_path = repo_root / "setup.py"
@@ -95,6 +95,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
             project_name = name_match.group(1)
 
     # Include all the Python scripts under src/ directory
+    src_added = 0
     src_root = Path("src").resolve()
     included_src_flag = False
     for py_file in src_root.rglob("*.py"):
@@ -102,14 +103,14 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         if not rel.startswith("src/"):
             continue
         src = rel
-        dst = f"{project_folder}/{project_name}/{rel}"
+        dst = f"{project_folder}/src/{project_name}/{rel.replace('src/', '')}"
 
         if src in existing_sources or dst in existing_dests:
             continue
 
         normalized_items.append({src: dst})
         included_src_flag = True
-        added += 1
+        src_added += 1
 
     if included_src_flag:
         # Also include the setup.py file at the root if not already included
@@ -117,7 +118,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         setup_dst = f"{project_folder}/setup.py"
         if setup_src not in existing_sources and setup_dst not in existing_dests:
             normalized_items.append({setup_src: setup_dst})
-            added += 1
+            src_added += 1
 
     # Optionally sort entries (dicts by their single key) for determinism
     def sort_key(item):
@@ -130,7 +131,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
     normalized_items.sort(key=sort_key)
     construct_data["extra_files"] = normalized_items
 
-    return added
+    return ntbk_added, src_added
 
 
 def main():
@@ -145,12 +146,11 @@ def main():
     original_text = construct_path.read_text(encoding="utf-8")
     
     data = load_construct(construct_path)
-    added = ensure_notebooks_in_extra_files(data, notebooks_root)
+    ntbk_added, src_added = ensure_notebooks_in_extra_files(data, notebooks_root)
     
     # Write using surgical update to preserve platform-specific scripts
     save_construct_surgical(construct_path, data, original_text)
-    print(f"Added {added} notebook(s) to extra_files.")
-
+    print(f"Added {ntbk_added} notebook(s) and {src_added} source file(s) to extra_files.")
 
 if __name__ == "__main__":
     main()
