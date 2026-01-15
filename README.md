@@ -12,19 +12,11 @@ Click the "Use this template" button at the top of this page to create a new rep
 
 Go to https://labconstrictor-form.streamlit.app/ and fill out the form with your application's details. At the end of the form, put your newly created repository's URL. Submit the form to automatically generate the necessary files, this will create a Pull Request in your repository, accept it and merge it. 
 
-> IMPORTANT: This instructions will be moved to [.tools/docs](.tools/docs) once the Pull Request is mergec. A link to them will be added to the repository's README.md file for future reference, so don't be afraid of losing them!
+> IMPORTANT: These instructions will be moved to [.tools/docs](.tools/docs) once the Pull Request is merged. A link to them will be added to the repository's README.md file for future reference, so don't be afraid of losing them!
 
 ### Step 3: Add Your Notebooks and Requirements
 
-Add your Jupyter notebooks together with a `requirements.txt` file listing all the Python packages your application needs to the `notebooks` directory in your repository.
+Add your Jupyter notebooks together with their requirements files, follow the instructions in [Do you want to upload a notebook?](.tools/docs/notebook_upload.md) to ensure a smooth upload process.
 
-#### Important Notes
-- To ensure reproducibility, it's recommended to specify exact package versions in your `requirements.txt` file (e.g., `numpy==1.21.0`).
-- Both the `Jupyter notebook` and the `requirements.txt` must be placed in a folder when including to the `notebooks` directory.
-- LabConstrictor provides a versioning system. In order to benefit from it, on the updated notebook specify the version number in a cell as follows:
-  ```python
-  current_version = "1.0.0"
-  ```
-
-### Step 4: Create a New Release
-Create a new release in your repository by going to the "Releases" section and clicking on "Draft a new release". Create a tag for your release (e.g., `v1.0.0`) and publish the release. The GitHub Actions workflows will automatically build installers for Windows, macOS, and Linux, and attach them to the release.
+### Step 4: Create Executable Installers
+To build installers for Windows, macOS, and Linux, you need to create a new release in your repository. Follow the instructions in [Do you want to create an installer executable file with your notebooks?](.tools/docs/executable_creation.md) to create a release and generate the installers.
