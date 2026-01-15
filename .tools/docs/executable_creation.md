@@ -14,6 +14,8 @@ On GitHub, go to your repository and click on the `Releases` tab. Then click on 
 
 Once you have filled in all the information, click on `Publish release`. This will trigger our automated workflows to create the installer executable files for your notebooks. To check the status of the executable creation process please read [How to check the automatic workflow status](workflow_status.md).
 
+> **IMPORTANT**: Check that no other workflows (on `Actions` section) are running on your repository before publishing a new release. If there are other workflows running, please wait for them to finish before publishing a new release to avoid conflicts.
+
 ## 3. Download the executable files
 
 Once the automated workflow has completed successfully, you will be able to download the installer following the instructions in [How to download the executable files](download_executable.md).

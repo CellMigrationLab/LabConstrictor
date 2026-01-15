@@ -43,6 +43,8 @@ To check the status of your pull request, you can go to your repository on GitHu
 
 When uploading a notebook and a requirements file our automated workflows will be triggered to check if everything is working properly. To check the status of the upload process please read [How to check the automatic workflow status](workflow_status.md).
 
+> **IMPORTANT**: If the workflow fails, the submission of the notebook will be undone. As explained check the logs and fix the issues before re-uploading the notebook and requirements file.
+
 # Do you want to update an existing notebook?
 
 To update an existing notebook you just need to follow Steps 3 and 4 from above. Make sure that the name of the notebook that you are uploading is the same as the one that you want to update in the repository. Also, make sure that you have updated the version number in the version controlling cell of your notebook.
