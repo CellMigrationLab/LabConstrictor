@@ -39,7 +39,7 @@ Then, click on `Create repository` and your respository ahs been created!
 
 Now that you have your repository, you are ready to initialise and customise it. For that, please go to https://labconstrictor-form.streamlit.app/ and click `Start initialisation` on the **Initialise a repository** section. Then, follow the provided guidelines on the website and once you have submited the form a Pull Request (suggested contributions) will be created on your repository, follow the steps on the GIF bellow to accept those suggestions:
 
-![Accept a Pull Request GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Accept_PR)
+![Accept a Pull Request GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Accept_PR.gif)
 
 > **IMPORTANT**: Once the suggestions are accepted, these instructions will be moved to [.tools/docs](.tools/docs). A link to them will be remain for future reference, so don't be afraid of losing them!
 
@@ -48,4 +48,5 @@ Now that you have your repository, you are ready to initialise and customise it.
 Add your Jupyter notebooks together with their requirements files, follow the instructions in [Do you want to upload a notebook?](.tools/docs/notebook_upload.md) to ensure a smooth upload process.
 
 ### Step 4: Create Executable Installers
+
 To build installers for Windows, macOS, and Linux, you need to create a new release in your repository. Follow the instructions in [Do you want to create an installer executable file with your notebooks?](.tools/docs/executable_creation.md) to create a release and generate the installers.
