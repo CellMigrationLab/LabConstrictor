@@ -1,6 +1,7 @@
+from pathlib import Path
+import yaml
 import json
 import sys
-from pathlib import Path
 
 
 def build_notebook_list(notebooks_root: Path):
@@ -9,9 +10,20 @@ def build_notebook_list(notebooks_root: Path):
 		# Path relative to notebooks folder
 		rel = ipynb.relative_to(notebooks_root)
 		name = ipynb.stem
+
+		# Path to the notebook's requirements.yaml
+		requirements_path = ipynb.with_name("requirements.yaml")
+		description = "-"
+		if requirements_path.exists():
+			# Read the requirements.yaml to get the description
+			with requirements_path.open(encoding="utf-8") as f:
+				reqs = yaml.safe_load(f)
+				if isinstance(reqs, dict) and "description" in reqs:
+					description = reqs["description"]
+		
 		items.append({
 			"name": name,
-			"description": "-",
+			"description": description,
 			"path": str(rel).replace("\\", "/"),
 		})
 	# Sort for deterministic order
