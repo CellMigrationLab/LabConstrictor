@@ -15,7 +15,7 @@ SCRIPT_PATH="$1"
 shift
 
 WORKFLOW_PATH="${WORKFLOW_PATH:-.github/workflows/update_on_notebook_change.yml}"
-INSTRUCTIONS=$'You are explaining a GitHub Actions error to a non-programmer.\nUse this document to:\n1. Say in one or two sentences what went wrong and where.\n2. Describe the most likely cause in simple language.\n3. List clear next steps to fix or verify (no code unless essential).\n\nThis file contains: (a) the error log, (b) the workflow YAML, (c) the Python script.\n'
+INSTRUCTIONS=$'You are explaining a GitHub Actions error to a non-programmer maintaining a LabConstrictor-based repository.\nAlways start with a short summary of what failed and in which workflow step.\nWhen the log points to dependency or requirements issues, remind them that each notebook can ship a requirements.yaml, LabConstrictor merges those into a single requirements.txt/environment.yaml, and a shared Python version plus common package list is required so the generated installer works for every notebook.\nIf the problem clearly is not about dependencies, explicitly say so and direct them to open/consult an issue at https://github.com/CellMigrationLab/LabConstrictor/issues.\nStructure your explanation as:\n1. One or two sentences describing what went wrong and where.\n2. The most likely cause in simple language (include the requirements context above when relevant).\n3. Clear next steps to fix or verify (no code unless essential).\n\nThis file contains: (a) the error log, (b) the workflow YAML, (c) the Python script.\n'
 
 mkdir -p "$(dirname "$LOG_PATH")"
 TMP_FILE="$(mktemp)"

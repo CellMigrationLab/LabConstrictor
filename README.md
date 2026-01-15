@@ -4,15 +4,17 @@ LabConstrictor is a template for you to create your own GitHub repository so tha
 
 ## Who is this for?
 
-Do you have Jupyter notebooks and you want to distribute them so that users do not need to deal with Python dependencies? Then LabConstrictor is for you. 
+Do you have Jupyter notebooks and you want to distribute them so that users do not need to deal with Python dependencies? Then LabConstrictor is for you!
 
 ## What do you need?
-
-You just need to have a Jupyter notebook that is currently working on an environment (e.g. cvonda, virtualenv or Google Colab) and a GitHub account. If you have these two requirements, by following the [Quick start guidelines](#quick-start) you will be able to start using LabConstrictor. 
+- A Jupyter notebook that you want to distribute.
+- A GitHub account to host your repository.
 
 ## What do you get?
 
-LabConstrictor is provided with automated processes that take care of validation, executable creation, etc. These processes will help you as a developer to deploy your notebooks smoothly and ensure that the users are able to use the notebooks in the same way as you developed it.
+- Code cells that give your notebooks version trackyng and requirements exportation.
+- Automatic validation of your requirements.
+- Workflows that create executable installers for Windows, MacOS and Linux.
 
 # Quick start
 

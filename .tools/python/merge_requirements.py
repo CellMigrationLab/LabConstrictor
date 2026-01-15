@@ -71,7 +71,7 @@ except Exception:
         return parse_version(a) > parse_version(b)
 
 
-def merge_python_version(current: str | None, candidate: str | None):
+def merge_python_version(filepath: str | None, current: str | None, candidate: str | None):
     """Pick the newest python_version string, if provided."""
     if not candidate:
         return current
@@ -80,7 +80,7 @@ def merge_python_version(current: str | None, candidate: str | None):
     if current == candidate:
         return current
     else:
-        raise ValueError(f"Conflicting python_version: {current} vs {candidate}")
+        raise ValueError(f"Conflicting python_version found {current} vs {candidate} when processing {filepath}")
 
 
 def process_requirement_line(line: str, pkg_order: list, pkgs: dict, other_lines: OrderedDict, base_dir: Path | None = None):
@@ -224,7 +224,7 @@ def main():
             continue
         if f.suffix.lower() in {".yaml", ".yml"}:
             candidate_py = read_requirements_yaml(f, pkg_order, pkgs, other_lines)
-            python_version = merge_python_version(python_version, candidate_py)
+            python_version = merge_python_version(f, python_version, candidate_py)
         else:
             read_requirements_file(f, pkg_order, pkgs, other_lines)
 
