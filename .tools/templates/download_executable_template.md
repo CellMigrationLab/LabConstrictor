@@ -92,8 +92,19 @@ After installation, you can launch PROJECT_NAME from your applications menu.
 
 ## 1. Click the button to download PROJECT_NAME executable
 
+> **How to know which one should I download?**
+> 1. Click the Apple menu in the top-left corner of your screen.
+> 2. Select About This Mac.
+> 3. A window will pop up displaying your Mac’s information. Look into the `Chip` or `Processor` field. If `Intel` is mentioned, then download the Intel option. Otherwise, if `Mx` (e.g. M1 or M2) is mentioned, then download the ARM64 option. 
+
 <a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-arm64.pkg">
-    <img src="https://img.shields.io/badge/Download%20for%20Mac-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac" width="250">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(ARM64)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac" width="250">
+</a>
+
+or 
+    
+<a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-x86_64.pkg">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(Intel)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac" width="250">
 </a>
 
 ## 2. Install the package
