@@ -43,10 +43,14 @@ Now that you have your repository, you are ready to initialise and customise it.
 
 > **IMPORTANT**: Once the suggestions are accepted, these instructions will be moved to [.tools/docs](.tools/docs). A link to them will be remain for future reference, so don't be afraid of losing them!
 
-### Step 3: Add Your Notebooks and Requirements
+### Step 3: [Optional] Upload external code
 
-Add your Jupyter notebooks together with their requirements files, follow the instructions in [Do you want to upload a notebook?](.tools/docs/notebook_upload.md) to ensure a smooth upload process.
+If you have any external code (e.g. Python scripts, data files, etc.) that you want to include in your repository, you can upload them by following the instructions in [Do you want to use external code in your notebooks?](.tools/docs/external_code_upload.md).
 
-### Step 4: Create Executable Installers
+### Step 4: Upload Your Notebooks
+
+Follow the instructions in [Do you want to upload a notebook?](.tools/docs/notebook_upload.md) to ensure a smooth upload process.
+
+### Step 5: Create Executable Installers
 
 To build installers for Windows, macOS, and Linux, you need to create a new release in your repository. Follow the instructions in [Do you want to create an installer executable file with your notebooks?](.tools/docs/executable_creation.md) to create a release and generate the installers.
