@@ -1,18 +1,47 @@
 # LabConstrictor
 
-LabConstrictor is a GitHub repository template provided with automated workflows to help you build and distribute your Jupyter notebook-based applications across multiple platforms. You would just need to upload your notebooks and requirements and the workflows will take care of the rest! You will get a ready-to-use installer for Windows, macOS, and Linux with every new release you create.
+LabConstrictor is a template for you to create your own GitHub repository so that you can upload your notebook and wrap them on executable installers for users to easily set up and use your notebooks.
 
-## How to Use?
+## Who is this for?
+
+Do you have Jupyter notebooks and you want to distribute them so that users do not need to deal with Python dependencies? Then LabConstrictor is for you. 
+
+## What do you need?
+
+You just need to have a Jupyter notebook that is currently working on an environment (e.g. cvonda, virtualenv or Google Colab) and a GitHub account. If you have these two requirements, by following the [Quick start guidelines](#quick-start) you will be able to start using LabConstrictor. 
+
+## What do you get?
+
+LabConstrictor is provided with automated processes that take care of validation, executable creation, etc. These processes will help you as a developer to deploy your notebooks smoothly and ensure that the users are able to use the notebooks in the same way as you developed it.
+
+# Quick start
 
 ### Step 1: Create a New Repository from this Template
 
-Click the "Use this template" button at the top of this page to create a new repository based on the LabConstrictor template.
+Click the `Use this template` button at the top of this page to create a new repository based on the LabConstrictor template.
 
-### Step 2: Customize Your Application
+![Use template screenshot](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Use_Template.png)
 
-Go to https://labconstrictor-form.streamlit.app/ and fill out the form with your application's details. At the end of the form, put your newly created repository's URL. Submit the form to automatically generate the necessary files, this will create a Pull Request in your repository, accept it and merge it. 
+To create a new repository you will need to provide:
 
-> IMPORTANT: These instructions will be moved to [.tools/docs](.tools/docs) once the Pull Request is merged. A link to them will be added to the repository's README.md file for future reference, so don't be afraid of losing them!
+1. **General**:
+    - Choose the **Owner** of the repository (e.g. your GitHub account or your research group GitHub organisation).
+    - Choose a **Repository name** that is short and memorable.
+    - [Optional] Give a short description to the repository where you describe what are your notebooks for.
+2. **Configuration**: 
+    - Choose the **Visibility** of your repository:
+        - **Public** if you already want people to start using it.
+        - **Private** if you want to keep it for your organisation or you are still developing your notebooks.
+
+Then, click on `Create repository` and your respository ahs been created!
+
+### Step 2: Initialiae your repository
+
+Now that you have your repository, you are ready to initialise and customise it. For that, please go to https://labconstrictor-form.streamlit.app/ and click `Start initialisation` on the **Initialise a repository** section. Then, follow the provided guidelines on the website and once you have submited the form a Pull Request (suggested contributions) will be created on your repository, follow the steps on the GIF bellow to accept those suggestions:
+
+![Accept a Pull Request GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Accept_PR)
+
+> **IMPORTANT**: Once the suggestions are accepted, these instructions will be moved to [.tools/docs](.tools/docs). A link to them will be remain for future reference, so don't be afraid of losing them!
 
 ### Step 3: Add Your Notebooks and Requirements
 
