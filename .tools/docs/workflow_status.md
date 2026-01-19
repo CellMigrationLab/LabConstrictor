@@ -1,13 +1,32 @@
-# How to check the automatic workflow status?
+# Check Workflow Status & Troubleshooting
 
-When you upload/update a notebook in your repository or create a release to generate installer executable files, the automated workflows will be triggered to ensure that everything is working properly and make some modifications.
+Whenever you upload a notebook or create a release, GitHub Actions automatically triggers a workflow to validate your code and build the installers.
 
-To check the status of these automated workflows, please follow the steps below:
+## 1. Monitor the Progress
 
-1. Go to your repository on GitHub.
-2. Click on the `Actions` tab. Here you will see a list of all the workflows that have been triggered in your repository.
-3. Look for the workflow that corresponds to your recent upload or release. T
-> If the workflow is still running, you will see a yellow dot next to it. If it has completed successfully, you will see a green checkmark. If it has failed, you will see a red cross.
-4. Wait for the workflow to complete. If the workflow has completed successfully, everything has been set up correctly. If the workflow has failed, click on the workflow and go to the bottom of the page, there you will find an Artifacts section. On the Artifact section, you will have logs that you can download and unzip. Text files will be inside the unzipped folder, copy and paste that text into your favorite Large Language Model (LLM) (e.g. ChatGPT or Gemini) to get a better explanation on how to fix the issues.
+1.  Go to the **Actions** tab in your GitHub repository.
+2.  You will see a list of recent workflows. Look for the one matching your recent commit or release.
+3.  Check the status icon next to the workflow name:
+![GitHub Actions Status Icons](https://docs.github.com/assets/images/help/repository/actions_status_icons.png)
 
->**IMPORTANT**: If you are planning on making a big update to your repository (e.g. changing many notebooks that might break the dependenciees), it is recommended to do it on a different branch.
+## 2. How to Debug a Failure
+
+If the workflow fails, don't panic. The system automatically generates a "ready-to-ask" error log for you.
+
+1.  **Download the Log:**
+    * Click on the failed workflow run.
+    * Scroll down to the bottom of the page to the **Artifacts** section.
+    * Download the artifact (usually a `.zip` file) and unzip it.
+
+2.  **Copy & Paste into AI:**
+    * Open the text file inside the folder.
+    * **We have already formatted this file as a prompt.** It contains the necessary context and error details.
+    * simply **Copy all the text** and paste it directly into your favorite AI tool (ChatGPT, Gemini, Claude, etc.). The AI will explain the error and tell you exactly how to fix your notebook or `requirements.yaml`.
+
+---
+
+### 💡 Best Practice for Large Updates
+
+If you are planning a major update (e.g., changing many notebooks or adding complex dependencies), do not push directly to the main branch.
+
+Instead, **create a new branch**, make your changes there, and verify that the workflows pass (✅) before merging into your main branch. This prevents breaking the live version of your application.

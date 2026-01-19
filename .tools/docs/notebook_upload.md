@@ -1,51 +1,66 @@
-# Do you want to upload a notebook?
+# Add or Update a Notebook
 
-Do you ha ve a notebook that you would like to include to your project repository? Great! Please follow the guidelines bellow to ensure a smooth upload process.
+Do you have a notebook that you would like to add or update an existing one in your project repository? Great! Please follow these steps to ensure a smooth upload process.
 
-## 1. Include version controlling and requirements extraction to your notebook
+## 1. Prepare your notebook
 
-Version controlling is really important to let your users know which version of the notebook they are using. Also, the requirements extraction is a key step for your notebook contribution. In order to help you with that, we have a template notebook that include two code cells that you can copy to your notebook and it will bring you both version controlling and requirements extraction.
+To ensure your notebook works within the LabConstrictor application, you must add two specific helper cells. These cells handle version tracking and dependency management.
 
-You can check the template notebook [here](../templates/Notebook_template.ipynb).
+> **Get the Code:** Copy the helper cells from the [Notebook Template](../templates/Notebook_template.ipynb).
 
-### Version controlling cell
+### A. The Version Control Cell
+Paste this cell at the **top** of your notebook. You must edit two variables inside it:
 
-We recommend you include the version controlling cell at the beginning of your notebook. This cell will print out the versions of the notebook and if it is up to date with the repository. You will need to modify two code lines in order to make it work:
+* `notebook_name`: Enter the filename of your notebook (excluding `.ipynb`).
+* `current_version`: Enter the version number (e.g., `'1.0.0'`).
 
-```python
-current_version = "0.0.1"
-notebook_name = "Notebook_template"
-```
+> **Note:** Every time you update the notebook logic, you **must** update this version number so users know an update is available.
 
-On `notebook_name`, please include the name of your notebook (without the `.ipynb` extension) and on `current_version`, please include the version of your notebook. Every time you make a change to your notebook, please remember to update the version number accordingly.
-
-### Requirements extraction cell
-
-We recommend you include the requirements extraction cell at the end of your notebook. This cell will create a `requirements.yaml` file that will include the Python version, a description of the notebook and all the packages that you are using in your notebook with their respective versions. On the next step you will learn how can you get the `requirements.yaml` file.
+### B. The Requirements Extraction Cell
+Paste this cell at the **very end** of your notebook.
+This cell scans your imports and generates a `requirements.yaml` file containing the Python version, notebook description, and all necessary libraries.
 
 ## 2. Generate the requirements file
 
-Once you have included both cells to your notebook, it is time to generate the `requirements.yaml` file.
+Once the cells are added, you need to generate the dependency file.
 
-First, you will need to select a environment where you know that the notebook is working properly (e.g. a conda environment, a virtualenv or on Google Colab). Then, you will need to run the requirements extraction cell, follow the instructions and a `requirements.yaml` file will be created in the same folder where your notebook is located.
+1.  Open your notebook in a working environment (local Conda, VirtualEnv, or Google Colab).
+2.  **Run the Requirements Extraction cell.**
+3.  A file named `requirements.yaml` will be created in the same folder.
 
-> **Important consideration on Google Colab**
+> **Using Google Colab?**
 > - If you have any `!pip install` commands on your notebook, please make sure to run them before running the requirements extraction cell. 
-> - You will need to download the notebook `File > Download > Download .ipynb` and upload to the Colab session to allow the requirements extraction cell to create the `requirements.yaml` file. 
+> - You will need to download the notebook `File > Download > Download .ipynb` and upload to the file system within the Colab session (on the left sidebar under the "Files" tab). 
 
-## 3. Upload the notebook and requirements file to the repository
+## 3. Upload to Repository
 
-You will need to go to [https://labconstrictor-form.streamlit.app/](https://labconstrictor-form.streamlit.app/) and click on `Go to update flow`. Upload your notebook and the `requirements.yaml` file that you have just created. Click on `Validate submission` and paste this GitHub repository URL and your personal access token (see [How to create a personal access token](../personal_access_token.md) if you don't have one yet). Finally, click on `Create pull request` and a pull request will be created with your notebook contribution!
+1.  Go to the **[LabConstrictor App](https://labconstrictor-form.streamlit.app/)**.
+2.  Select **Go to update flow**.
+3.  Upload your **Notebook** (`.ipynb`) and the generated **Requirements** (`requirements.yaml`).
+4.  Click **Validate submission**.
+5.  Enter your Repository URL and **Personal Access Token**.
+    * *(Don't have a token? See [How to create a personal access token](../personal_access_token.md))*
+6.  Click **Create pull request**.
 
-To check the status of your pull request, you can go to your repository on GitHub and click on the `Pull requests` tab. You will see your pull request there. Click on the pull request to see the details. Then click on `Merge pull request` to allow your notebook to be included in the repository.
 
-## 4. Check if the notebook has been uploaded successfully
+## 4. Merge and Verify
 
-When uploading a notebook and a requirements file our automated workflows will be triggered to check if everything is working properly. To check the status of the upload process please read [How to check the automatic workflow status](workflow_status.md).
+1.  Go to the **Pull requests** tab in your GitHub repository.
+2.  Open the new request (e.g., "Add notebook X").
+3.  Click **Merge pull request** to add the notebook to your main branch.
 
-> **IMPORTANT**: If the workflow fails, the submission of the notebook will be undone. As explained check the logs and fix the issues before re-uploading the notebook and requirements file.
+### ⚠️ Automated Validation
+Merging triggers an automatic workflow to verify the notebook and dependencies.
+* **Check Status:** See [How to check workflow status](workflow_status.md).
+* **Failure Protocol:** If the workflow fails (e.g., due to dependency conflicts), the system will **automatically revert** the merge. You must check the logs, fix the issue in your local notebook/requirements, and repeat the upload process.
 
-# Do you want to update an existing notebook?
+---
 
-To update an existing notebook you just need to follow Steps 3 and 4 from above. Make sure that the name of the notebook that you are uploading is the same as the one that you want to update in the repository. Also, make sure that you have updated the version number in the version controlling cell of your notebook.
+# How to Update an Existing Notebook
 
+The process for updating a notebook is identical to adding a new one:
+
+1.  **Bump the Version:** In your notebook's top cell, increase the `current_version` (e.g., from `'1.0.0'` to `'1.0.1'`).
+2.  **Regenerate Requirements:** Run the bottom cell to ensure `requirements.yaml` reflects the new version number.
+3.  **Upload:** Use the [LabConstrictor App](https://labconstrictor-form.streamlit.app/) to upload the file.
+    * *Ensure the filename matches the existing one in the repository exactly.*
