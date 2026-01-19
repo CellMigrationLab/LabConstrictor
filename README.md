@@ -32,7 +32,7 @@ Go from notebook to installer in minutes.
 
 #### 1. [**Create a New Repository from this Template**](.tools/docs/create_repository.md)
 #### 2. [**Initialise your repository**](.tools/docs/initialise_repository.md)
-#### 3. [[Optional] **Upload external code**](.tools/docs/external_code_upload.md)
+#### 3. [*(Optional)* **Upload external code**](.tools/docs/external_code_upload.md)
 #### 4. [**Upload Your Notebooks**](.tools/docs/notebook_upload.md) 
 #### 5. [**Create Executable Installers**](.tools/docs/executable_creation.md)
 > **Requirements:** You only need a GitHub account and the Jupyter notebooks you want to distribute.
