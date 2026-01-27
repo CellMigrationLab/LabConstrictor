@@ -4,9 +4,9 @@ Do you have a notebook that you would like to add or update an existing one in y
 
 ## 1. Prepare your notebook
 
-To ensure your notebook works within the LabConstrictor application, you must add two specific helper cells. These cells handle version tracking and dependency management.
+To ensure your notebook works within the versioning tracking that LabConstrictor application provides, you need to add a version control cell at the top of your notebook.
 
-> **Get the Code:** Copy the helper cells from the [Notebook Template](../templates/Notebook_template.ipynb).
+> **Get the Code:** Copy the helper cell from the [Notebook Template](../templates/Notebook_template.ipynb).
 
 ### A. The Version Control Cell
 Paste this cell at the **top** of your notebook. You must edit two variables inside it:
@@ -16,25 +16,13 @@ Paste this cell at the **top** of your notebook. You must edit two variables ins
 
 > **Note:** Every time you update the notebook logic, you **must** update this version number so users know an update is available.
 
-### B. The Requirements Extraction Cell
-Paste this cell at the **very end** of your notebook.
-This cell scans your imports and generates a `requirements.yaml` file containing the Python version, notebook description, and all necessary libraries.
-
 ## 2. Generate the requirements file
 
-Once the cells are added, you need to generate the dependency file.
+Please follow the instructions in the [Obtain requirements of the notebook](notebook_requirements.md) guide to generate the `requirements.yaml` file for your notebook.
 
-1.  Open your notebook in a working environment (local Conda, VirtualEnv, or Google Colab).
-2.  **Run the Requirements Extraction cell.**
-3.  A file named `requirements.yaml` will be created in the same folder.
+## 3. Upload to the repository
 
-> **Using Google Colab?**
-> - If you have any `!pip install` commands on your notebook, please make sure to run them before running the requirements extraction cell. 
-> - You will need to download the notebook `File > Download > Download .ipynb` and upload to the file system within the Colab session (on the left sidebar under the "Files" tab). 
-
-## 3. Upload to Repository
-
-1.  Go to the **[LabConstrictor App](https://labconstrictor-form.streamlit.app/)**.
+1.  Go to the **[LabConstrictor website](https://labconstrictor-form.streamlit.app/)**. If you find a `Zzzz` message for inactivity, please click on `Yes, get this app back up!`.
 2.  Select **Go to update flow**.
 3.  Upload your **Notebook** (`.ipynb`) and the generated **Requirements** (`requirements.yaml`).
 4.  Click **Validate submission**.
@@ -45,9 +33,7 @@ Once the cells are added, you need to generate the dependency file.
 
 ## 4. Merge and Verify
 
-1.  Go to the **Pull requests** tab in your GitHub repository.
-2.  Open the new request (e.g., "Add notebook X").
-3.  Click **Merge pull request** to add the notebook to your main branch.
+If you need help merging the Pull Request, please follow the instructions in the [Accept a Pull Request](accept_pull_request.md) guide.
 
 ### ⚠️ Automated Validation
 Merging triggers an automatic workflow to verify the notebook and dependencies.
