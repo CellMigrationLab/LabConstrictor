@@ -2,6 +2,7 @@
 import argparse
 import pathlib
 import re
+import shutil
 import sys
 import textwrap
 
@@ -139,9 +140,10 @@ def main() -> None:
         # Remove existing download_executable.md if present
         if pathlib.Path(".tools/docs/download_executable.md").exists():
             pathlib.Path(".tools/docs/download_executable.md").unlink()
-        # Copy the template to the docs folder
-        pathlib.Path(".tools/templates/download_executable_template.md").copy(
-            pathlib.Path(".tools/docs/download_executable.md")
+        # Copy the template to the docs folder using shutil for cross-platform support
+        shutil.copy(
+            ".tools/templates/download_executable_template.md",
+            ".tools/docs/download_executable.md",
         )
 
     text, current = read_current_version()
