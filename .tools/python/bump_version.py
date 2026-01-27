@@ -139,8 +139,8 @@ def main() -> None:
         # Remove existing download_executable.md if present
         if pathlib.Path(".tools/docs/download_executable.md").exists():
             pathlib.Path(".tools/docs/download_executable.md").unlink()
-        # Move the template to the docs folder
-        pathlib.Path(".tools/templates/download_executable_template.md").rename(
+        # Copy the template to the docs folder
+        pathlib.Path(".tools/templates/download_executable_template.md").copy(
             pathlib.Path(".tools/docs/download_executable.md")
         )
 
