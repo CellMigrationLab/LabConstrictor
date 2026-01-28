@@ -1,28 +1,26 @@
-# Create a Installer Files 
+# Create Installer Files 
 
-Have you uploaded notebooks to your repository and are you ready to share your work? Great! Please follow the guidelines below to ensure a smooth executable creation process.
+After uploading your notebooks to the repository, follow these steps to create executable files for sharing.
 
 ### ⚠️ Please check before proceeding:
 
-Go to the Actions tab in your repository. Ensure there are no workflows currently running. If a workflow is in progress, wait for it to finish. Publishing a release while other jobs are running can cause build conflicts.
+Open the Actions tab in your repository and check that no workflows are running. If one is in progress, wait until it finishes. Starting a release while other jobs are running may cause build conflicts.
 
 ## 1. Draft a new release
 
 1. Go to your repository's main page.
 2. Click on Releases (usually on the right sidebar).
-3. Click on `Create a new release` and fill in the following information:
-   - **Tag**: click on `Create a new tag` and enter a version number e.g. `0.0.1`.
+3. Click `Create a new release` and provide the following information:
+   - **Tag**: Click `Create a new tag` and enter a version number, for example, `0.0.1`.
       > **IMPORTANT**: Make sure that it follows a semantic versioning format (MAJOR.MINOR.PATCH) e.g. `1.0.0`, `1.2.3`, `2.1.0`.
-   - **Release title**: enter a title for your release e.g. `Initial release`.
-   - **Description** *(optional)*: enter a description for your release e.g. `This is the initial release of my project.`
+   - **Release title**: Enter a title for your release, such as `Initial release`.
+   - **Description** (optional): Enter a description for your release, for example, `This is the initial release of my project.`
 
 ## 2. Publish the release
 
-Once you have filled in all the information, click on `Publish release`. This will trigger our automated workflows to create the installer executable files for your notebooks. To check the status of the executable creation process please read [How to check the automatic workflow status](workflow_status.md).
+Once you have fillAfter entering all required information, click `Publish release`. This action will start the automated workflow to create installer executable files for your notebooks. To monitor the process, see [How to check the automatic workflow status](workflow_status.md).he executable files
 
-## 3. Download the executable files
-
-Once the automated workflow has completed successfully, you will be able to download the installer following the instructions in [How to download the executable files](download_executable.md).
+When the automated workflow completes, download the installer by following the instructions in [How to download the executable files](download_executable.md).
 
 
 ---
@@ -32,5 +30,6 @@ Once the automated workflow has completed successfully, you will be able to down
 [← Previous](notebook_upload.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [Next →](download_executable.md)
+
 
 </div>
