@@ -1,40 +1,63 @@
-# Obtain requirements of the notebook
+# Obtain Requirements of your Notebook
 
-To obtain the requirements of your Jupyter notebook, you have can do it automatically following [Option 1](#option-1-automated-extraction-of-requirements) or manually following [Option 2 ](#option-2-manual-extraction-of-requirements).
+To obtain the requirements for your Jupyter notebook, you can do this automatically via **Option 1** or manually via **Option 2**.
 
-If you already have a versioned `requirements.txt` we recommend you to follow [Option 2](#option-2-manual-extraction-of-requirements) as it will be faster. Otherwise, please follow [Option 1](#option-1-automated-extraction-of-requirements).
+* **Option 1 (Automated):** Recommended if you need to generate requirements from scratch.
+* **Option 2 (Manual):** Recommended if you already have a versioned `requirements.txt` file, as it will be faster.
 
-## Option 1: Automated extraction of requirements
+---
 
-> **IMPORTANT**: This option requires you to have a Python environment where your notebook can run without errors. This environment can be a local Conda/VirtualEnv or an online Google Colab session.
+## Option 1: Automated Extraction of Requirements
 
-### 1. Open the requirements generator notebook
+> **IMPORTANT:** This option requires you to have a Python environment where your notebook can run without errors. This environment can be a local Conda/VirtualEnv or an online Google Colab session.
 
-You have two options to open the requirements generator notebook:
- - **Locally**: Download the [Requirements_Generator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Generator.ipynb) and open it in your local Python environment (conda or virtualenv).
-  > **Note**: The Python environment where you open the requirements generator notebook needs to be the one you use to run the target notebook whose requirements you want to extract.
- - **Google Colab**: Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
+### 1. Open the Requirements Generator Notebook
 
-### 2. Run the requirements generator notebook
+You have two options to open the generator:
 
-In the requirements generator notebook, follow the instructions provided in the notebook to generate the `requirements.yaml` file for the Jupyter notebook you want to extract requirements from. You will need to provide the path to your notebook file when prompted.
+* **Locally:** Download the [Requirements_Generator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Generator.ipynb) and open it in your local Python environment (conda or virtualenv).
+> **Note:** The Python environment where you open the generator must be the same one used to run the target notebook.
 
-## Option 2: Manual extraction of requirements
 
-### 1. Create a requirements.yaml file
+* **Google Colab:** Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
 
-You would need to create a `requirements.yaml` file similar to the [example requirements.yaml file](../templates/requirements.yaml). This file should contain 3 different fields:
-- **dependencies**: A list of all the packages used in the notebook along with their versions (e.g., `pandas==2.2.2`). The list needs to be indexed with a hyphen (`- `) followed by a space before each package as in the example.
-- **python_version**: The version of Python used in the notebook (e.g., `3.11.1`).
-- **description**: A short desctiption of the notebook and its purpose.
+### 2. Run the Requirements Generator
 
-### 2. Open the requirements validator notebook
+Follow the instructions provided inside the notebook to generate the `requirements.yaml` file. You will be prompted to provide the path to the notebook file you wish to analyze.
 
-You have two options to open the requirements generator notebook, but in this case we recommend using Google Colab as you don't need any specific Python environment to run the validator. Still, here are the two options:
+---
 
-- **Local**: Download the [Requirements_Validator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Validator.ipynb) and open it in any Python environment with ipywidgets installed.
-- **Google Colab**: Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Validator.ipynb).
+## Option 2: Manual Extraction of Requirements
 
-### 3. Run the requirements validator notebook
+### 1. Create a `requirements.yaml` File
 
-In the requirements validator notebook, follow the instructions provided in the notebook to validate your `requirements.yaml` file. You will need to provide the path to your `requirements.yaml` file when prompted.
+You will need to create a `requirements.yaml` file similar to the [example requirements.yaml file](https://www.google.com/search?q=../templates/requirements.yaml). This file must contain the following three fields:
+
+* **`dependencies`:** A list of all packages used in the notebook along with their versions. The list needs to be indexed with a hyphen (`-`) followed by a space before each package.
+* **`python_version`:** The version of Python used in the notebook (e.g., `3.11.1`).
+* **`description`:** A short description of the notebook and its purpose.
+
+**Example File Content:**
+
+```yaml
+dependencies:
+  - pandas==2.2.2
+  - ipython==7.34.0
+  - tqdm==4.67.1
+description: This notebook is for analyzing cell migration data...
+python_version: 3.11.1
+
+```
+
+### 2. Open the Requirements Validator Notebook
+
+We recommend using **Google Colab** for this step, as you do not need a specific Python environment to run the validator.
+
+* **Google Colab (Recommended):** Open the notebook directly by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Validator.ipynb).
+* **Locally:** Download the [Requirements_Validator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Validator.ipynb) and open it in any Python environment that has `ipywidgets` installed.
+
+### 3. Run the Requirements Validator
+
+Follow the instructions provided inside the notebook to validate your file. You will need to provide the path to your newly created `requirements.yaml` file when prompted.
+
+---
