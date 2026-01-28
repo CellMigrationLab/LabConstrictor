@@ -1,6 +1,6 @@
 # Internal LabConstrictor documentation
 
-This is a temporal file to index all the internal documentation files for LabConstrictor. Once the repository is initialized and customized by the user this file will be replaced with the [main README.md](../../README.md) file.
+This file temporarily lists all internal LabConstrictor documentation. After you set up and customise the repository, it will be replaced by the [main README.md](../../README.md) file.
 
 ## From zero to installed notebooks
 
@@ -19,4 +19,5 @@ This is a temporal file to index all the internal documentation files for LabCon
 - [Accept a Pull Request](accept_pull_request.md)
 - [GitHub actions/workflows overview](workflow_status.md)
 - [Create a personal access token](personal_access_token.md)
+
 
