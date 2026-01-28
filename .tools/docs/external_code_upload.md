@@ -1,10 +1,10 @@
 # Adding External Code
 
-If you have external code (e.g., Python modules or scripts) that you would like to use in your Jupyter notebooks, please follow the guidelines below to ensure a smooth upload process.
+If you want to use your own Python modules or scripts in Jupyter notebooks, follow these steps to upload them easily.
 
 ## 1. Prepare your external code
 
-Make sure that your external code is well-organized and follows best practices for Python packaging. This includes having an appropriate directory structure, including an `__init__.py` file if necessary, and ensuring that any dependencies are clearly defined.
+Organize your external code and follow Python packaging best practices. Set up the right folder structure, add an `__init__.py` file if needed, and list any required dependencies.
 
 **Suggested Directory Structure:**
 
@@ -19,13 +19,13 @@ src
 
 ## 2. Upload your external code to the repository
 
-Navigate to the src folder in your repository and upload your files or folders there.
+Go to the src folder in your repository and upload your files or folders there.
 
 ![Upload external code GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Upload_src.gif)
 
-## 3. How to import in your notebook
+## 3. How to import into your notebook
 
-Your external code will be made accesible to your notebooks as a package. Therefore, in order to use the external code on your notebooks, it you will need to be imported similar to the example below:
+Once uploaded, your external code will be available to your notebooks as a package. To use it, import it as shown in the examples below:
 
 **Import the whole package:**
 ```python  
@@ -49,5 +49,6 @@ from PYTHON_PROJ_NAME import subpackage
 [← Previous](initialise_repository.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [Next →](notebook_requirements.md)
+
 
 </div>
