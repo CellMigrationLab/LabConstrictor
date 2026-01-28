@@ -1,10 +1,10 @@
 # Generate a GitHub Personal Access Token
 
-To interact with GitHub repositories from your notebook (e.g., cloning, editing, pushing files), you need a GitHub Personal Access Token (PAT). This token authenticates your API calls and grants the necessary permissions. Here there is a GIF with the steps to generate a token:
+If you want to work with GitHub repositories from your notebook, like cloning, editing, or pushing files, you’ll need a GitHub Personal Access Token (PAT). This token lets you authenticate your API calls and gives you the right permissions. The GIF below shows the steps to create a token.
 
 ![Gif of generating a GitHub token](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/GitHub_Access_Token.gif)
 
-For detailed steps, follow the instructions below based on the level of access you need.
+To see the full steps, follow the instructions below that match the type of access you want.
 
 ## For Read & Write Access
 
@@ -19,8 +19,8 @@ For detailed steps, follow the instructions below based on the level of access y
        > Grants read & write access to repository contents (needed for cloning, editing, and pushing files)
    - *(Optional: To only work with public repositories, select **public_repo** instead of **repo**)*  
 7. Click **Generate token** at the bottom  
-8. **Copy** your new token immediately — you won’t see it again!  
-9. Paste the token into your notebook’s `GitHub-token` field so API calls authenticate as the chosen owner.  
+8. **Copy** your new token right away. You won’t be able to see it again later!  
+9. Paste the token into your notebook’s `GitHub-token` field, so API calls authenticate as the chosen owner.  
 
 ---
 
@@ -30,7 +30,7 @@ For detailed steps, follow the instructions below based on the level of access y
 2. Click your profile icon (top right) ➔ **Settings**  
 3. In the left sidebar, select **Developer settings** ➔ **Personal access tokens** ➔ **Tokens (classic)**  
 4. Click **Generate new token (classic)**  
-5. For **Resource owner**, select the owner of the repository (your user or organization)  
+5. For **Resource owner**, select the owner of the repository (your user or organisation)  
 6. Give your token a descriptive **Name** (e.g., `Notebook Read-Only Token`) and set an **Expiration** if desired  
 7. Under **Scopes**, check:  
    - **repo**  
@@ -50,5 +50,6 @@ For detailed steps, follow the instructions below based on the level of access y
 [← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 Next →
+
 
 </div>
