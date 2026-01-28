@@ -41,3 +41,12 @@ To use LabConstrictor effectively, please ensure that you meet the following req
 - **GitHub Account:** You will need a GitHub account to create a new repository from the LabConstrictor template.
 - **Jupyter Notebooks:** Have your Jupyter notebooks ready that you want to package into desktop applications.
 - **Python Environment:** A Python environment (local or online) where your notebooks can run without errors. This is necessary for generating and validating requirements files.
+
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="" style="color: gray; pointer-events: none; flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="create_repository.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

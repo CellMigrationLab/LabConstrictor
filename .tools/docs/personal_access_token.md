@@ -40,3 +40,12 @@ For detailed steps, follow the instructions below based on the level of access y
 8. Click **Generate token** at the bottom  
 9. **Copy** your new token immediately—you won’t see it again!  
 10. Paste the token into your notebook’s `GitHub-token` field for authentication.  
+
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="workflow_status.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="" style="color: gray; pointer-events: none; flex: 1; text-align: right;">Next →</a>
+</div>

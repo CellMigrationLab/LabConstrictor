@@ -60,3 +60,9 @@ We recommend using **Google Colab** for this step, as you do not need a specific
 Follow the instructions provided inside the notebook to validate your file. You will need to provide the path to your newly created `requirements.yaml` file when prompted.
 
 ---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="external_code_upload.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="executable_creation.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

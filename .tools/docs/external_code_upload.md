@@ -41,3 +41,11 @@ from PYTHON_PROJ_NAME import my_script
 ```python  
 from PYTHON_PROJ_NAME import subpackage
 ```
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="initialise_repository.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="notebook_requirements.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

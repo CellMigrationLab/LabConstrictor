@@ -34,6 +34,8 @@ After installation, you can launch PROJECT_NAME from your desktop app or from th
 
 ![Launch PROJECT_NAME](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Windows_Launch.gif)
 
+Then, start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+
 ---
 </details>
 
@@ -78,7 +80,7 @@ bash PROJECT_NAME-VERSION_NUMBER-Linux-x86_64.sh
 
 ## 4. Launch PROJECT_NAME
 
-After installation, you can launch PROJECT_NAME from your applications menu.
+After installation, you can launch PROJECT_NAME from your applications menu and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
 
 ---
 </details>
@@ -123,7 +125,7 @@ After that, follow the on-screen prompts to complete the installation.
 
 ## 3. Launch PROJECT_NAME
 
-After installation, you can launch PROJECT_NAME from your Applications folder.
+After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
 
 </details>
 
@@ -219,3 +221,12 @@ bash uninstall.sh
 2.- Check that both PROJECT_NAME App and folder are there.
 
 </details>
+
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="executable_creation.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="notebook_usage.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

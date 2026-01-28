@@ -23,3 +23,12 @@ Once you have filled in all the information, click on `Publish release`. This wi
 ## 3. Download the executable files
 
 Once the automated workflow has completed successfully, you will be able to download the installer following the instructions in [How to download the executable files](download_executable.md).
+
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="notebook_upload.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="download_executable.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

@@ -30,3 +30,11 @@ If the workflow fails, don't panic. The system automatically generates a "ready-
 If you are planning a major update (e.g., changing many notebooks or adding complex dependencies), do not push directly to the main branch.
 
 Instead, **create a new branch**, make your changes there, and verify that the workflows pass (✅) before merging into your main branch. This prevents breaking the live version of your application.
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="accept_pull_request.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="personal_access_token.md" style="flex: 1; text-align: right;">Next →</a>
+</div>

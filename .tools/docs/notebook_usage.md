@@ -26,10 +26,19 @@ Still, even if the play button apears or not, you can always run the code cell b
 
 As you might also notice, the code is hidden by default. To reveal the code, click on the `Show/Hide Code` button in the top toolbar:
 
-![Show Hide Code Button](https://github.conm/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
+![Show Hide Code Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
 
 ## 4. Accessing your Notebooks
 
 After running the welcome notebook, a dashboard will appear with a list of available notebooks (similar to the screenshot on the [Welcome Notebook](#welcome-notebook) step).
 
 On the last column of the dashboard, you will find a button labeled `Open the Notebook`. Click this button to open the corresponding notebook in a new tab and run it as you did with the welcome notebook.
+
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="download_executable.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="" style="color: gray; pointer-events: none; flex: 1; text-align: right;">Next →</a>
+</div>

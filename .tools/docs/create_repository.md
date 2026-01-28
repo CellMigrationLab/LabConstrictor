@@ -25,3 +25,11 @@ Briefly describe what your notebooks do (e.g., "Automated cell migration analysi
     * **Private:** Choose this if you are still developing the tools or need to keep the code internal to your lab.
 
 4. Click **Create repository**. 🎉 **Success!** Your repository is now created and ready to be initialized.
+
+---
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+  <a href="before_getting_started.md" style="flex: 1; text-align: left;">← Previous</a>
+  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
+  <a href="initialise_repository.md" style="flex: 1; text-align: right;">Next →</a>
+</div>
