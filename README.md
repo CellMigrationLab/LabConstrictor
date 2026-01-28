@@ -10,8 +10,8 @@ This GitHub template automates the entire pipeline: it packages your notebooks, 
 
 LabConstrictor is optimized for:
 - Researchers sharing reproducible analysis pipelines or lab tools.
-- Developers shipping interactive notebooks to non-technical stakeholders.
-- Educators running workshops where setup time must be zero.
+- Developers shipping interactive notebooks to non-technical users.
+- Educators running workshops where setup time must be near zero.
 
 
 ## ✨ LabConstrictor's Features 
@@ -49,4 +49,5 @@ We’d love to feature your project! [Open an issue](https://github.com/YOUR_USE
 
 **Citation**
 If you use LabConstrictor in your research, please cite the project to support its development:
+
 *(Citation details coming soon)*
