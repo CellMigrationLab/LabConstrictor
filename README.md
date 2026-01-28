@@ -2,13 +2,13 @@
 
 ![LabConstrictor Comic](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/comic.png)
 
-**LabConstrictor** turns your Jupyter notebooks into **installable desktop applications**—so users can launch your work instantly, without touching Python, pip, or terminal commands.
+**LabConstrictor** turns your Jupyter notebooks into **installable desktop applications**. This lets users launch your work right away, without needing to use Python, pip, or any terminal commands.
 
-This GitHub template automates the entire pipeline: it packages your notebooks, builds cross-platform installers, and delivers a clean, user-friendly **Welcome dashboard**. Your users get a native double-click experience; you keep a fully versioned, reproducible workflow.
+This GitHub template handles everything for you. It packages your notebooks, builds installers for different platforms, and provides a simple, user-friendly **Welcome dashboard**. Your users can open your app with a double-click, while you keep a versioned, reproducible workflow.
 
 ## 🎯 Who is this for?
 
-LabConstrictor is optimized for:
+LabConstrictor is ideal for:
 - Researchers sharing reproducible analysis pipelines or lab tools.
 - Developers shipping interactive notebooks to non-technical users.
 - Educators running workshops where setup time must be near zero.
@@ -18,7 +18,7 @@ LabConstrictor is optimized for:
 
 * **Easy Configuration**: Includes a web form to easily configure repo settings, manage dependencies, and brand your application without manual editing.
 * **Cross-Platform**: Automatically builds `.exe` (Windows), `.pkg` (macOS), and `.sh` (Linux) installers.
-* **Auto-Hide Code**: Code cells can be hidden, allowing users to see a clean, "app-like" interface but still being able to reveal code if needed.
+* **Auto-Hide Code**: Code cells can be hidden, allowing users to see a clean, "app-like" interface, but still being able to reveal code if needed.
 * **Dependency Guardrails**: automatic workflows merge and validate requirements, catching conflicts *before* you release.
 * **Version Control**: Helper cells track versions and alert users when an update is available.
 
@@ -39,7 +39,7 @@ Go from notebook to installer in minutes.
 
 ## 🤝 Contributing
 
-We welcome contributions—whether it’s bug fixes, UX improvements, or new packaging strategies.
+We welcome contributions, including bug fixes, UX improvements, or new packaging strategies.
 Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submitting PRs.
 
 ## 📢 Community & Citation
@@ -51,3 +51,4 @@ We’d love to feature your project! [Open an issue](https://github.com/YOUR_USE
 If you use LabConstrictor in your research, please cite the project to support its development:
 
 *(Citation details coming soon)*
+
