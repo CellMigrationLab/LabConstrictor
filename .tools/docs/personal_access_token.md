@@ -44,8 +44,11 @@ For detailed steps, follow the instructions below based on the level of access y
 
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-  <a href="workflow_status.md" style="flex: 1; text-align: left;">← Previous</a>
-  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
-  <a href="" style="color: gray; pointer-events: none; flex: 1; text-align: right;">Next →</a>
+
+<div align="center">
+
+[← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Next →
+
 </div>

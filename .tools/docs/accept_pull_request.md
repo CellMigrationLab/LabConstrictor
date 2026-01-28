@@ -25,8 +25,10 @@ After merging, you can delete the branch associated with the Pull Request by cli
 
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-  <a href="" style="color: gray; pointer-events: none; flex: 1; text-align: left;">← Previous</a>
-  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
-  <a href="workflow_status.md" style="flex: 1; text-align: right;">Next →</a>
+<div align="center">
+
+← Previous &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](workflow_status.md)
+
 </div>

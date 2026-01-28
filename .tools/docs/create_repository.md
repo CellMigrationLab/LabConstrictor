@@ -28,8 +28,10 @@ Briefly describe what your notebooks do (e.g., "Automated cell migration analysi
 
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-  <a href="before_getting_started.md" style="flex: 1; text-align: left;">← Previous</a>
-  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
-  <a href="initialise_repository.md" style="flex: 1; text-align: right;">Next →</a>
+<div align="center">
+
+[← Previous](before_getting_started.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](initialise_repository.md)
+
 </div>

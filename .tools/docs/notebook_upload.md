@@ -50,3 +50,13 @@ The process for updating a notebook is identical to adding a new one:
 2.  **Regenerate Requirements:** Run the bottom cell to ensure `requirements.yaml` reflects the new version number.
 3.  **Upload:** Use the [LabConstrictor App](https://labconstrictor-form.streamlit.app/) to upload the file.
     * *Ensure the filename matches the existing one in the repository exactly.*
+
+---
+    
+<div align="center">
+
+[← Previous](notebook_requirements.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](executable_creation.md)
+
+</div>

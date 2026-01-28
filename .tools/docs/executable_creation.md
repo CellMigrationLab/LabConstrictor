@@ -27,8 +27,10 @@ Once the automated workflow has completed successfully, you will be able to down
 
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-  <a href="notebook_upload.md" style="flex: 1; text-align: left;">← Previous</a>
-  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
-  <a href="download_executable.md" style="flex: 1; text-align: right;">Next →</a>
+<div align="center">
+
+[← Previous](notebook_upload.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](download_executable.md)
+
 </div>

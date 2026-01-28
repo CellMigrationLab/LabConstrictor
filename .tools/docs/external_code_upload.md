@@ -44,8 +44,10 @@ from PYTHON_PROJ_NAME import subpackage
 
 ---
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-  <a href="initialise_repository.md" style="flex: 1; text-align: left;">← Previous</a>
-  <a href="README.md" style="flex: 1; text-align: center;">🏠 Home</a>
-  <a href="notebook_requirements.md" style="flex: 1; text-align: right;">Next →</a>
+<div align="center">
+
+[← Previous](initialise_repository.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](notebook_requirements.md)
+
 </div>
