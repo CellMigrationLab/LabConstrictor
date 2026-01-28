@@ -1,6 +1,6 @@
-# Obtain Requirements of your Notebook
+# Obtain the requirements of your Notebook
 
-To obtain the requirements for your Jupyter notebook, you can do this automatically via **Option 1** or manually via **Option 2**.
+You can get your Jupyter notebook’s requirements automatically with Option 1 or manually with Option 2.
 
 * **Option 1 (Automated):** Recommended if you need to generate requirements from scratch.
 * **Option 2 (Manual):** Recommended if you already have a versioned `requirements.txt` file, as it will be faster.
@@ -9,7 +9,7 @@ To obtain the requirements for your Jupyter notebook, you can do this automatica
 
 ## Option 1: Automated Extraction of Requirements
 
-> **IMPORTANT:** This option requires you to have a Python environment where your notebook can run without errors. This environment can be a local Conda/VirtualEnv or an online Google Colab session.
+> **IMPORTANT:** This option requires that you have a Python environment where your notebook runs without errors. This environment can be a local Conda/VirtualEnv or an online Google Colab session.
 
 ### 1. Open the Requirements Generator Notebook
 
@@ -22,7 +22,7 @@ You have two options to open the generator:
 
 ### 2. Run the Requirements Generator
 
-Follow the instructions provided inside the notebook to generate the `requirements.yaml` file. You will be prompted to provide the path to the notebook file you wish to analyze.
+Follow the instructions provided inside the notebook to generate the `requirements.yaml` file. You will be prompted to provide the path to the notebook file you wish to analyse.
 
 ---
 
@@ -66,5 +66,6 @@ Follow the instructions provided inside the notebook to validate your file. You 
 [← Previous](external_code_upload.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [Next →](notebook_upload.md)
+
 
 </div>
