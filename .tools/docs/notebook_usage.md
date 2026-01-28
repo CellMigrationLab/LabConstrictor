@@ -1,38 +1,38 @@
 # Usage of Notebooks After Installation
 
-Once you have installed desktop application, this guide will help you understand how to use the Jupyter notebooks included in the application.
+After you install the desktop application, this guide will show you how to use the Jupyter notebooks that come with it.
 
 ## 1. Launching the Application
 
-To launch the application, open the Start Menu (Windows or Linux) or Applications folder (MacOS) and search for the application name. Click on the application icon to launch it.
+To open the application, go to the Start Menu on Windows or Linux, or the Applications folder on macOS. Search for the application name and click its icon to start it.
 
 ## 2. Welcome Notebook
 
-After launching the application, a Jupyter Lab session will open in your default web browser. The welcome notebook will be displayed automatically:
+When you start the application, Jupyter Lab will open in your default web browser. The welcome notebook will appear automatically:
 
 ![Welcome Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Welcome_Notebook.png)
 
 ## 3. How to Run Notebooks
 
-Depending on the JupyterLab and ipywidgets versions that you defined, it might happen that a play button does not appear close to each code cell:
+Depending on the versions of JupyterLab and ipywidgets you use, the play button might not show up next to each code cell:
 
 ![Play Button vs Missing](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_Cell_Button.png)
 
-If the play button appears, you can click it to run the corresponding code cell.
+If you see the play button, click it to run that code cell.
 
-Still, even if the play button apears or not, you can always run the code cell by clicking on the cell to select it and then pressing the play button in the top toolbar:
+Whether or not the play button appears, you can always run a code cell by selecting it and clicking the play button in the top toolbar:
 
 ![Toolbar Play Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_Play_Button.png)
 
-As you might also notice, the code is hidden by default. To reveal the code, click on the `Show/Hide Code` button in the top toolbar:
+You may notice that the code is hidden by default. To see the code, click the `Show/Hide Code` button in the top toolbar:
 
 ![Show Hide Code Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
 
 ## 4. Accessing your Notebooks
 
-After running the welcome notebook, a dashboard will appear with a list of available notebooks (similar to the screenshot on the [Welcome Notebook](#welcome-notebook) step).
+Once you run the welcome notebook, a dashboard will show a list of available notebooks. It looks similar to the screenshot in the [Welcome Notebook](#welcome-notebook) step.
 
-On the last column of the dashboard, you will find a button labeled `Open the Notebook`. Click this button to open the corresponding notebook in a new tab and run it as you did with the welcome notebook.
+In the last column of the dashboard, you'll see a button called `Open the Notebook`. Click it to open that notebook in a new tab and run it just like you did with the welcome notebook.
 
 
 ---
@@ -43,5 +43,6 @@ On the last column of the dashboard, you will find a button labeled `Open the No
 [← Previous](download_executable.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 Next →
+
 
 </div>
