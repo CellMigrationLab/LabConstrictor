@@ -16,8 +16,7 @@ To obtain the requirements for your Jupyter notebook, you can do this automatica
 You have two options to open the generator:
 
 * **Locally:** Download the [Requirements_Generator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Generator.ipynb) and open it in your local Python environment (conda or virtualenv).
-> **Note:** The Python environment where you open the generator must be the same one used to run the target notebook.
-
+  > **Note**: When using it locally, the Python environment where you open the requirements generator notebook needs to be the one you use to run the target notebook whose requirements you want to extract.
 
 * **Google Colab:** Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
 

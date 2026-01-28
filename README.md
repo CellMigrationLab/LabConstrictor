@@ -26,6 +26,10 @@ LabConstrictor is ideal for:
 
 ![LabConstrictor Summary GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Summary.gif)
 
+## Before You Begin
+
+Please read the [Before Getting Started Guide](.tools/docs/before_getting_started.md) to familiarise yourself with the LabConstrictor workflow and requirements.
+
 ## ⚡ Quick Start
 
 Go from notebook to installer in minutes.
