@@ -12,6 +12,9 @@ CELL_VIEW_VALUE = "form"
 COLLAPSED_VALUE = False
 SOURCE_HIDDEN_VALUE = True
 
+# Placeholder for repository initialisiation that enables or disables this script.
+DISABLED = HIDE_CODE_DISABLED
+
 
 def collect_notebooks(root: Path) -> Iterable[Path]:
     """Yield every notebook under root (recursively for directories)."""
@@ -79,6 +82,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     notebooks = list(collect_notebooks(args.path))
+
+    if DISABLED:
+        print("Hiding code cells is disabled for this repository.")
+        print("To enable, set HIDE_CODE_DISABLED to False in app/python_scripts/hide_code_cells.py")
+        print("or go to https://labconstrictor-form.streamlit.app/ and initialise your repository again but with hiding code cells enabled.")
+        return
 
     if not notebooks:
         print("No notebooks found.")

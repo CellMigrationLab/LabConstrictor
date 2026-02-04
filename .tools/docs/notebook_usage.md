@@ -12,21 +12,9 @@ When you start the application, Jupyter Lab will open in your default web browse
 
 ![Welcome Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Welcome_Notebook.png)
 
-## 3. How to Run Notebooks
+## 3. How to Run Notebooks?
 
-Depending on the versions of JupyterLab and ipywidgets you use, the play button might not show up next to each code cell:
-
-![Play Button vs Missing](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_Cell_Button.png)
-
-If you see the play button, click it to run that code cell.
-
-Whether or not the play button appears, you can always run a code cell by selecting it and clicking the play button in the top toolbar:
-
-![Toolbar Play Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_Play_Button.png)
-
-You may notice that the code is hidden by default. To see the code, click the `Show/Hide Code` button in the top toolbar:
-
-![Show Hide Code Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
+You might be used to work with notebooks. Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks with hidden code cells.
 
 ## 4. Accessing your Notebooks
 
