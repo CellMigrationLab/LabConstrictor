@@ -14,7 +14,7 @@ When you start the application, Jupyter Lab will open in your default web browse
 
 ## 3. How to Run Notebooks?
 
-You might be used to work with notebooks. Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks with hidden code cells.
+You might be used to work with notebooks on JupyterLab (in case you need so guidance on JupyterLab check [this guide](jupyterlab_guide/jupyterlab_guide.md)). Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.
 
 ## 4. Accessing your Notebooks
 
