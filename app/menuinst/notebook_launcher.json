@@ -1,29 +1,29 @@
 { 
 "$schema": "https://schemas.conda.org/menuinst/menuinst-1-1-3.schema.json", 
-"menu_name": "PROJECT_NAME", 
+"menu_name": "LabConstrictor", 
 "menu_items": [ { 
-    "name": "PROJECT_NAME", 
+    "name": "LabConstrictor", 
     "activate": true, 
     "terminal": true,
     "platforms": { "win": {
-                        "icon": "ICON_ICO_IMAGE_PATH", 
+                        "icon": "", 
                         "command": [
                                     "cmd.exe", "/c",
-                                    "echo Starting Jupyter Lab, please wait a moment... && python.exe -m jupyterlab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit && echo Jupyter Lab has exited."
+                                    "echo Starting Jupyter Lab, please wait a moment... && python.exe -m jupyterlab \"BASE_PATH_KEYWORD/LabConstrictor/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/LabConstrictor/notebooks\" && exit && echo Jupyter Lab has exited."
                                 ]
                     },
                    "linux": {
-                        "icon": "ICON_IMAGE_PATH",
+                        "icon": "",
                         "command": [
                                     "bash", "-lc", 
-                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && python -m jupyterlab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit"
+                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && python -m jupyterlab \"BASE_PATH_KEYWORD/LabConstrictor/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/LabConstrictor/notebooks\" && exit"
                                    ]
                     }, 
                    "osx": {
-                        "icon": "ICON_ICNS_IMAGE_PATH",
+                        "icon": "",
                         "command": [
                                     "bash", "-lc", 
-                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && python -m jupyterlab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit"
+                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && python -m jupyterlab \"BASE_PATH_KEYWORD/LabConstrictor/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/LabConstrictor/notebooks\" && exit"
                                    ]
                         } 
                  }

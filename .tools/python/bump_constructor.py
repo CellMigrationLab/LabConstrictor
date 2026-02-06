@@ -40,7 +40,7 @@ def extract_project_folder(extra_files: list) -> str:
                     if parts:
                         return parts[0]
     # Fallback
-    return "PROJECT_NAME"
+    return "LabConstrictor"
 
 
 def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) -> int:
@@ -87,7 +87,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
 
     # First get the name of the package from setup.py
     setup_path = repo_root / "setup.py"
-    project_name = "PROJECT_NAME"
+    project_name = "LabConstrictor"
     if setup_path.exists():
         setup_text = setup_path.read_text(encoding="utf-8")
         name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', setup_text)
