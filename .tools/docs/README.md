@@ -14,6 +14,10 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
 - [Notebook usage after installation](notebook_usage.md)
 
+## Notebook authoring tips
+
+- [Write notebooks that run in both Google Colab and JupyterLab](notebook_portability.md)
+
 ## GitHub management
 
 - [Accept a Pull Request](accept_pull_request.md)
