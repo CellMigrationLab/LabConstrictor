@@ -9,15 +9,18 @@ You can get your Jupyter notebook’s requirements automatically with Option 1 o
 
 ## Option 1: Automated Extraction of Requirements
 
-> **IMPORTANT:** This option requires that you have a Python environment where your notebook runs without errors. This environment can be a local Conda/VirtualEnv or an online Google Colab session.
-
 ### 1. Open the Requirements Generator Notebook
 
-You have two options to open the generator:
+**⚠️ IMPORTANT:** You will need to choose the option based on the environment you used to run the target notebook whose requirements you want to extract. 
+
+ * Did you ran your notebook locally on your machine (with Conda/VirtualEnv)? ➡️ Locally
+ * Did you ran your notebook on Google Colab? ➡️ Online 
+
+In both cases the Python environment that you use for the notebook, needs to run without errors. Knowing this please choose the option that best suits your case:
 
 * **Locally:** Go to the [Requirements_Generator.ipynb](../notebooks/Requirements_Generator.ipynb) notebook, download it (clicking on the button indicated on the screenshot bellow ⬇️) and open it in your local Python environment (conda or virtualenv).
-  > **Note**: When using it locally, the Python environment where you open the requirements generator notebook needs to be the one you use to run the target notebook whose requirements you want to extract.
-
+  > **Note**: When using it locally, the Python environment where you open the requirements generator notebook needs to be exactly the one you use to run the target notebook whose requirements you want to extract. For example, if you have multiple conda environments, you need to make sure that you use the same conda environment that you use to run the target notebook.
+  
 ![Download Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Download_Notebook.png)
   
 * **Google Colab:** Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
