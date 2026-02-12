@@ -10,6 +10,9 @@ To start, click the `Use this template` button at the top of the page. This will
 
 3. Next, you’ll need to fill in some details:
 
+* **Include all branches:**
+Please, let the default `Off` option.
+
 * **Owner:**
 Pick either your personal account or your research group’s organization.
 
