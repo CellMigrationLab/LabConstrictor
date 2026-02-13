@@ -10,7 +10,7 @@ else
     echo "No setup.py detected, skipping local pip install" >> "$PREFIX/menuinst_debug.log"
 fi
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/PROJECT_NAME/notebook_launcher.json" --keyword "BASE_PATH_KEYWORD"
-"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/app/pre_uninstall.sh" --keyword "BASE_PATH"
+"$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/pre_uninstall.sh" --keyword "BASE_PATH"
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/include_path.py" --path "$PREFIX" --files "$PREFIX/uninstall.sh" --keyword "BASE_PATH"
 "$PREFIX/bin/python" "$PREFIX/PROJECT_NAME/hide_code_cells.py" "$PREFIX/PROJECT_NAME"
 "$PREFIX/bin/python" -c "import os, sys; print('Python:', sys.executable); print('Prefix:', os.environ.get('PREFIX'))" >> "$PREFIX/menuinst_debug.log"
