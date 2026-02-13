@@ -32,9 +32,9 @@ def build_readme_content(notebooks: list[Path]) -> str:
 
 	for folder in sorted(grouped.keys(), key=lambda p: p.as_posix()):
 		folder_label = "." if folder == Path(".") else folder.as_posix()
-		lines.append(f"- [{folder_label}]({folder_label}):")
+		lines.append(f"- [{folder_label}]({folder_label.replace(' ', '%20')}):")
 		for notebook in grouped[folder]:
-			lines.append(f"    - [{notebook.name}]({notebook.as_posix()})")
+			lines.append(f"    - [{notebook.name}]({notebook.as_posix().replace(' ', '%20')})")
 		lines.append("")
 
 	return "\n".join(lines).rstrip() + "\n"

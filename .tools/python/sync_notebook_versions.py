@@ -121,9 +121,9 @@ def discover_versions(paths: Iterable[Path] | None) -> tuple[list[NotebookVersio
 def render_global_yaml(grouped: dict[str, dict[str, str]]) -> str:
     lines: list[str] = []
     for category in sorted(grouped):
-        lines.append(f"{category}:")
+        lines.append(f'"{category}":')
         for name, version in grouped[category].items():
-            lines.append(f"  {name}: {version}")
+            lines.append(f'  "{name}": "{version}"')
     return "\n".join(lines) + "\n"
 
 
