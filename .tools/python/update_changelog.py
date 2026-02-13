@@ -89,27 +89,26 @@ def load_current_versions(version_file_path):
     return {}, {}
 
 
-def find_notebook_folder(project_name, version_file_path, category=None):
+def find_notebook_folder(root_path, project_name):
     """Find the corresponding notebook folder for a project."""
-    version_dir = Path(version_file_path).parent
-    if category:
-        project_folder = version_dir / category / project_name
-        if project_folder.exists():
-            return project_folder
+    root_path = Path(root_path)
 
-    for folder in version_dir.iterdir():
-        if not folder.is_dir() or folder.name == '__pycache__':
+    for folder in root_path.iterdir():
+        if folder.name == '__pycache__':
             continue
-        project_folder = folder / project_name
-        if project_folder.exists():
-            return project_folder
-
+        if folder.is_dir():
+            notebook_path = find_notebook_folder(folder, project_name)
+            if notebook_path:
+                return notebook_path
+        elif folder.stem == project_name and folder.suffix == '.ipynb':
+            return folder.parent
+        
     return None
 
 
 def create_or_update_changelog(project_name, old_version, new_version, commit_info, version_file_path, category=None):
     """Create or update changelog file for a project."""
-    folder_path = find_notebook_folder(project_name, version_file_path, category=category)
+    folder_path = find_notebook_folder(Path(version_file_path).parent, project_name)
     if folder_path is None:
         print(f"Skipping changelog update for {project_name}: notebook folder not found.")
         return
