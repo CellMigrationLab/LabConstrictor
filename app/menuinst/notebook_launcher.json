@@ -9,21 +9,21 @@
                         "icon": "ICON_ICO_IMAGE_PATH", 
                         "command": [
                                     "cmd.exe", "/c",
-                                    "echo Starting Jupyter Lab, please wait a moment... && python.exe -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit && echo Jupyter Lab has exited."
+                                    "echo Starting Jupyter Lab, please wait a moment... && python.exe -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=~\" && exit && echo Jupyter Lab has exited."
                                 ]
                     },
                    "linux": {
                         "icon": "ICON_IMAGE_PATH",
                         "command": [
                                     "bash", "-lc", 
-                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && \"BASE_PATH_KEYWORD/bin/python\" -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit"
+                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && \"BASE_PATH_KEYWORD/bin/python\" -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=~\" && exit"
                                    ]
                     }, 
                    "osx": {
                         "icon": "ICON_ICNS_IMAGE_PATH",
                         "command": [
                                     "bash", "-lc", 
-                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && \"BASE_PATH_KEYWORD/bin/python\" -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=BASE_PATH_KEYWORD/PROJECT_NAME/notebooks\" && exit"
+                                    "echo \"Starting Jupyter Lab, please wait a moment...\" && \"BASE_PATH_KEYWORD/bin/python\" -m jupyter lab \"BASE_PATH_KEYWORD/PROJECT_NAME/notebooks/Welcome.ipynb\" --ServerApp.shutdown_no_activity_timeout=30 \"--notebook-dir=~\" && exit"
                                    ]
                         } 
                  }
