@@ -33,6 +33,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
+          separator: ","
           files: |
             notebooks/**/*.ipynb
             notebooks/notebook_latest_versions.yaml
@@ -40,12 +41,17 @@ jobs:
           
       - name: Syncronize notebook versions
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          bash .tools/bash/run_with_context.sh \
-            artifacts/sync_notebook_versions.log \
-            "sync_notebook_versions.py" \
-            .tools/python/sync_notebook_versions.py \
-            python .tools/python/sync_notebook_versions.py ${{ steps.changed-files.outputs.all_changed_files }}
+          IFS=',' read -ra FILES <<< "${ALL_CHANGED_FILES}"
+          for file in "${FILES[@]}"; do
+            bash .tools/bash/run_with_context.sh \
+              artifacts/sync_notebook_versions.log \
+              "sync_notebook_versions.py" \
+              .tools/python/sync_notebook_versions.py \
+              python .tools/python/sync_notebook_versions.py "$file"
+          done
             
       - name: Update CHANGELOG
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
