@@ -9,6 +9,11 @@ on:
       - 'notebooks/**/requirements.yaml'
   workflow_dispatch:
 
+# This enables to run a single workflow at a time
+concurrency:
+  group: notebooks-global-lock-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   updates-version_change:
     name: Upon notebook change, update manifests and changelogs

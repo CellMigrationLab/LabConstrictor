@@ -6,6 +6,11 @@ on:
     # - cron: '0 9 * * 1'
   workflow_dispatch:
 
+# This enables to run a single workflow at a time
+concurrency:
+  group: notebooks-global-lock-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
