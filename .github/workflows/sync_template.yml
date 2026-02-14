@@ -31,7 +31,8 @@ jobs:
 
       - name: Add upstream remote
         run: |
-          git remote add upstream https://github.com/CellMigrationLab/LabConstrictor.git
+          git remote add upstream https://x-access-token:${{ secrets.SYNC_TOKEN }}@github.com/CellMigrationLab/LabConstrictor.git
+          # git remote add upstream https://github.com/CellMigrationLab/LabConstrictor.git
 
       - name: Fetch upstream changes
         run: |
