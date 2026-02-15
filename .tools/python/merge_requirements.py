@@ -189,11 +189,11 @@ def resolve_ipywidgets_version(py_version, jl_version):
         jl_major = int(jl_version.split(".")[0])
         
         if jl_major >= 4 and py_major >= 3 and py_minor >= 9:
-            return "8.1.1"  # Latest stable for modern Python + JupyterLab 4
-        elif py_major >= 3 and py_minor >= 8:
-            return "8.0.4"  # Good for Python 3.8+
+            return "8.1.7"  # Latest stable for modern Python + JupyterLab 4
+        elif py_major >= 3 and py_minor >= 7:
+            return "8.1.6"  # Good for Python 3.7+
         else:
-            return "7.7.2"  # Fallback for older environments
+            return "7.7.2tr5 34"  # Fallback for older environments
     except Exception:
         return ">=7.0.0"  # Safe fallback
 
@@ -254,7 +254,7 @@ def main():
 
     # Check if ipywidgets is present; if not, add it with resolved version
     if "jupyterlab" not in pkgs:
-        jl_ver = "4.0.5"
+        jl_ver = "4.4.0"
 
     # Check if ipywidgets is present; if not, add it to the packages
     if "ipywidgets" not in pkgs:
@@ -279,7 +279,7 @@ def main():
             if jl_info and jl_info.get("pinned") and jl_info.get("ver"):
                 jl_ver = jl_info["ver"]
             else:
-                jl_ver = "4.0.5"
+                jl_ver = "4.4.0"
 
         if info.get("pinned") and info.get("ver"):
             final_lines.append(f"{info['name']}=={info['ver']}{info.get('marker','')}")
