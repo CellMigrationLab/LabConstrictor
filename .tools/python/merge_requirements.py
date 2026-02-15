@@ -193,7 +193,7 @@ def resolve_ipywidgets_version(py_version, jl_version):
         elif py_major >= 3 and py_minor >= 7:
             return "8.1.6"  # Good for Python 3.7+
         else:
-            return "7.7.2tr5 34"  # Fallback for older environments
+            return "7.7.2"  # Fallback for older environments
     except Exception:
         return ">=7.0.0"  # Safe fallback
 
