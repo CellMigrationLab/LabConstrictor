@@ -71,6 +71,9 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
     ntbk_added = 0
     repo_root = Path(".").resolve()
 
+    # For safety, remove any existing notebooks/*.ipynb entries to avoid duplicates, we will re-add them with correct paths
+    normalized_items = [item for item in normalized_items if not (isinstance(item, dict) and any(str(src).startswith("notebooks/") and src.endswith(".ipynb") for src in item.keys()))]
+
     # Include all notebooks under notebooks/ directory
     for ipynb in notebooks_root.rglob("*.ipynb"):
         rel = ipynb.relative_to(repo_root).as_posix()
@@ -79,8 +82,8 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         src = rel
         dst = f"{project_folder}/{rel}"
 
-        if src in existing_sources or dst in existing_dests:
-            continue
+        # if src in existing_sources or dst in existing_dests:
+        #     continue
 
         normalized_items.append({src: dst})
         ntbk_added += 1
@@ -94,6 +97,9 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         if name_match:
             project_name = name_match.group(1)
 
+    # For safety, remove any existing src/ entries to avoid duplicates, we will re-add them with correct paths
+    normalized_items = [item for item in normalized_items if not (isinstance(item, dict) and any(str(src).startswith("src/") for src in item.keys()))]
+
     # Include all the Python scripts under src/ directory
     src_added = 0
     src_root = Path("src").resolve()
@@ -105,8 +111,8 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
         src = rel
         dst = f"{project_folder}/src/{project_name}/{rel.replace('src/', '')}"
 
-        if src in existing_sources or dst in existing_dests:
-            continue
+        # if src in existing_sources or dst in existing_dests:
+        #     continue
 
         normalized_items.append({src: dst})
         included_src_flag = True
