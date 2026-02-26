@@ -7,7 +7,8 @@ When you upload a notebook or make a release, GitHub Actions starts a workflow t
 1.  Go to the **Actions** tab in your GitHub repository.
 2. You’ll see a list of recent workflows. Find the one that matches your latest commit or release.
 3.  Check the status icon next to the workflow name:
-![GitHub Actions Status Icons](https://docs.github.com/assets/images/help/repository/actions_status_icons.png)
+
+![GitHub Actions Status Icons](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/actions_status_icons.png)
 
 ## 2. How to Debug a Failure
 
@@ -41,3 +42,4 @@ Instead, **create a new branch**, make your changes there, and check that the wo
 
 
 </div>
+
