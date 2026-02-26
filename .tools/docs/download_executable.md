@@ -1,4 +1,11 @@
-Sorry, but no executable files are available yet. For that, please upload notebooks and create a release.
+### Sorry, but no executable files are available yet
+
+In order to create the executables, please remember to upload notebooks and create a release: 
+
+ - First: [**Upload Your Notebooks**](.tools/docs/notebook_upload.md) 
+ - Then: [**Create Executable Installers**](.tools/docs/executable_creation.md)
+
+Once you've done that, the executables will appear here for download. Or you will be able to find them in the "Releases" section of your repository.
 
 ---
 
