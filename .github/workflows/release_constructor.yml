@@ -71,12 +71,12 @@ jobs:
 
       - name: Upload diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-bump-version-logs
           path: artifacts/*.log
           if-no-files-found: ignore
-          compression-level: 0
+          archive: false
 
   build-installers:
     name: Build installers (${{ matrix.os_name }})
@@ -173,12 +173,12 @@ jobs:
 
       - name: Upload diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-installers-${{ matrix.os_name }}-logs
           path: artifacts/*.log
           if-no-files-found: ignore
-          compression-level: 0
+          archive: false
 
       - name: Upload installers to release
         uses: softprops/action-gh-release@v2
