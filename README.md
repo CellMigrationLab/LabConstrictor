@@ -41,6 +41,8 @@ Go from notebook to installer in minutes.
 #### 5. [**Create Executable Installers**](.tools/docs/executable_creation.md)
 > **Requirements:** You only need a GitHub account and the Jupyter notebooks you want to distribute.
 
+Need help writing notebooks that run well in both Colab and JupyterLab? See the [notebook portability guide](.tools/docs/notebook_portability.md).
+
 ## 🤝 Contributing
 
 We welcome contributions, including bug fixes, UX improvements, or new packaging strategies.
