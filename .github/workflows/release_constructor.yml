@@ -151,9 +151,8 @@ jobs:
       - name: Set up Miniconda
         uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-activate-base: true
+          auto-activate: true
           miniforge-version: latest
-          installer-type: Miniforge3
           use-mamba: true
 
       - name: Create constructor environment
