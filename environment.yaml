@@ -1,7 +1,8 @@
 name: LOWER_PROJ_NAME
 channels:
   - conda-forge
-  - defaults
+  - bioconda
+  - nodefaults
 dependencies:
   - python=PYTHON_VERSION
   - conda

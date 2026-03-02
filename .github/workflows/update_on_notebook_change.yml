@@ -48,7 +48,7 @@ jobs:
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/sync_notebook_versions.log \
+            artifacts/error_log_document.log \
             "sync_notebook_versions.py" \
             .tools/python/sync_notebook_versions.py \
             python .tools/python/sync_notebook_versions.py
@@ -57,7 +57,7 @@ jobs:
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/update_changelog.log \
+            artifacts/error_log_document.log \
             "update_changelog.py" \
             .tools/python/update_changelog.py \
             python .tools/python/update_changelog.py notebooks/notebook_latest_versions.yaml
@@ -66,7 +66,7 @@ jobs:
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/update_version_last_commit.log \
+            artifacts/error_log_document.log \
             "update_version_last_commit.py" \
             .tools/python/update_version_last_commit.py \
             python .tools/python/update_version_last_commit.py notebooks/notebook_latest_versions.yaml
@@ -75,7 +75,7 @@ jobs:
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/hide_code_cells.log \
+            artifacts/error_log_document.log \
             "hide_code_cells.py" \
             app/python_scripts/hide_code_cells.py \
             python app/python_scripts/hide_code_cells.py .
@@ -84,7 +84,7 @@ jobs:
         if: contains(steps.changed-files.outputs.all_changed_files, '.ipynb') || contains(steps.changed-files.outputs.all_changed_files, 'notebook_latest_versions.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/bump_notebook_README.log \
+            artifacts/error_log_document.log \
             "bump_notebook_README.py" \
             .tools/python/bump_notebook_README.py \
             python .tools/python/bump_notebook_README.py
@@ -93,7 +93,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || contains(steps.changed-files.outputs.all_changed_files, 'requirements.yaml')
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/merge_requirements.log \
+            artifacts/error_log_document.log \
             "merge_requirements.py" \
             .tools/python/merge_requirements.py \
             python .tools/python/merge_requirements.py --source-dir notebooks --output requirements.txt
@@ -120,7 +120,7 @@ jobs:
         if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           bash .tools/bash/run_with_context.sh \
-            artifacts/test_conda_env.log \
+            artifacts/error_log_document.log \
             "test_conda_environment.sh" \
             .tools/bash/test_conda_environment.sh \
             bash .tools/bash/test_conda_environment.sh
@@ -130,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: notebook-debug-bundle
-          path: artifacts/*.log
+          path: artifacts/error_log_document.log
           archive: false
 
       - name: Commit updated files
