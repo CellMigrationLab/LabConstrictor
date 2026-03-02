@@ -76,6 +76,7 @@ jobs:
           name: release-bump-version-logs
           path: artifacts/*.log
           if-no-files-found: ignore
+          compression-level: 0
 
   build-installers:
     name: Build installers (${{ matrix.os_name }})
@@ -157,14 +158,19 @@ jobs:
 
       - name: Create constructor environment
         run: |
-          set -euxo pipefail
-          conda create -y -n "${CONSTRUCTOR_ENV}" -c conda-forge -c defaults python=3.11 constructor
+          bash .tools/bash/run_with_context.sh \
+            "artifacts/${{ matrix.os_name }}-create_constructor_env.log" \
+            "create_constructor_environment.sh" \
+            .tools/bash/create_constructor_environment.sh \
+            bash .tools/bash/create_constructor_environment.sh
 
       - name: Build installer with constructor
         run: |
-          set -euxo pipefail
-          mkdir -p "${OUTPUT_DIR}"
-          conda run -n "${CONSTRUCTOR_ENV}" constructor . --output-dir "${OUTPUT_DIR}"
+          bash .tools/bash/run_with_context.sh \
+            "artifacts/${{ matrix.os_name }}-build_constructor.log" \
+            "build_installer_with_constructor.sh" \
+            .tools/bash/build_installer_with_constructor.sh \
+            bash .tools/bash/build_installer_with_constructor.sh
 
       - name: Upload diagnostics
         if: always()
@@ -173,6 +179,8 @@ jobs:
           name: build-installers-${{ matrix.os_name }}-logs
           path: artifacts/*.log
           if-no-files-found: ignore
+          compression-level: 0
+
       - name: Upload installers to release
         uses: softprops/action-gh-release@v2
         with:
