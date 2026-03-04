@@ -1,7 +1,11 @@
 @ECHO OFF
 echo Running post_install > "%PREFIX%\menuinst_debug.log"
 "%PREFIX%\python.exe" -m pip install -r "%PREFIX%\PROJECT_NAME\requirements.txt"
-"%PREFIX%\python.exe" -m pip install "wmi==1.5.1"
+
+IF EXIST "%PREFIX%\PROJECT_NAME\requirements-windows.txt" (
+    "%PREFIX%\python.exe" -m pip install -r "%PREFIX%\PROJECT_NAME\requirements-windows.txt"
+)
+
 SET "PROJECT_ROOT=%PREFIX%\PROJECT_NAME"
 IF EXIST "%PROJECT_ROOT%\setup.py" (
     echo Found setup.py, installing PROJECT_NAME package locally >> "%PREFIX%\menuinst_debug.log"

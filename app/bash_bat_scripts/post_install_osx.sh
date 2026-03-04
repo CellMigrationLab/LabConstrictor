@@ -1,7 +1,13 @@
 #!/bin/bash
 set -e
 echo "Running post_install" > "$PREFIX/menuinst_debug.log"
+
 "$PREFIX/bin/python" -m pip install -r "$PREFIX/PROJECT_NAME/requirements.txt"
+
+if [ -f "$PREFIX/PROJECT_NAME/requirements-macos.txt" ]; then
+    "$PREFIX/bin/python" -m pip install -r "$PREFIX/PROJECT_NAME/requirements-macos.txt"
+fi
+
 PROJECT_ROOT="$PREFIX/PROJECT_NAME"
 if [ -f "$PROJECT_ROOT/setup.py" ]; then
     echo "Found setup.py, installing PROJECT_NAME package locally" >> "$PREFIX/menuinst_debug.log"

@@ -42,8 +42,46 @@ def extract_project_folder(extra_files: list) -> str:
     # Fallback
     return "PROJECT_NAME"
 
+def ensure_requirements_in_extra_files(construct_data: dict):
+    extra_files = construct_data.get("extra_files")
+    if extra_files is None:
+        extra_files = []
+        construct_data["extra_files"] = extra_files
 
-def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) -> int:
+    # Check if requirements.txt is included, if not, add it
+    requirements_included = any(
+        isinstance(item, dict) and "requirements.txt" in item for item in extra_files
+    )
+    if not requirements_included:
+        extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})
+    
+    # Check if requirements-linux.txt exists and is included, if not, add it
+    if Path("requirements-linux.txt").exists():
+        linux_included = any(
+            isinstance(item, dict) and "requirements-linux.txt" in item for item in extra_files
+        )
+        if not linux_included:
+            extra_files.append({"requirements-linux.txt": "PROJECT_NAME/requirements-linux.txt"})
+    # Check if requirements-windows.txt exists and is included, if not, add it
+    if Path("requirements-windows.txt").exists():
+        windows_included = any(
+            isinstance(item, dict) and "requirements-windows.txt" in item for item in extra_files
+        )
+        if not windows_included:
+            extra_files.append({"requirements-windows.txt": "PROJECT_NAME/requirements-windows.txt"})
+    
+    # Check if requirements-macos.txt exists and is included, if not, add it
+    if Path("requirements-macos.txt").exists():
+        macos_included = any(
+            isinstance(item, dict) and "requirements-macos.txt" in item for item in extra_files
+        )
+        if not macos_included:
+            extra_files.append({"requirements-macos.txt": "PROJECT_NAME/requirements-macos.txt"})
+
+    # Update the construct data with the modified extra_files
+    construct_data["extra_files"] = extra_files
+
+def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Path) -> int:
     extra_files = construct_data.get("extra_files")
     if extra_files is None:
         extra_files = []
@@ -102,7 +140,6 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
 
     # Include all the Python scripts under src/ directory
     src_added = 0
-    src_root = Path("src").resolve()
     included_src_flag = False
     for py_file in src_root.rglob("*.py"):
         rel = py_file.relative_to(repo_root).as_posix()
@@ -143,6 +180,7 @@ def ensure_notebooks_in_extra_files(construct_data: dict, notebooks_root: Path) 
 def main():
     construct_path = Path("construct.yaml") if len(sys.argv) < 2 else Path(sys.argv[1])
     notebooks_root = Path("notebooks").resolve()
+    src_root = Path("src").resolve()
 
     if not construct_path.exists():
         print(f"construct.yaml not found at: {construct_path}", file=sys.stderr)
@@ -152,7 +190,11 @@ def main():
     original_text = construct_path.read_text(encoding="utf-8")
     
     data = load_construct(construct_path)
-    ntbk_added, src_added = ensure_notebooks_in_extra_files(data, notebooks_root)
+    # Check if the requirements files are included in extra_files, if not, add them
+    ensure_requirements_in_extra_files(data)
+
+    # Update extra_files with notebooks and src files
+    ntbk_added, src_added = ensure_extra_files(data, notebooks_root, src_root)
     
     # Write using surgical update to preserve platform-specific scripts
     save_construct_surgical(construct_path, data, original_text)
