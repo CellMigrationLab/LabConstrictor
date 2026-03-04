@@ -158,7 +158,7 @@ jobs:
       - name: Create constructor environment
         run: |
           bash .tools/bash/run_with_context.sh \
-            "artifacts/error_log_document.log" \
+            "artifacts/error_log_document_${{ matrix.os_name }}.log" \
             "create_constructor_environment.sh" \
             .tools/bash/create_constructor_environment.sh \
             bash .tools/bash/create_constructor_environment.sh
@@ -166,7 +166,7 @@ jobs:
       - name: Build installer with constructor
         run: |
           bash .tools/bash/run_with_context.sh \
-            "artifacts/error_log_document.log" \
+            "artifacts/error_log_document_${{ matrix.os_name }}.log" \
             "build_installer_with_constructor.sh" \
             .tools/bash/build_installer_with_constructor.sh \
             bash .tools/bash/build_installer_with_constructor.sh
@@ -176,7 +176,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: build-installers-${{ matrix.os_name }}-logs
-          path: artifacts/error_log_document.log
+          path: artifacts/error_log_document_${{ matrix.os_name }}.log
           if-no-files-found: ignore
           archive: false
 

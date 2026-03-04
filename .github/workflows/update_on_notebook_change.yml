@@ -139,7 +139,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Updated files because of notebook and/or requirements changes
-          file_pattern: requirements.txt environment.yaml notebooks/* setup.py
+          file_pattern: requirements*.txt environment.yaml notebooks/* setup.py
 
       - name: Revert user commit that broke requirements
         if: failure() && github.event_name == 'push'
