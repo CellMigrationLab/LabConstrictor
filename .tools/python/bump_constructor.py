@@ -163,6 +163,14 @@ def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Pat
             normalized_items.append({setup_src: setup_dst})
             src_added += 1
 
+        # Include the external code change tracking file if it exists
+        src_change_file = ".tools/meta/src_change.yaml"
+        if Path(src_change_file).exists():
+            src_change_dst = f"{project_folder}/src_change.yaml"
+            if src_change_file not in existing_sources and src_change_dst not in existing_dests:
+                normalized_items.append({src_change_file: src_change_dst})
+                src_added += 1
+
     # Optionally sort entries (dicts by their single key) for determinism
     def sort_key(item):
         if isinstance(item, dict):
