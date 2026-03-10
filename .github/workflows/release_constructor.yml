@@ -81,6 +81,7 @@ jobs:
   build-installers:
     name: Build installers (${{ matrix.os_name }})
     runs-on: ${{ matrix.runner }}
+    needs: bump-version
     strategy:
       fail-fast: false
       matrix:
