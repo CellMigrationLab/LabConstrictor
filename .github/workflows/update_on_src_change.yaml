@@ -27,8 +27,7 @@ jobs:
           
       - name: Update src change file
         run: |
-          mkdir -p .meta
-          cat > .meta/src_change.yaml <<EOF
+          cat > .tools/meta/src_change.yaml <<EOF
           src_last_modified: "$(date -u +'%Y-%m-%d_%H:%M:%S')"
           EOF
 
@@ -37,4 +36,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: GitHub Action - Updated src change file
+
           file_pattern: .tools/meta/src_change.json
