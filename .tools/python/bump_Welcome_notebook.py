@@ -21,7 +21,7 @@ def build_notebook_list(notebooks_root: Path):
 				if isinstance(reqs, dict) and "description" in reqs:
 					description = reqs["description"]
 		
-		path = "BASE_PATH_KEYWORD/" + str(rel).replace('\\', '/')
+		path = "notebooks/" + str(rel).replace('\\', '/')
 
 		items.append({
 			"name": name,

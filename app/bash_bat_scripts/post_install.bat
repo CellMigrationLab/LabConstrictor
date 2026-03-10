@@ -14,7 +14,6 @@ IF EXIST "%PROJECT_ROOT%\setup.py" (
     echo No setup.py detected, skipping local pip install >> "%PREFIX%\menuinst_debug.log"
 )
 "%PREFIX%\python.exe" "%PREFIX%\PROJECT_NAME\include_path.py" --path "%PREFIX%" --files "%PREFIX%\PROJECT_NAME\notebook_launcher.json" --keyword "BASE_PATH_KEYWORD" >> "%PREFIX%\menuinst_debug.log"
-"%PREFIX%\python.exe" "%PREFIX%\PROJECT_NAME\include_path.py" --path "%PREFIX%" --files "%PREFIX%\PROJECT_NAME\notebooks\Welcome.ipynb" --keyword "BASE_PATH_KEYWORD" >> "%PREFIX%\menuinst_debug.log"
 "%PREFIX%\python.exe" "%PREFIX%\PROJECT_NAME\hide_code_cells.py" "%PREFIX%\PROJECT_NAME" >> "%PREFIX%\menuinst_debug.log"
 "%PREFIX%\python.exe" -c "import os, sys; print('Python:', sys.executable); print('Prefix:', os.environ.get('PREFIX'))" >> "%PREFIX%\menuinst_debug.log"
 "%PREFIX%\python.exe" -c "from menuinst.api import install; import os; print(install(os.path.join(r'%PREFIX%', 'PROJECT_NAME', 'notebook_launcher.json')))" >> "%PREFIX%\menuinst_debug.log" 2>&1
