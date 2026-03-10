@@ -24,7 +24,7 @@ def build_notebook_list(notebooks_root: Path):
 		items.append({
 			"name": name,
 			"description": description,
-			"path": str(rel).replace("\\", "/"),
+			"path": Path("..") / str(rel).replace("\\", "/"),
 		})
 	# Sort for deterministic order
 	items.sort(key=lambda x: x["path"]) 
