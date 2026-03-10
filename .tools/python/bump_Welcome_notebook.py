@@ -21,10 +21,12 @@ def build_notebook_list(notebooks_root: Path):
 				if isinstance(reqs, dict) and "description" in reqs:
 					description = reqs["description"]
 		
+		path = "BASE_PATH_KEYWORD/" + str(rel).replace('\\', '/')
+
 		items.append({
 			"name": name,
 			"description": description,
-			"path": Path("..") / str(rel).replace("\\", "/"),
+			"path": path,
 		})
 	# Sort for deterministic order
 	items.sort(key=lambda x: x["path"]) 
