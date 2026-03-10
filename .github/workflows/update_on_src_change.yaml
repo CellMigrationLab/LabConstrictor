@@ -37,4 +37,5 @@ jobs:
         with:
           commit_message: GitHub Action - Updated src change file
 
-          file_pattern: .tools/meta/src_change.json
+          file_pattern: .tools/meta/src_change.yaml
+
