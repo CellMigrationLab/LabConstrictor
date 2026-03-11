@@ -14,7 +14,7 @@ VERSION_LINE_RE = re.compile(
     r'^(version:\s*)(?P<quote>["\']?)(?P<version>\d+\.\d+\.\d+)(?P=quote)(?P<trailing>\s*(?:#.*)?)$',
     re.MULTILINE,
 )
-THANKS_LINE_RE = re.compile(r'(Thank you for installing[^\n]* v)(\d+\.\d+\.\d+)(!)')
+THANKS_LINE_RE = re.compile(r'(Thank you! You have successfully installed [^\n]*)(\d+\.\d+\.\d+)(!)')
 PKG_VERSION_RE = re.compile(r'^(\s*SET\s+"PKG_VERSION=)(\d+\.\d+\.\d+)("\s*)$', re.MULTILINE)
 POST_INSTALL = ROOT / "app" / "bash_bat_scripts" / "post_install.bat"
 
