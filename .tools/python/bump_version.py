@@ -110,6 +110,15 @@ def bump_post_install_bat(new_version: str) -> None:
     POST_INSTALL.write_text(updated, encoding="utf-8")
     print(f"Updated post_install.bat PKG_VERSION to {new_version}")
 
+def bump_version_in_download_executable_md(new_version: str) -> None:
+    download_md = ROOT / "docs" / "download_executable.md"
+    if not download_md.exists():
+        return
+    # This file may contain the version in various formats, so we use the flexible replacement function
+    if replace_version_in_file(download_md, new_version, new_version):
+        print(f"Updated download_executable.md to version {new_version}")
+    else:
+        print("No version string found in download_executable.md to update.")
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -158,6 +167,9 @@ def main() -> None:
 
     # Also bump PKG_VERSION in post_install.bat
     bump_post_install_bat(args.new_version)
+
+    # Update download_executable.md if it exists
+    bump_version_in_download_executable_md(args.new_version)
 
     # Update additional files if specified
     if args.files:

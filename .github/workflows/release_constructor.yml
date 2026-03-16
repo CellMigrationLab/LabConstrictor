@@ -67,7 +67,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
-          commit_message: GitHub Action - Update version to "${RELEASE_VERSION}"
+          commit_message: GitHub Action - Update version to ${{ github.event.release.tag_name }}
 
       - name: Upload diagnostics
         if: always()

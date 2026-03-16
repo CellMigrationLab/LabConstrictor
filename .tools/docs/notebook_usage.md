@@ -8,7 +8,11 @@ To open the application, go to the Start Menu on Windows or Linux, or the Applic
 
 ## 2. Welcome Notebook
 
-When you start the application, Jupyter Lab will open in your default web browser. The welcome notebook will appear automatically:
+When you start the application, a terminal will pop up.
+
+> Don't be scared by the terminal, is normal for keeping your Jupyter Lab session. **Do not close the terminal** until you have finnisehd working with your notebooks.  When so click on the terminal and type `Ctrl + C` or `Cmd + C` to stop the Jupyter Lab session and close the terminal.
+
+After some seconds, Jupyter Lab will open in your default web browser. The welcome notebook will appear automatically:
 
 ![Welcome Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Welcome_Notebook.png)
 
