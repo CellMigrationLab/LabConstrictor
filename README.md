@@ -48,14 +48,12 @@ Need help writing notebooks that run well in both Colab and JupyterLab? See the 
 We welcome contributions, including bug fixes, UX improvements, or new packaging strategies.
 Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submitting PRs.
 
-## 📢 Community & Citation
+## 📢 Community
 
 **Using LabConstrictor?**
 We’d love to feature your project! [Open an issue](https://github.com/YOUR_USERNAME/LabConstrictor/issues) to let us know about your use case.
 
-**Citation**
+## ✍️ Citation
 If you use LabConstrictor in your research, please cite the project to support its development:
 
-*(Citation details coming soon)*
-
-
+Iván Hidalgo-Cenalmor, Marcela Xiomara Rivera Pineda, Bruno M. Saraiva, Ricardo Henriques, and Guillaume Jacquemet. **Packaging Jupyter notebooks as installable desktop apps using LabConstrictor. arXiv preprint 2026** DOI: https://doi.org/10.48550/arXiv.2603.10704
