@@ -1,5 +1,5 @@
 # LabConstrictor
-
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19074200.svg)](https://doi.org/10.5281/zenodo.19074200)
 ![LabConstrictor Comic](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/comic.png)
 
 **LabConstrictor** turns your Jupyter notebooks into **installable desktop applications**. This lets users launch your work right away, without needing to use Python, pip, or any terminal commands.
