@@ -6,7 +6,7 @@ If you want to add or update a notebook in your project repository, just follow 
 
 To ensure your notebook works with the versioning tracking provided by the LabConstrictor application, please follow these three steps to prepare your notebook:
 
-1. First, create a cell at the top of your notebook (see our [JupyterLab guide](jupyterlab_guide/jupyterlab_guide.md) if you need help with that). 
+1. First, create a cell at the top of your notebook (see our [JupyterLab guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md) if you need help with that). 
 2. Then, copy and paste the code bellow into that cell.
 3. Finally, update the `current_version` variable with the version of your notebook (for example, "0.0.2") and the `notebook_name` variable with the name of your notebook file (without the .ipynb extension).
 

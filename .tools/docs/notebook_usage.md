@@ -18,7 +18,7 @@ After some seconds, Jupyter Lab will open in your default web browser. The welco
 
 ## 3. How to Run Notebooks?
 
-You might be used to work with notebooks on JupyterLab (in case you need so guidance on JupyterLab check [this guide](jupyterlab_guide/jupyterlab_guide.md)). Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.
+You might be used to work with notebooks on JupyterLab (in case you need so guidance on JupyterLab check [this guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md)). Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.
 
 ## 4. Accessing your Notebooks
 
