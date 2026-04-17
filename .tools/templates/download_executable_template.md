@@ -5,7 +5,7 @@ Choose your operating system and follow the instructions below to install PROJEC
 
 <details>
 <summary>
-    🪟 CLICK HERE TO DISPLAY WINDOWS GUIDELINES
+    <big>🪟 CLICK HERE TO DISPLAY WINDOWS GUIDELINES</big>
 </summary>
 
 ## 1. Click the button to download PROJECT_NAME executable
@@ -43,7 +43,7 @@ Then, start using it following the instructions on the [Usage of Notebooks After
 
 <details>
 <summary>
-    🐧 CLICK HERE TO DISPLAY UBUNTU GUIDELINES
+    <big>🐧 CLICK HERE TO DISPLAY UBUNTU GUIDELINES</big>
 </summary>
 
 ## 1. Click the button to download PROJECT_NAME executable
@@ -89,10 +89,19 @@ After installation, you can launch PROJECT_NAME from your applications menu and 
 
 <details>
 <summary>
-    🍎 CLICK HERE TO DISPLAY MACOS GUIDELINES
+    <big>🍎 CLICK HERE TO DISPLAY MACOS GUIDELINES</big>
 </summary>
 
-## 1. Click the button to download PROJECT_NAME executable
+## 1. Choose your installation strategy
+
+First of all, you will need to choose whether you want to install it with **(A) a graphical user interface** or with **(B) the command line**:
+
+<details>
+<summary>
+    <big>A. Using the graphical user interface</big>
+</summary>
+
+## 2. Download the `.pkg` file
 
 > **How to know which one should I download?**
 > 1. Click the Apple menu in the top-left corner of your screen.
@@ -100,32 +109,77 @@ After installation, you can launch PROJECT_NAME from your applications menu and 
 > 3. A window will pop up displaying your Mac’s information. Look into the `Chip` or `Processor` field. If `Intel` is mentioned, then download the Intel option. Otherwise, if `Mx` (e.g. M1 or M2) is mentioned, then download the ARM64 option. 
 
 <a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-arm64.pkg">
-    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(ARM64)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac" width="250">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(ARM64)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac ARM64" width="250">
 </a>
 
 or 
     
 <a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-x86_64.pkg">
-    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(Intel)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac" width="250">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(Intel)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac Intel" width="250">
 </a>
 
-## 2. Install the package
 
-Double-click the downloaded file to start the installation process. It might give some errors, as shown bellow, go to `Settings > Privacy & Security > Security` and there the PROJECT_NAME package should appear. Click on `Open Anyway`.
+## 3. Install the package
 
-![MacOS Error Message](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/MacOS_Error_Message.gif)
+Follow the guidelines shown on the following GIF or the instructions bellow:
 
-After that, follow the on-screen prompts to complete the installation.
+![MacOS PKG Installation](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/MacOS_Install_Pkg.gif)
 
-> This process may take around 6-8 minutes, don't worry you will only need to this once.
+1. Double-click the downloaded file to start the installation process. It might give some errors, as shown bellow, go to `Settings > Privacy & Security > Security` and there the PROJECT_NAME package should appear. Click on `Open Anyway`.
+2. After that, follow the on-screen prompts to complete the installation.
+    > This process may take around 6-8 minutes, don't worry you will only need to do this once.
 
-> We recommend you installing it on the `Applications` folder.
+    > We recommend you choosing `Install only for me`.
 
-![MacOS Installation Dialog](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/MacOS_Installation_Dialog.gif)
-
-## 3. Launch PROJECT_NAME
+## 4. Launch PROJECT_NAME
 
 After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+
+</details>
+
+<details>
+<summary>
+    <big>B. Using the command line</big>
+</summary>
+
+## 2. Download the `.sh` file
+
+> **How to know which one should I download?**
+> 1. Click the Apple menu in the top-left corner of your screen.
+> 2. Select About This Mac.
+> 3. A window will pop up displaying your Mac’s information. Look into the `Chip` or `Processor` field. If `Intel` is mentioned, then download the Intel option. Otherwise, if `Mx` (e.g. M1 or M2) is mentioned, then download the ARM64 option. 
+
+<a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-arm64.sh">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(ARM64)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac ARM64" width="250">
+</a>
+
+or 
+    
+<a href="https://github.com/GITHUB_OWNER/GITHUB_REPO_NAME/releases/download/VERSION_NUMBER/PROJECT_NAME-VERSION_NUMBER-MacOSX-x86_64.sh">
+    <img src="https://img.shields.io/badge/Download%20for%20Mac%20(Intel)-Latest-lightgrey?logo=apple&style=for-the-badge" alt="Download for Mac Intel" width="250">
+</a>
+
+
+## 3. Install the package
+
+Follow the guidelines shown on the following GIF or the instructions bellow:
+
+![MacOS Installation Dialog](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/MacOS_Install_Bash.gif)
+
+1. Open a terminal on the folder where you downloaded the file.
+2. Copy and paste the following command:
+    ```bash
+    bash PROJECT_NAME-VERSION_NUMBER-MacOSX-ARCHITECTURE.sh
+    ```
+3. Click Enter to run the command.
+4. Follow the on-screen prompts to complete the installation.
+    > This process may take around 6-8 minutes, don't worry you will only need to do this once.
+
+## 4. Launch PROJECT_NAME
+
+After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+
+</details>
 
 </details>
 
@@ -136,7 +190,7 @@ After installation, you can launch PROJECT_NAME from your Applications folder an
 
 <details>
 <summary>
-    🪟 CLICK HERE TO DISPLAY WINDOWS GUIDELINES
+    <big>🪟 CLICK HERE TO DISPLAY WINDOWS GUIDELINES</big>
 </summary>
 
 ## 1. Go to the `Installed apps` settings
@@ -158,7 +212,7 @@ Once there, search for `PROJECT_NAME` and click the three dots on the right and 
 
 <details>
 <summary>
-    🐧 CLICK HERE TO DISPLAY UBUNTU GUIDELINES
+    <big>🐧 CLICK HERE TO DISPLAY UBUNTU GUIDELINES</big>
 </summary>
 
 ## 1. Go to the installation folder
@@ -200,7 +254,7 @@ bash uninstall.sh
 
 <details>
 <summary>
-    🍎 CLICK HERE TO DISPLAY MACOS GUIDELINES
+    <big>🍎 CLICK HERE TO DISPLAY MACOS GUIDELINES</big>
 </summary>
 
 ![MacOS Uninstall](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/MacOS_Uninstall.gif)
