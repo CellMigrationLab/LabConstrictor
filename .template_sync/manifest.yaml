@@ -1,0 +1,5 @@
+template_version: 0.1.0
+migrations:
+  - from: 0.0.1
+    to: 0.1.0
+    script: migrations/v0_0_1_to_v0_1_0.py
