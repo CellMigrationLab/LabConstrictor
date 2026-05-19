@@ -5,6 +5,22 @@
 set -e  # Exit on any error
 set -u  # Exit on undefined variables
 
+is_truthy() {
+    case "${1:-}" in
+        1|true|TRUE|True|yes|YES|Yes|on|ON|On)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+if is_truthy "${SKIP_CONDA_ENV_TEST:-}"; then
+    echo "SKIP_CONDA_ENV_TEST is enabled; skipping conda environment validation."
+    exit 0
+fi
+
 echo "=========================================="
 echo "Testing Conda Environment Creation"
 echo "=========================================="

@@ -118,6 +118,8 @@ jobs:
       - name: Verify merged requirements inside conda
         id: test-conda-env
         if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          SKIP_CONDA_ENV_TEST: ${{ vars.SKIP_CONDA_ENV_TEST }}
         run: |
           bash .tools/bash/run_with_context.sh \
             artifacts/error_log_document.log \
