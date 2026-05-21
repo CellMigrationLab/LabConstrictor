@@ -3,7 +3,6 @@ from pathlib import Path
 import yaml
 import re
 
-
 def load_construct(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8"))
 
@@ -146,7 +145,7 @@ def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Pat
         if not rel.startswith("src/"):
             continue
         src = rel
-        dst = f"{project_folder}/src/{project_name}/{rel.replace('src/', '')}"
+        dst = f"{project_folder}/{rel}"
 
         # if src in existing_sources or dst in existing_dests:
         #     continue
