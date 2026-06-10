@@ -53,6 +53,10 @@ Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submit
 **Using LabConstrictor?**
 We’d love to feature your project! [Open an issue](https://github.com/YOUR_USERNAME/LabConstrictor/issues) to let us know about your use case.
 
+## 📚 Use Cases
+
+People have already used LabConstrictor to package their tools in apps. Check out the [Use Cases](.tools/docs/use_cases.md) to see examples of what’s possible.
+
 ## ✍️ Citation
 If you use LabConstrictor in your research, please cite the project to support its development:
 
