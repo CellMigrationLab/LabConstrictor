@@ -53,6 +53,12 @@ def ensure_requirements_in_extra_files(construct_data: dict):
     )
     if not requirements_included:
         extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})
+
+    gpu_requirements_included = any(
+        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files
+    )
+    if not gpu_requirements_included and Path("requirements_gpu.txt").exists():
+        extra_files.append({"requirements_gpu.txt": "PROJECT_NAME/requirements_gpu.txt"})
     
     # Check if requirements-linux.txt exists and is included, if not, add it
     if Path("requirements-linux.txt").exists():
