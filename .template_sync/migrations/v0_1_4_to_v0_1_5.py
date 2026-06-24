@@ -410,21 +410,13 @@ def update_post_install_bat(repo_root: Path) -> bool:
 
     original_text = read_text(path)
     newline = detect_newline(original_text)
-    updated_text = original_text
+    lines = original_text.splitlines(keepends=True)
     changed = False
 
-    old_start = newline.join(
-        [
-            "@ECHO OFF",
-            'echo Running post_install > "%PREFIX%\\menuinst_debug.log"',
-            '"%PREFIX%\\python.exe" -m pip install -r "%PREFIX%\\PROJECT_NAME\\requirements.txt" >> "%PREFIX%\\menuinst_debug.log"',
-        ]
-    )
-    new_start = newline.join(
-        [
-            "@ECHO OFF",
-            "SETLOCAL",
-            'echo Running post_install > "%PREFIX%\\menuinst_debug.log"',
+    if 'SET "GPU_REQUIREMENTS=%PREFIX%\\PROJECT_NAME\\requirements_gpu.txt"' not in original_text:
+        echo_line = 'echo Running post_install > "%PREFIX%\\menuinst_debug.log"'
+        selected_install_line = '"%PREFIX%\\python.exe" -m pip install -r "%SELECTED_REQUIREMENTS%" >> "%PREFIX%\\menuinst_debug.log"'
+        block_lines = [
             'SET "BASE_REQUIREMENTS=%PREFIX%\\PROJECT_NAME\\requirements.txt"',
             'SET "GPU_REQUIREMENTS=%PREFIX%\\PROJECT_NAME\\requirements_gpu.txt"',
             'SET "SELECTED_REQUIREMENTS=%BASE_REQUIREMENTS%"',
@@ -441,40 +433,67 @@ def update_post_install_bat(repo_root: Path) -> bool:
             '    echo GPU requirements file not found, installing CPU requirements from "%BASE_REQUIREMENTS%" >> "%PREFIX%\\menuinst_debug.log"',
             ")",
             "",
-            '"%PREFIX%\\python.exe" -m pip install -r "%SELECTED_REQUIREMENTS%" >> "%PREFIX%\\menuinst_debug.log"',
         ]
-    )
-    updated_text, did_change = replace_text(
-        updated_text,
-        old_start,
-        new_start,
-        already_updated='SET "GPU_REQUIREMENTS=%PREFIX%\\PROJECT_NAME\\requirements_gpu.txt"',
-    )
-    changed = did_change or changed
 
-    old_end = newline.join(
-        [
-            "echo Post-install completed!",
-            "SetLocal EnableDelayedExpansion",
-        ]
-    )
-    new_end = newline.join(
-        [
-            "echo Post-install completed!",
-            "ENDLOCAL",
-        ]
-    )
-    updated_text, did_change = replace_text(
-        updated_text,
-        old_end,
-        new_end,
-        already_updated="ENDLOCAL",
-    )
-    changed = did_change or changed
+        if not any(line.rstrip("\r\n") == "SETLOCAL" for line in lines):
+            for index, line in enumerate(lines):
+                if line.rstrip("\r\n") == "@ECHO OFF":
+                    lines.insert(index + 1, "SETLOCAL" + newline)
+                    changed = True
+                    break
+
+        echo_index = None
+        install_index = None
+        for index, line in enumerate(lines):
+            stripped = line.rstrip("\r\n")
+            if stripped == echo_line:
+                echo_index = index
+            if (
+                stripped.startswith('"%PREFIX%\\python.exe" -m pip install -r ')
+                and "requirements.txt" in stripped
+                and "requirements-windows.txt" not in stripped
+                and "%SELECTED_REQUIREMENTS%" not in stripped
+            ):
+                install_index = index
+                break
+
+        if echo_index is None or install_index is None:
+            raise ValueError(f"Unable to find insertion point in {POST_INSTALL_BAT_PATH}")
+
+        insertion = [entry + newline for entry in block_lines]
+        for offset, entry in enumerate(insertion, start=1):
+            lines.insert(echo_index + offset, entry)
+        changed = True
+
+        install_index += len(insertion)
+        lines[install_index] = selected_install_line + newline
+
+    has_endlocal = any(line.rstrip("\r\n") == "ENDLOCAL" for line in lines)
+    if not has_endlocal:
+        replaced = False
+        for index, line in enumerate(lines):
+            if line.rstrip("\r\n") == "SetLocal EnableDelayedExpansion":
+                lines[index] = "ENDLOCAL" + newline
+                replaced = True
+                changed = True
+                break
+
+        if not replaced:
+            for index, line in enumerate(lines):
+                if line.rstrip("\r\n") == "echo Post-install completed!":
+                    lines.insert(index + 1, "ENDLOCAL" + newline)
+                    changed = True
+                    replaced = True
+                    break
+
+        if not replaced:
+            lines.append("ENDLOCAL" + newline)
+            changed = True
 
     if not changed:
         return False
 
+    updated_text = "".join(lines)
     write_text(path, updated_text)
     print(f"Updated {POST_INSTALL_BAT_PATH}")
     return True
