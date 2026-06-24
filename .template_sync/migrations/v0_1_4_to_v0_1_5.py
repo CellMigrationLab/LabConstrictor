@@ -329,39 +329,37 @@ def update_bump_constructor(repo_root: Path) -> bool:
     if '        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files' in original_text:
         return False
 
-    pattern = re.compile(
-        r'(?P<anchor>    if not requirements_included:\r?\n'
-        r'        extra_files\.append\(\{"requirements\.txt": "PROJECT_NAME/requirements\.txt"\}\)\r?\n)'
-        r'(?P<gap>\s*\r?\n)?'
-        r'(?P<comment>    \# Check if requirements-linux\.txt exists and is included, if not, add it)',
-    )
-    gpu_block = newline.join(
-        [
-            "    gpu_requirements_included = any(",
-            '        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files',
-            "    )",
-            '    if not gpu_requirements_included and Path("requirements_gpu.txt").exists():',
-            '        extra_files.append({"requirements_gpu.txt": "PROJECT_NAME/requirements_gpu.txt"})',
-        ]
-    )
-
-    def repl(match: re.Match[str]) -> str:
-        return (
-            match.group("anchor")
-            + newline
-            + gpu_block
-            + newline
-            + newline
-            + match.group("comment")
+    lines = original_text.splitlines(keepends=True)
+    anchor_line = '        extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})'
+    gpu_block = (
+        newline.join(
+            [
+                "    gpu_requirements_included = any(",
+                '        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files',
+                "    )",
+                '    if not gpu_requirements_included and Path("requirements_gpu.txt").exists():',
+                '        extra_files.append({"requirements_gpu.txt": "PROJECT_NAME/requirements_gpu.txt"})',
+            ]
         )
+        + newline
+    )
 
-    updated_text, replacements = pattern.subn(repl, original_text, count=1)
-    if replacements == 0:
-        raise ValueError(f"Unable to find requirements insertion point in {BUMP_CONSTRUCTOR_PATH}")
+    for index, line in enumerate(lines):
+        if line.rstrip("\r\n") != anchor_line:
+            continue
 
-    write_text(path, updated_text)
-    print(f"Updated {BUMP_CONSTRUCTOR_PATH}")
-    return True
+        insert_at = index + 1
+        while insert_at < len(lines) and lines[insert_at].strip() == "":
+            insert_at += 1
+
+        lines.insert(insert_at, newline)
+        lines.insert(insert_at, gpu_block)
+        updated_text = "".join(lines)
+        write_text(path, updated_text)
+        print(f"Updated {BUMP_CONSTRUCTOR_PATH}")
+        return True
+
+    raise ValueError(f"Unable to find requirements insertion point in {BUMP_CONSTRUCTOR_PATH}")
 
 
 def update_post_install_bat(repo_root: Path) -> bool:
