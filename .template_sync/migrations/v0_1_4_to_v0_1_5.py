@@ -326,45 +326,38 @@ def update_bump_constructor(repo_root: Path) -> bool:
 
     original_text = read_text(path)
     newline = detect_newline(original_text)
-    updated_text = original_text
+    if '        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files' in original_text:
+        return False
 
-    old_block = newline.join(
-        [
-            "    requirements_included = any(",
-            '        isinstance(item, dict) and "requirements.txt" in item for item in extra_files',
-            "    )",
-            "    if not requirements_included:",
-            '        extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})',
-            "    ",
-            "    # Check if requirements-linux.txt exists and is included, if not, add it",
-        ]
+    pattern = re.compile(
+        r'(?P<anchor>    if not requirements_included:\r?\n'
+        r'        extra_files\.append\(\{"requirements\.txt": "PROJECT_NAME/requirements\.txt"\}\)\r?\n)'
+        r'(?P<gap>\s*\r?\n)?'
+        r'(?P<comment>    \# Check if requirements-linux\.txt exists and is included, if not, add it)',
     )
-    new_block = newline.join(
+    gpu_block = newline.join(
         [
-            "    requirements_included = any(",
-            '        isinstance(item, dict) and "requirements.txt" in item for item in extra_files',
-            "    )",
-            "    if not requirements_included:",
-            '        extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})',
-            "",
             "    gpu_requirements_included = any(",
             '        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files',
             "    )",
             '    if not gpu_requirements_included and Path("requirements_gpu.txt").exists():',
             '        extra_files.append({"requirements_gpu.txt": "PROJECT_NAME/requirements_gpu.txt"})',
-            "    ",
-            "    # Check if requirements-linux.txt exists and is included, if not, add it",
         ]
     )
-    updated_text, changed = replace_text(
-        updated_text,
-        old_block,
-        new_block,
-        already_updated='        isinstance(item, dict) and "requirements_gpu.txt" in item for item in extra_files',
-    )
 
-    if not changed:
-        return False
+    def repl(match: re.Match[str]) -> str:
+        return (
+            match.group("anchor")
+            + newline
+            + gpu_block
+            + newline
+            + newline
+            + match.group("comment")
+        )
+
+    updated_text, replacements = pattern.subn(repl, original_text, count=1)
+    if replacements == 0:
+        raise ValueError(f"Unable to find requirements insertion point in {BUMP_CONSTRUCTOR_PATH}")
 
     write_text(path, updated_text)
     print(f"Updated {BUMP_CONSTRUCTOR_PATH}")
