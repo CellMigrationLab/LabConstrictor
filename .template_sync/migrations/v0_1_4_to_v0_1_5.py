@@ -330,7 +330,6 @@ def update_bump_constructor(repo_root: Path) -> bool:
         return False
 
     lines = original_text.splitlines(keepends=True)
-    anchor_line = '        extra_files.append({"requirements.txt": "PROJECT_NAME/requirements.txt"})'
     gpu_block = (
         newline.join(
             [
@@ -343,23 +342,64 @@ def update_bump_constructor(repo_root: Path) -> bool:
         )
         + newline
     )
-
+    func_start = None
+    func_end = len(lines)
     for index, line in enumerate(lines):
-        if line.rstrip("\r\n") != anchor_line:
+        stripped = line.strip()
+        if stripped.startswith("def ensure_requirements_in_extra_files("):
+            func_start = index
             continue
+        if func_start is not None and stripped.startswith("def ") and not line.startswith((" ", "\t")):
+            func_end = index
+            break
 
-        insert_at = index + 1
-        while insert_at < len(lines) and lines[insert_at].strip() == "":
-            insert_at += 1
+    if func_start is None:
+        raise ValueError(f"Unable to find ensure_requirements_in_extra_files() in {BUMP_CONSTRUCTOR_PATH}")
 
-        lines.insert(insert_at, newline)
-        lines.insert(insert_at, gpu_block)
-        updated_text = "".join(lines)
-        write_text(path, updated_text)
-        print(f"Updated {BUMP_CONSTRUCTOR_PATH}")
-        return True
+    insert_at = None
+    candidate_prefixes = (
+        "# Check if requirements-linux.txt",
+        '# Check if requirements-windows.txt',
+        '# Check if requirements-macos.txt',
+        'if Path("requirements-linux.txt").exists():',
+        "if Path('requirements-linux.txt').exists():",
+        'if Path("requirements-windows.txt").exists():',
+        "if Path('requirements-windows.txt').exists():",
+        'if Path("requirements-macos.txt").exists():',
+        "if Path('requirements-macos.txt').exists():",
+        '# Update the construct data with the modified extra_files',
+        'construct_data["extra_files"] = extra_files',
+        "construct_data['extra_files'] = extra_files",
+    )
 
-    raise ValueError(f"Unable to find requirements insertion point in {BUMP_CONSTRUCTOR_PATH}")
+    for index in range(func_start + 1, func_end):
+        stripped = lines[index].strip()
+        if stripped.startswith(candidate_prefixes):
+            insert_at = index
+            break
+
+    if insert_at is None:
+        requirements_append_re = re.compile(
+            r"extra_files\.append\(\{['\"]requirements\.txt['\"]:\s*['\"].*requirements\.txt['\"]\}\)"
+        )
+        for index in range(func_start + 1, func_end):
+            if requirements_append_re.search(lines[index]):
+                insert_at = index + 1
+                while insert_at < func_end and lines[insert_at].strip() == "":
+                    insert_at += 1
+                break
+
+    if insert_at is None:
+        insert_at = func_end
+        while insert_at > func_start + 1 and lines[insert_at - 1].strip() == "":
+            insert_at -= 1
+
+    lines.insert(insert_at, newline)
+    lines.insert(insert_at, gpu_block)
+    updated_text = "".join(lines)
+    write_text(path, updated_text)
+    print(f"Updated {BUMP_CONSTRUCTOR_PATH}")
+    return True
 
 
 def update_post_install_bat(repo_root: Path) -> bool:
