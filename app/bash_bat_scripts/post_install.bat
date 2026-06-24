@@ -4,19 +4,21 @@ echo Running post_install > "%PREFIX%\menuinst_debug.log"
 SET "BASE_REQUIREMENTS=%PREFIX%\PROJECT_NAME\requirements.txt"
 SET "GPU_REQUIREMENTS=%PREFIX%\PROJECT_NAME\requirements_gpu.txt"
 SET "SELECTED_REQUIREMENTS=%BASE_REQUIREMENTS%"
+SET "NVIDIA_SMI="
 
 IF EXIST "%GPU_REQUIREMENTS%" (
-    where nvidia-smi >NUL 2>&1
-    IF ERRORLEVEL 1 (
-        echo NVIDIA GPU not detected, installing CPU requirements from "%BASE_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
-    ) ELSE (
-        echo NVIDIA GPU detected, installing GPU requirements from "%GPU_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
+    CALL :detect_nvidia_smi
+    IF DEFINED NVIDIA_SMI (
+        echo NVIDIA GPU utility detected at "%NVIDIA_SMI%", installing GPU requirements from "%GPU_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
         SET "SELECTED_REQUIREMENTS=%GPU_REQUIREMENTS%"
+    ) ELSE (
+        echo NVIDIA GPU not detected, installing CPU requirements from "%BASE_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
     )
 ) ELSE (
     echo GPU requirements file not found, installing CPU requirements from "%BASE_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
 )
 
+echo Installing requirements from "%SELECTED_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
 "%PREFIX%\python.exe" -m pip install -r "%SELECTED_REQUIREMENTS%" >> "%PREFIX%\menuinst_debug.log"
 
 IF EXIST "%PREFIX%\PROJECT_NAME\requirements-windows.txt" (
@@ -53,3 +55,20 @@ reg add "%ARP_KEY%" /v NoRepair /t REG_DWORD /d 1 /f >> "%PREFIX%\menuinst_debug
 
 echo Post-install completed!
 ENDLOCAL
+GOTO :EOF
+
+:detect_nvidia_smi
+FOR %%P IN (
+    "%ProgramFiles%\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
+    "%ProgramW6432%\NVIDIA Corporation\NVSMI\nvidia-smi.exe"
+    "%SystemRoot%\System32\nvidia-smi.exe"
+    "%SystemRoot%\Sysnative\nvidia-smi.exe"
+) DO (
+    IF NOT DEFINED NVIDIA_SMI IF EXIST "%%~P" SET "NVIDIA_SMI=%%~P"
+)
+IF DEFINED NVIDIA_SMI GOTO :EOF
+
+FOR /F "delims=" %%I IN ('where.exe nvidia-smi.exe 2^>NUL') DO (
+    IF NOT DEFINED NVIDIA_SMI SET "NVIDIA_SMI=%%~fI"
+)
+GOTO :EOF
