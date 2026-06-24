@@ -507,52 +507,59 @@ def update_post_install_sh(repo_root: Path) -> bool:
 
     original_text = read_text(path)
     newline = detect_newline(original_text)
-
-    old_block = newline.join(
-        [
-            '#!/bin/bash',
-            "set -e",
-            'echo "Running post_install" > "$PREFIX/menuinst_debug.log"',
-            "",
-            '"$PREFIX/bin/python" -m pip install -r "$PREFIX/PROJECT_NAME/requirements.txt" >> "$PREFIX/menuinst_debug.log"',
-        ]
-    )
-    new_block = newline.join(
-        [
-            '#!/bin/bash',
-            "set -e",
-            'echo "Running post_install" > "$PREFIX/menuinst_debug.log"',
-            "",
-            'BASE_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements.txt"',
-            'GPU_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements_gpu.txt"',
-            'SELECTED_REQUIREMENTS="$BASE_REQUIREMENTS"',
-            "",
-            'if [ -f "$GPU_REQUIREMENTS" ]; then',
-            '    if [[ "$OSTYPE" == "darwin"* ]]; then',
-            '        echo "macOS detected, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
-            "    elif command -v nvidia-smi >/dev/null 2>&1; then",
-            '        echo "NVIDIA GPU detected, installing GPU requirements from $GPU_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
-            '        SELECTED_REQUIREMENTS="$GPU_REQUIREMENTS"',
-            "    else",
-            '        echo "NVIDIA GPU not detected, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
-            "    fi",
-            "else",
-            '    echo "GPU requirements file not found, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
-            "fi",
-            "",
-            '"$PREFIX/bin/python" -m pip install -r "$SELECTED_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
-        ]
-    )
-    updated_text, changed = replace_text(
-        original_text,
-        old_block,
-        new_block,
-        already_updated='GPU_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements_gpu.txt"',
-    )
-
-    if not changed:
+    if 'GPU_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements_gpu.txt"' in original_text:
         return False
 
+    lines = original_text.splitlines(keepends=True)
+    echo_line = 'echo "Running post_install" > "$PREFIX/menuinst_debug.log"'
+    selected_install_line = '"$PREFIX/bin/python" -m pip install -r "$SELECTED_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"'
+    block_lines = [
+        'BASE_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements.txt"',
+        'GPU_REQUIREMENTS="$PREFIX/PROJECT_NAME/requirements_gpu.txt"',
+        'SELECTED_REQUIREMENTS="$BASE_REQUIREMENTS"',
+        "",
+        'if [ -f "$GPU_REQUIREMENTS" ]; then',
+        '    if [[ "$OSTYPE" == "darwin"* ]]; then',
+        '        echo "macOS detected, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
+        "    elif command -v nvidia-smi >/dev/null 2>&1; then",
+        '        echo "NVIDIA GPU detected, installing GPU requirements from $GPU_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
+        '        SELECTED_REQUIREMENTS="$GPU_REQUIREMENTS"',
+        "    else",
+        '        echo "NVIDIA GPU not detected, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
+        "    fi",
+        "else",
+        '    echo "GPU requirements file not found, installing CPU requirements from $BASE_REQUIREMENTS" >> "$PREFIX/menuinst_debug.log"',
+        "fi",
+        "",
+    ]
+
+    echo_index = None
+    install_index = None
+    for index, line in enumerate(lines):
+        stripped = line.rstrip("\r\n")
+        if stripped == echo_line:
+            echo_index = index
+        if (
+            stripped.startswith('"$PREFIX/bin/python" -m pip install -r ')
+            and 'requirements.txt" >> "$PREFIX/menuinst_debug.log"' in stripped
+            and "requirements-macos.txt" not in stripped
+            and "requirements-linux.txt" not in stripped
+            and "$SELECTED_REQUIREMENTS" not in stripped
+        ):
+            install_index = index
+            break
+
+    if echo_index is None or install_index is None:
+        raise ValueError(f"Unable to find insertion point in {POST_INSTALL_SH_PATH}")
+
+    insertion = [entry + newline for entry in block_lines]
+    for offset, entry in enumerate(insertion, start=1):
+        lines.insert(echo_index + offset, entry)
+
+    install_index += len(insertion)
+    lines[install_index] = selected_install_line + newline
+
+    updated_text = "".join(lines)
     write_text(path, updated_text)
     print(f"Updated {POST_INSTALL_SH_PATH}")
     return True
