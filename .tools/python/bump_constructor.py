@@ -204,12 +204,10 @@ def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Pat
         # Also include the setup.py file at the root if not already included
         setup_src = "setup.py"
         setup_dst = f"{project_folder}/setup.py"
-        if setup_src not in existing_sources and setup_dst not in existing_dests:
-            normalized_items.append({setup_src: setup_dst})
-            src_added += 1
-            debug(f"Included setup.py: {setup_src} -> {setup_dst}")
-        else:
-            debug("setup.py mapping already present")
+
+        normalized_items.append({setup_src: setup_dst})
+        src_added += 1
+        debug(f"Included setup.py: {setup_src} -> {setup_dst}")
 
         # Include the external code change tracking file if it exists
         src_change_file = ".tools/meta/src_change.yaml"
