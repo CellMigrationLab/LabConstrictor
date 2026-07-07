@@ -23,6 +23,14 @@ def write_text(path: Path, text: str) -> None:
         fh.write(text)
 
 
+def replace_exact_block(text: str, old_block: str, new_block: str, path: Path, description: str) -> tuple[str, bool]:
+    if old_block in text:
+        return text.replace(old_block, new_block, 1), True
+    if new_block in text:
+        return text, False
+    raise ValueError(f"Unable to find {description} in {path}")
+
+
 def update_bump_version(repo_root: Path) -> bool:
     path = repo_root / BUMP_VERSION_PATH
     if not path.exists():
@@ -31,6 +39,68 @@ def update_bump_version(repo_root: Path) -> bool:
 
     original_text = read_text(path)
     newline = detect_newline(original_text)
+    changed = False
+
+    old_conclusion_regex_block = newline.join(
+        [
+            "CONCLUSION_LINE_RE = re.compile(",
+            '    r\'^(conclusion_text:\\s*)(?P<quote>["\\\'])(?P<body>.*?)(?P=quote)(?P<trailing>\\s*(?:#.*)?)$\',',
+            "    re.MULTILINE,",
+            ")",
+        ]
+    )
+    new_conclusion_regex_block = newline.join(
+        [
+            "CONCLUSION_LINE_RE = re.compile(",
+            '    r\'^(conclusion_text:\\s*)(?:(?P<quote>["\\\'])(?P<quoted_body>.*?)(?P=quote)|(?P<bare_body>.*?))(?P<trailing>\\s*(?:#.*)?)$\',',
+            "    re.MULTILINE,",
+            ")",
+        ]
+    )
+
+    updated_text, block_changed = replace_exact_block(
+        original_text,
+        old_conclusion_regex_block,
+        new_conclusion_regex_block,
+        path,
+        "CONCLUSION_LINE_RE block",
+    )
+    changed = changed or block_changed
+
+    old_repl_conclusion_block = newline.join(
+        [
+            "    # 2) Update the version inside conclusion_text if present.",
+            "    def _repl_conclusion(m: re.Match) -> str:",
+            '        body = m.group("body")',
+            '        if "VERSION_NUMBER" in body:',
+            '            updated_body = body.replace("VERSION_NUMBER", new_version)',
+            "        else:",
+            "            updated_body = body.replace(old_version, new_version)",
+            '        return f"{m.group(1)}{m.group(\'quote\')}{updated_body}{m.group(\'quote\')}{m.group(\'trailing\')}"',
+        ]
+    )
+    new_repl_conclusion_block = newline.join(
+        [
+            "    # 2) Update the version inside conclusion_text if present.",
+            "    def _repl_conclusion(m: re.Match) -> str:",
+            '        quote = m.group("quote") or ""',
+            '        body = m.group("quoted_body") if quote else (m.group("bare_body") or "")',
+            '        if "VERSION_NUMBER" in body:',
+            '            updated_body = body.replace("VERSION_NUMBER", new_version)',
+            "        else:",
+            "            updated_body = body.replace(old_version, new_version)",
+            '        return f"{m.group(1)}{quote}{updated_body}{quote}{m.group(\'trailing\')}"',
+        ]
+    )
+
+    updated_text, block_changed = replace_exact_block(
+        updated_text,
+        old_repl_conclusion_block,
+        new_repl_conclusion_block,
+        path,
+        "_repl_conclusion block",
+    )
+    changed = changed or block_changed
 
     updated_block = newline.join(
         [
@@ -69,19 +139,23 @@ def update_bump_version(repo_root: Path) -> bool:
     start_marker = "def bump_version_in_download_executable_md(new_version: str) -> None:"
     end_marker = f"{newline}def main() -> None:"
 
-    start = original_text.find(start_marker)
+    start = updated_text.find(start_marker)
     if start == -1:
         raise ValueError(f"Unable to find function start in {BUMP_VERSION_PATH}")
 
-    end = original_text.find(end_marker, start)
+    end = updated_text.find(end_marker, start)
     if end == -1:
         raise ValueError(f"Unable to find function end before main() in {BUMP_VERSION_PATH}")
 
-    current_block = original_text[start:end].rstrip("\r\n")
+    current_block = updated_text[start:end].rstrip("\r\n")
     if current_block == updated_block:
-        return False
+        if not changed:
+            return False
+        write_text(path, updated_text)
+        print(f"Updated {BUMP_VERSION_PATH}")
+        return True
 
-    updated_text = original_text[:start] + updated_block + newline + original_text[end + len(newline):]
+    updated_text = updated_text[:start] + updated_block + newline + updated_text[end + len(newline):]
     write_text(path, updated_text)
     print(f"Updated {BUMP_VERSION_PATH}")
     return True

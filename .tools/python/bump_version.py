@@ -15,7 +15,7 @@ VERSION_LINE_RE = re.compile(
     re.MULTILINE,
 )
 CONCLUSION_LINE_RE = re.compile(
-    r'^(conclusion_text:\s*)(?P<quote>["\'])(?P<body>.*?)(?P=quote)(?P<trailing>\s*(?:#.*)?)$',
+    r'^(conclusion_text:\s*)(?:(?P<quote>["\'])(?P<quoted_body>.*?)(?P=quote)|(?P<bare_body>.*?))(?P<trailing>\s*(?:#.*)?)$',
     re.MULTILINE,
 )
 PKG_VERSION_RE = re.compile(r'^(\s*SET\s+"PKG_VERSION=)(\d+\.\d+\.\d+)("\s*)$', re.MULTILINE)
@@ -103,12 +103,13 @@ def bump_construct_text(text: str, old_version: str, new_version: str) -> str:
 
     # 2) Update the version inside conclusion_text if present.
     def _repl_conclusion(m: re.Match) -> str:
-        body = m.group("body")
+        quote = m.group("quote") or ""
+        body = m.group("quoted_body") if quote else (m.group("bare_body") or "")
         if "VERSION_NUMBER" in body:
             updated_body = body.replace("VERSION_NUMBER", new_version)
         else:
             updated_body = body.replace(old_version, new_version)
-        return f"{m.group(1)}{m.group('quote')}{updated_body}{m.group('quote')}{m.group('trailing')}"
+        return f"{m.group(1)}{quote}{updated_body}{quote}{m.group('trailing')}"
 
     text = CONCLUSION_LINE_RE.sub(_repl_conclusion, text, count=1)
     return text
