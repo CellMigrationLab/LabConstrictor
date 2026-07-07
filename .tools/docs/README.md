@@ -22,6 +22,6 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Accept a Pull Request](accept_pull_request.md)
 - [GitHub actions/workflows overview](workflow_status.md)
+- [Troubleshooting](troubleshooting.md)
 - [Create a personal access token](personal_access_token.md)
-
 
