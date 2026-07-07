@@ -180,12 +180,19 @@ def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Pat
 
     # Include all the Python scripts under src/ directory
     src_added = 0
+    only_init_files = True
     included_src_flag = False
     for py_file in src_root.rglob("*.py"):
         rel = py_file.relative_to(repo_root).as_posix()
-        # Avoid any python files that are not in the src/ directory or any __init__.py files that are not in the src/ directory 
-        if not rel.startswith("src/") or py_file.name == "__init__.py":
+        
+        # Avoid any python files that are not in the src/ directory 
+        if not rel.startswith("src/"):
             continue
+
+        # Control if we only have __init__.py files
+        if not py_file.name == "__init__.py":
+            only_init_files = False
+        
         src = rel
         dst = f"{project_folder}/{rel}"
 
@@ -196,6 +203,10 @@ def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Pat
         included_src_flag = True
         src_added += 1
         debug(f"Included source file: {src} -> {dst}")
+
+    if only_init_files:
+        debug("Only __init__.py files found under src/, skipping setup.py and src change marker packaging")
+        included_src_flag = False
 
     # For safety also remove setup.py and src_change.yaml if they exist in the extra_files to avoid duplicates, we will re-add them with correct paths if src/ is included
     normalized_items = [item for item in normalized_items if not (isinstance(item, dict) and any(str(src) in ["setup.py", ".tools/meta/src_change.yaml"] for src in item.keys()))]  
