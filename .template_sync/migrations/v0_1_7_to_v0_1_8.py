@@ -54,34 +54,34 @@ def update_bump_version(repo_root: Path) -> bool:
             "            else:",
             '                print("Template for download_executable.md not found! Skipping creation of download_executable.md")',
             "                return",
-            "            ",
+            "",
             "            # This file contains placeholders, update them with the new version",
-            "            text = download_md.read_text(encoding=\"utf-8\")",
+            '            text = download_md.read_text(encoding="utf-8")',
             "            updated_text = replace_version_placeholder(text, new_version)",
             "            if updated_text != text:",
-            "                download_md.write_text(updated_text, encoding=\"utf-8\")",
+            '                download_md.write_text(updated_text, encoding="utf-8")',
             '                print(f"Updated download_executable.md to version {new_version}")',
             "            else:",
             '                print("No version string found in download_executable.md to update.")',
         ]
     )
 
-    pattern = re.compile(
-        r"def bump_version_in_download_executable_md\(new_version: str\) -> None:\r?\n"
-        r"(?:    .*\r?\n)*?"
-        r"(?=def main\(\) -> None:)",
-        re.MULTILINE,
-    )
+    start_marker = "def bump_version_in_download_executable_md(new_version: str) -> None:"
+    end_marker = f"{newline}def main() -> None:"
 
-    match = pattern.search(original_text)
-    if not match:
-        raise ValueError(f"Unable to find bump_version_in_download_executable_md in {BUMP_VERSION_PATH}")
+    start = original_text.find(start_marker)
+    if start == -1:
+        raise ValueError(f"Unable to find function start in {BUMP_VERSION_PATH}")
 
-    current_block = match.group(0).rstrip("\r\n")
+    end = original_text.find(end_marker, start)
+    if end == -1:
+        raise ValueError(f"Unable to find function end before main() in {BUMP_VERSION_PATH}")
+
+    current_block = original_text[start:end].rstrip("\r\n")
     if current_block == updated_block:
         return False
 
-    updated_text = pattern.sub(updated_block + newline + newline, original_text, count=1)
+    updated_text = original_text[:start] + updated_block + newline + original_text[end + len(newline):]
     write_text(path, updated_text)
     print(f"Updated {BUMP_VERSION_PATH}")
     return True
