@@ -15,8 +15,6 @@ POST_INSTALL_SH_PATH = Path("app/bash_bat_scripts/post_install.sh")
 NOTEBOOK_LAUNCHER_PATH = Path("app/menuinst/notebook_launcher.json")
 LAUNCH_JUPYTER_PATH = Path("app/python_scripts/launch_jupyter.py")
 TROUBLESHOOTING_PATH = Path(".tools/docs/troubleshooting.md")
-TEST_WORKFLOW_PATH = Path(".github/workflows/tests.yml")
-INSTALLER_TEST_PATH = Path("tests/test_installer_configuration.py")
 
 
 def detect_newline(text: str) -> str:
@@ -329,8 +327,6 @@ def migrate(repo_root: Path, context: dict[str, Any]) -> None:
     changed_any = copy_template(repo_root, "app/menuinst/notebook_launcher.json", NOTEBOOK_LAUNCHER_PATH, replacements) or changed_any
     changed_any = copy_template(repo_root, "app/python_scripts/launch_jupyter.py", LAUNCH_JUPYTER_PATH, replacements) or changed_any
     changed_any = copy_template(repo_root, ".tools/docs/troubleshooting.md", TROUBLESHOOTING_PATH, replacements) or changed_any
-    changed_any = copy_template(repo_root, ".github/workflows/tests.yml", TEST_WORKFLOW_PATH) or changed_any
-    changed_any = copy_template(repo_root, "tests/test_installer_configuration.py", INSTALLER_TEST_PATH) or changed_any
 
     if not changed_any:
         print("No repository changes were required for this migration.")
