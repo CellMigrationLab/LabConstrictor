@@ -22,6 +22,7 @@ extra_files:
 - app/menuinst/notebook_launcher.json: PROJECT_NAME/notebook_launcher.json
 - app/python_scripts/hide_code_cells.py: PROJECT_NAME/hide_code_cells.py
 - app/python_scripts/include_path.py: PROJECT_NAME/include_path.py
+- app/python_scripts/launch_jupyter.py: PROJECT_NAME/launch_jupyter.py
 - notebooks/notebook_latest_versions.yaml: PROJECT_NAME/notebook_latest_versions.yaml
 - requirements.txt: PROJECT_NAME/requirements.txt
 - requirements_gpu.txt: PROJECT_NAME/requirements_gpu.txt

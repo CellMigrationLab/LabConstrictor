@@ -1,4 +1,4 @@
-template_version: 0.1.9
+template_version: 0.1.10
 migrations:
   - from: 0.0.1
     to: 0.1.0
@@ -30,3 +30,6 @@ migrations:
   - from: 0.1.8
     to: 0.1.9
     script: migrations/v0_1_8_to_v0_1_9.py
+  - from: 0.1.9
+    to: 0.1.10
+    script: migrations/v0_1_9_to_v0_1_10.py

@@ -7,5 +7,10 @@ dependencies:
   - python=PYTHON_VERSION
   - conda
   - git
-  - pip
+  - pip>=24.2
+  - setuptools
+  - wheel
+  - menuinst>=2
+  - truststore>=0.10.4
+  - certifi
   - jupyterlab=JUPYTERLAB_VERSION

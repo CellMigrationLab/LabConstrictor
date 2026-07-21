@@ -20,6 +20,7 @@ LabConstrictor is ideal for:
 * **Cross-Platform**: Automatically builds `.exe` (Windows), `.pkg` (macOS), and `.sh` (Linux) installers.
 * **Auto-Hide Code**: Code cells can be hidden, allowing users to see a clean, "app-like" interface, but still being able to reveal code if needed.
 * **Dependency Guardrails**: automatic workflows merge and validate requirements, catching conflicts *before* you release.
+* **TLS-Resilient Launching**: verified certificate fallback keeps packaged JupyterLab apps usable on systems with malformed certificate-store entries.
 * **Version Control**: Helper cells track versions and alert users when an update is available.
 
 ## 📸 The User Experience

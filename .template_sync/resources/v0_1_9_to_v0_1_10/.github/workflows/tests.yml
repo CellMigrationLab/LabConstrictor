@@ -1,0 +1,63 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python 3.11
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            setup.py
+
+      - name: Install project and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install pytest pyyaml nbformat
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          setup = Path("setup.py")
+          if setup.is_file():
+              text = setup.read_text(encoding="utf-8")
+              is_unconfigured_template = (
+                  "PYTHON_PROJ_NAME" in text or "PYTHON_VERSION" in text
+              )
+              if not is_unconfigured_template:
+                  subprocess.run(
+                      [sys.executable, "-m", "pip", "install", "-e", "."],
+                      check=True,
+                  )
+          PY
+
+      - name: Validate Python syntax
+        run: python -m compileall app/python_scripts .template_sync/migrations tests
+
+      - name: Run test suite
+        run: python -m pytest
