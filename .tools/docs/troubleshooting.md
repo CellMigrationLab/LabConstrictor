@@ -17,15 +17,29 @@ This should remove the app even if the previous error message appears.
 
 ## Synchronisation is failing on GitHub Actions
 
-It may happen that your `Sync with Template Repository` workflow fails with an error like:
+The **Sync with Template Repository** workflow needs the encrypted repository secret `LABCONSTRICTOR_SYNC_TOKEN` because template migrations can update files in `.github/workflows/`. Follow the [automatic template synchronization guide](template_synchronization.md) for the complete beginner-friendly setup.
+
+### The synchronization token is missing
+
+Create the token and save it under **Settings → Secrets and variables → Actions** with this exact name:
 
 ```text
-Error: GitHub Actions is not permitted to create or approve pull requests.
+LABCONSTRICTOR_SYNC_TOKEN
 ```
 
-This means that your repository or organization does not allow GitHub Actions to create and approve pull requests. To fix this, change the workflow permissions in the repository or organization settings:
+### GitHub refuses to update a workflow file
 
-> Go to Settings > Actions > General > Workflow permissions and check **Allow GitHub Actions to create and approve pull requests**.
+If the error says GitHub is refusing to create or update a workflow without `workflows` permission, ensure the token has all of these repository permissions:
+
+- **Contents:** Read and write
+- **Pull requests:** Read and write
+- **Workflows:** Read and write
+
+Repositories created before template version `0.1.12` also need the one-time workflow edit described in the synchronization guide so the existing workflow starts using the secret.
+
+### Bad credentials or authentication failed
+
+The token may have expired or been revoked. Create a replacement token and update the existing `LABCONSTRICTOR_SYNC_TOKEN` secret.
 
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 

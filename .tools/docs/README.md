@@ -6,6 +6,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Before getting started](before_getting_started.md)
 - [Create a new repository from this template](create_repository.md)
+- [Enable automatic template updates](template_synchronization.md)
 - [Initialise your repository](initialise_repository.md)
 - [Upload external code (optional)](external_code_upload.md)
 - [Generate notebook requirements](notebook_requirements.md)
@@ -22,6 +23,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Accept a Pull Request](accept_pull_request.md)
 - [GitHub actions/workflows overview](workflow_status.md)
+- [Configure automatic template synchronization](template_synchronization.md)
 - [Troubleshooting](troubleshooting.md)
-- [Create a personal access token](personal_access_token.md)
+- [Create a personal access token for notebook access](personal_access_token.md)
 

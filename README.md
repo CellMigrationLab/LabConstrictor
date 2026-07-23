@@ -36,13 +36,18 @@ Please read the [Before Getting Started Guide](.tools/docs/before_getting_starte
 Go from notebook to installer in minutes.
 
 #### 1. [**Create a New Repository from this Template**](.tools/docs/create_repository.md)
-#### 2. [**Initialise your repository**](.tools/docs/initialise_repository.md)
-#### 3. [*(Optional)* **Upload external code**](.tools/docs/external_code_upload.md)
-#### 4. [**Upload Your Notebooks**](.tools/docs/notebook_upload.md) 
-#### 5. [**Create Executable Installers**](.tools/docs/executable_creation.md)
+#### 2. [**Enable automatic template updates**](.tools/docs/template_synchronization.md)
+#### 3. [**Initialise your repository**](.tools/docs/initialise_repository.md)
+#### 4. [*(Optional)* **Upload external code**](.tools/docs/external_code_upload.md)
+#### 5. [**Upload Your Notebooks**](.tools/docs/notebook_upload.md) 
+#### 6. [**Create Executable Installers**](.tools/docs/executable_creation.md)
 > **Requirements:** You only need a GitHub account and the Jupyter notebooks you want to distribute.
 
 Need help writing notebooks that run well in both Colab and JupyterLab? See the [notebook portability guide](.tools/docs/notebook_portability.md).
+
+## 🔄 Automatic Template Updates
+
+LabConstrictor can prepare pull requests that keep generated repositories aligned with improvements in this template, including updates to GitHub Actions workflows. Complete the one-time [automatic synchronization setup](.tools/docs/template_synchronization.md) after creating your repository.
 
 ## 🤝 Contributing
 

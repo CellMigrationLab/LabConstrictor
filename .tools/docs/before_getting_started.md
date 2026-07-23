@@ -34,7 +34,7 @@ If your notebooks don’t need internet access, users can run the desktop apps o
 
 To get started with LabConstrictor, you only need the following:
 
-- **🐙 GitHub Account:** You’ll need a GitHub account to make a new repository from the LabConstrictor template. 
+- **🐙 GitHub Account:** You’ll need a GitHub account to make a new repository from the LabConstrictor template. After creating it, complete the one-time [automatic synchronization setup](template_synchronization.md) so it can receive future template improvements.
 - **📒 Jupyter Notebooks:** Have your Jupyter notebooks ready to package into desktop apps.
 - **🐍 Python Environment:** You’ll need a Python environment (local or online) where your notebooks run without errors. This is needed to create and check requirement files. Alternatively, you can create the requirement files yourself, but this may be prone to errors.
 - **(Optional) 🖼️ Images, logo and icons:** for branding your executable installer. We recommend following the [images guidelines](./installer_images.md) for further information and guidance.

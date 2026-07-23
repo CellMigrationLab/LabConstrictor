@@ -1,5 +1,7 @@
 # Generate a GitHub Personal Access Token
 
+> Looking for the token used by the automatic template update workflow? Follow the dedicated [automatic template synchronization guide](template_synchronization.md). It uses a repository-scoped fine-grained token with a different purpose and secret name.
+
 If you want to work with GitHub repositories from your notebook, like cloning, editing, or pushing files, you’ll need a GitHub Personal Access Token (PAT). This token lets you authenticate your API calls and gives you the right permissions. The GIF below shows the steps to create a token.
 
 ![Gif of generating a GitHub token](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/GitHub_Access_Token.gif)
@@ -47,7 +49,7 @@ To see the full steps, follow the instructions below that match the type of acce
 
 <div align="center">
 
-[← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[← Previous](template_synchronization.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 Next →
 

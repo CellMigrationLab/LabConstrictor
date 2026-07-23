@@ -1,6 +1,6 @@
 # Check Workflow Status & Troubleshooting
 
-When you upload a notebook or make a release, GitHub Actions starts a workflow to check your code and build the installers.
+When you upload a notebook or make a release, GitHub Actions starts a workflow to check your code and build the installers. The template synchronization workflow additionally requires the one-time [`LABCONSTRICTOR_SYNC_TOKEN` setup](template_synchronization.md).
 
 ## 1. Monitor the Progress
 
@@ -38,7 +38,7 @@ Instead, **create a new branch**, make your changes there, and check that the wo
 
 [← Previous](accept_pull_request.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[Next →](personal_access_token.md)
+[Next →](template_synchronization.md)
 
 
 </div>
