@@ -1,4 +1,4 @@
-template_version: 0.1.12
+template_version: 0.1.13
 migrations:
   - from: 0.0.0
     to: 0.0.1
@@ -42,3 +42,6 @@ migrations:
   - from: 0.1.11
     to: 0.1.12
     script: migrations/v0_1_11_to_v0_1_12.py
+  - from: 0.1.12
+    to: 0.1.13
+    script: migrations/v0_1_12_to_v0_1_13.py

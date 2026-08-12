@@ -87,7 +87,7 @@ class TokenIntegrationMigrationTests(unittest.TestCase):
             self.assertIn("persist-credentials: false", workflow)
             self.assertIn("Check synchronization token setup", workflow)
             self.assertNotIn("echo '`${{ secrets.LABCONSTRICTOR_SYNC_TOKEN }}`", workflow)
-            self.assertIn("Create a LabConstrictor synchronization token", guide)
+            self.assertIn("Create the synchronization token", guide)
             self.assertIn("workflows=write", guide)
             self.assertIn("Keep this project-specific text.", readme)
             self.assertIn(".tools/docs/template_synchronization.md", readme)
