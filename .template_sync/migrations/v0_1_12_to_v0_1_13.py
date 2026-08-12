@@ -33,9 +33,43 @@ CONCLUSION_LINE_RE = re.compile(
 RELEASE_VERSION_RE = re.compile(r"/releases/download/(\d+\.\d+\.\d+)/")
 SEMVER_RE = re.compile(r"\b\d+\.\d+\.\d+\b")
 
-GRID_CONFIG = '''GRID_COLUMN_WIDTHS = (\n    "1.2fr "\n    "1.0fr "\n    "3.0fr "\n    "0.8fr "\n    "1.4fr "\n    "0.8fr "\n    "1.8fr"\n)\n\n\ndef apply_grid_column_widths(grid):\n    """Apply responsive widths tuned to the expected content of each column."""\n    grid.layout.grid_template_columns = GRID_COLUMN_WIDTHS\n\n\n'''
+GRID_CONFIG = (
+    'GRID_COLUMN_WIDTHS = (\n'
+    '    "minmax(110px, 1.2fr) "\n'
+    '    "minmax(90px, 1.0fr) "\n'
+    '    "minmax(220px, 3.0fr) "\n'
+    '    "minmax(90px, 0.8fr) "\n'
+    '    "minmax(110px, 1.4fr) "\n'
+    '    "minmax(75px, 0.8fr) "\n'
+    '    "minmax(160px, 1.8fr)"\n'
+    ')\n\n\n'
+    'def apply_grid_layout(grid):\n'
+    '    """Apply responsive sizing while keeping the table readable on narrow panes."""\n'
+    '    grid.add_class("labconstrictor-responsive-grid")\n'
+    '    grid.layout.width = "100%"\n'
+    '    grid.layout.grid_template_columns = GRID_COLUMN_WIDTHS\n'
+    '    grid.layout.overflow = "auto"\n\n\n'
+)
 
-CALLBACK_BLOCK = '''                                        grid[row_idx, 3] = widgets.HTML(f"<div style='text-align: center;'>{online_latest_versions[main_folder][subfolder]}</div>")\n                                        grid[row_idx, 4] = widgets.HTML("<div style='text-align: center;'>✅ Up-to-date</div>")\n                                        grid[row_idx, 5] = widgets.HTML("<div style='text-align: center;'>-</div>")\n'''
+WIDGET_OUTPUT_BLOCK = (
+    '# Capture stdout, stderr, rich displays, figures, warnings, and tracebacks from widget callbacks.\n'
+    '_widget_callback_output_cell_1 = widgets.Output()\n\n\n'
+)
+
+RESPONSIVE_CSS = (
+    '    .labconstrictor-responsive-grid .widget-html-content {\n'
+    '        font-size: clamp(12px, 0.9vw, 15px) !important;\n'
+    '        line-height: 1.35 !important;\n'
+    '    }\n'
+    '    .labconstrictor-responsive-grid .widget-button {\n'
+    '        font-size: clamp(11px, 0.85vw, 14px) !important;\n'
+    '    }\n'
+    '    .table-description {\n'
+    '        text-align: left !important;\n'
+    '        white-space: normal !important;\n'
+    '        overflow-wrap: anywhere !important;\n'
+    '    }\n'
+)
 
 
 def read_text(path: Path) -> str:
@@ -186,7 +220,7 @@ def update_welcome_notebook(repo_root: Path, relative_path: Path) -> bool:
     except json.JSONDecodeError as exc:
         raise ValueError(f"Unable to parse {relative_path} as JSON") from exc
 
-    changed = False
+    notebook_changed = False
     found_grid = False
     for cell in notebook.get("cells", []):
         if cell.get("cell_type") != "code":
@@ -200,79 +234,141 @@ def update_welcome_notebook(repo_root: Path, relative_path: Path) -> bool:
 
         found_grid = True
         normalized = src.replace("\r\n", "\n")
+        original_normalized = normalized
 
-        if "GRID_COLUMN_WIDTHS = (" not in normalized:
-            marker = "def load_table(version_response, project_version_response, notebooks):\n"
+        load_marker = "def load_table(version_response, project_version_response, notebooks):\n"
+        load_index = normalized.find(load_marker)
+        if load_index < 0:
+            raise ValueError(
+                f"Unable to find load_table insertion point in {relative_path}"
+            )
+        grid_config_index = normalized.find("GRID_COLUMN_WIDTHS = (")
+        if 0 <= grid_config_index < load_index:
+            normalized = normalized[:grid_config_index] + GRID_CONFIG + normalized[load_index:]
+        else:
+            normalized = normalized.replace(load_marker, GRID_CONFIG + load_marker, 1)
+
+        if "_widget_callback_output_cell_1 = widgets.Output()" not in normalized:
+            marker = "# Define notebooks with their metadata\n"
             if marker not in normalized:
                 raise ValueError(
-                    f"Unable to find load_table insertion point in {relative_path}"
+                    f"Unable to find widget-output insertion point in {relative_path}"
                 )
-            normalized = normalized.replace(marker, GRID_CONFIG + marker, 1)
-            changed = True
+            normalized = normalized.replace(marker, WIDGET_OUTPUT_BLOCK + marker, 1)
+
+        normalized = normalized.replace(
+            "update_src_button.on_click(on_update_src_button_clicked)",
+            "update_src_button.on_click(_widget_callback_output_cell_1.capture(clear_output=True, wait=True)(on_update_src_button_clicked))",
+        )
+        normalized = re.sub(
+            r"update_button\.on_click\(button_update\((.*?)\)\)",
+            r"update_button.on_click(_widget_callback_output_cell_1.capture(clear_output=True, wait=True)(button_update(\1)))",
+            normalized,
+        )
+        normalized = normalized.replace(
+            "apply_grid_column_widths(grid)", "apply_grid_layout(grid)"
+        )
 
         lines = normalized.splitlines(keepends=True)
 
+        grid_create_index = next(
+            (i for i, line in enumerate(lines)
+             if line.strip() == "grid = GridspecLayout(1 + num_rows, 7)"),
+            None,
+        )
+        if grid_create_index is None:
+            raise ValueError(f"Unable to find Welcome table grid in {relative_path}")
+        next_line = lines[grid_create_index + 1].strip() if grid_create_index + 1 < len(lines) else ""
+        if next_line != "apply_grid_layout(grid)":
+            indent = lines[grid_create_index][: len(lines[grid_create_index]) - len(lines[grid_create_index].lstrip())]
+            lines.insert(grid_create_index + 1, f"{indent}apply_grid_layout(grid)\n")
+
         callback_apply_present = False
         for index, line in enumerate(lines):
-            if line.strip() != "apply_grid_column_widths(grid)":
+            if line.strip() != "apply_grid_layout(grid)":
                 continue
             previous = lines[index - 1].strip() if index > 0 else ""
             if previous.startswith("grid[row_idx, 5] = widgets.HTML"):
                 callback_apply_present = True
                 break
-
         if not callback_apply_present:
-            insert_index = None
-            indent = ""
             for index, line in enumerate(lines):
                 if line.strip().startswith("grid[row_idx, 5] = widgets.HTML"):
-                    insert_index = index + 1
                     indent = line[: len(line) - len(line.lstrip())]
+                    lines.insert(index + 1, f"{indent}apply_grid_layout(grid)\n")
                     break
-            if insert_index is None:
+            else:
                 raise ValueError(
                     f"Unable to find notebook-update grid block in {relative_path}"
                 )
-            lines.insert(insert_index, f"{indent}apply_grid_column_widths(grid)\n")
-            changed = True
 
-        display_index = None
-        for index, line in enumerate(lines):
-            if line.strip() == "display(grid, grip_output)":
-                display_index = index
-                break
+        display_index = next(
+            (i for i, line in enumerate(lines) if line.strip() == "display(grid, grip_output)"),
+            None,
+        )
         if display_index is None:
             raise ValueError(f"Unable to find grid display in {relative_path}")
-
         previous = lines[display_index - 1].strip() if display_index > 0 else ""
-        if previous != "apply_grid_column_widths(grid)":
-            display_line = lines[display_index]
-            indent = display_line[: len(display_line) - len(display_line.lstrip())]
-            lines.insert(display_index, f"{indent}apply_grid_column_widths(grid)\n")
-            changed = True
+        if previous != "apply_grid_layout(grid)":
+            indent = lines[display_index][: len(lines[display_index]) - len(lines[display_index].lstrip())]
+            lines.insert(display_index, f"{indent}apply_grid_layout(grid)\n")
 
         normalized = "".join(lines)
 
-        if changed:
+        if "font-size: clamp(12px, 0.9vw, 15px)" not in normalized:
+            style_close = "    </style>\n"
+            if style_close not in normalized:
+                raise ValueError(f"Unable to find Welcome CSS block in {relative_path}")
+            normalized = normalized.replace(style_close, RESPONSIVE_CSS + style_close, 1)
+
+        header_start = normalized.find("    .grid-header {")
+        if header_start >= 0:
+            header_end = normalized.find("    }", header_start)
+            header_block = normalized[header_start:header_end]
+            if "font-size: clamp(13px, 1vw, 16px)" not in header_block:
+                header_marker = "        font-weight: 600 !important;\n"
+                marker_index = normalized.find(header_marker, header_start, header_end)
+                if marker_index >= 0:
+                    insert_at = marker_index + len(header_marker)
+                    normalized = (
+                        normalized[:insert_at]
+                        + "        font-size: clamp(13px, 1vw, 16px) !important;\n"
+                        + normalized[insert_at:]
+                    )
+
+        normalized = normalized.replace(
+            "widgets.HTML(f\"<div style='text-align: center;'>{nb['description']}</div>\")",
+            "widgets.HTML(f\"<div class='table-description'>{nb['description']}</div>\")",
+        )
+
+        if "display(_widget_callback_output_cell_1)" not in normalized:
+            normalized = (
+                normalized.rstrip("\n")
+                + "\n\n# Display callback-generated output directly below this cell.\n"
+                + "display(_widget_callback_output_cell_1)\n"
+            )
+
+        if normalized != original_normalized:
             rendered_source = normalize_newlines(normalized, "\n")
             cell["source"] = (
                 rendered_source.splitlines(keepends=True)
                 if source_is_list
                 else rendered_source
             )
+            notebook_changed = True
         break
 
     if not found_grid:
         print(f"Skipping {relative_path}: expected Welcome table grid was not found")
         return False
-    if not changed:
+    if not notebook_changed:
         return False
 
     rendered = json.dumps(notebook, ensure_ascii=False, indent=1)
     if original_text.endswith(("\n", "\r\n")):
         rendered += newline
     write_text(path, rendered)
-    print(f"Updated responsive column widths in {relative_path}")
+    print(f"Updated responsive Welcome table and widget output in {relative_path}")
     return True
 
 

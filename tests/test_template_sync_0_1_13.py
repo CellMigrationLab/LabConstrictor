@@ -31,7 +31,54 @@ def load_module(path: Path, name: str):
 
 
 def welcome_notebook(owner: str = "ExampleOwner", repo: str = "ExampleProject") -> dict:
-    code = f'''from ipywidgets import widgets, GridspecLayout\n\n\ngithub_owner = "{owner}"\ngithub_repo_name = "{repo}"\n\n\ndef load_table(version_response, project_version_response, notebooks):\n    num_rows = 1\n    grid = GridspecLayout(1 + num_rows, 7)\n\n    def update_callback():\n        row_idx = 1\n        main_folder = "notebooks"\n        subfolder = "Example"\n        online_latest_versions = {{"notebooks": {{"Example": "1.0.0"}}}}\n        grid[row_idx, 3] = widgets.HTML(f"<div style='text-align: center;'>{{online_latest_versions[main_folder][subfolder]}}</div>")\n        grid[row_idx, 4] = widgets.HTML("<div style='text-align: center;'>✅ Up-to-date</div>")\n        grid[row_idx, 5] = widgets.HTML("<div style='text-align: center;'>-</div>")\n\n    grip_output = widgets.Output()\n    display(grid, grip_output)\n'''
+    code = f'''from ipywidgets import widgets, GridspecLayout
+
+
+github_owner = "{owner}"
+github_repo_name = "{repo}"
+
+# Define notebooks with their metadata
+notebooks = []
+
+def load_table(version_response, project_version_response, notebooks):
+    num_rows = 1
+    grid = GridspecLayout(1 + num_rows, 7)
+    display(widgets.HTML("""
+    <style>
+    .grid-header {{
+        background-color: #ff6600 !important;
+        color: white !important;
+        font-weight: 600 !important;
+        padding: 12px !important;
+        text-align: center !important;
+    }}
+    </style>
+    """))
+
+    update_src_button = widgets.Button(description="Update Source Code")
+    def on_update_src_button_clicked(button):
+        pass
+    update_src_button.on_click(on_update_src_button_clicked)
+
+    def button_update(main_folder, subfolder, row_idx):
+        def show(button):
+            grid[row_idx, 3] = widgets.HTML(f"<div style='text-align: center;'>{{online_latest_versions[main_folder][subfolder]}}</div>")
+            grid[row_idx, 4] = widgets.HTML("<div style='text-align: center;'>✅ Up-to-date</div>")
+            grid[row_idx, 5] = widgets.HTML("<div style='text-align: center;'>-</div>")
+        return show
+
+    online_latest_versions = {{"notebooks": {{"Example": "1.0.0"}}}}
+    main_folder = "notebooks"
+    subfolder = "Example"
+    idx = 1
+    nb = {{"description": "A longer notebook description used for layout testing."}}
+    grid[idx, 2] = widgets.HTML(f"<div style='text-align: center;'>{{nb['description']}}</div>")
+    update_button = widgets.Button(description="Update")
+    update_button.on_click(button_update(main_folder, subfolder, row_idx=idx))
+
+    grip_output = widgets.Output()
+    display(grid, grip_output)
+'''
     return {
         "cells": [
             {
@@ -46,6 +93,7 @@ def welcome_notebook(owner: str = "ExampleOwner", repo: str = "ExampleProject") 
         "nbformat": 4,
         "nbformat_minor": 5,
     }
+
 
 
 class VersionRepairTests(unittest.TestCase):
@@ -166,8 +214,19 @@ class Migration013Tests(unittest.TestCase):
                 self.assertIn('github_owner = "ExampleOwner"', source)
                 self.assertIn('github_repo_name = "ExampleProject"', source)
                 self.assertIn("GRID_COLUMN_WIDTHS = (", source)
-                self.assertIn('"3.0fr "', source)
-                self.assertGreaterEqual(source.count("apply_grid_column_widths(grid)"), 2)
+                self.assertIn("minmax(220px, 3.0fr)", source)
+                self.assertIn('grid.layout.width = "100%"', source)
+                self.assertIn('grid.layout.overflow = "auto"', source)
+                self.assertIn("font-size: clamp(12px, 0.9vw, 15px)", source)
+                self.assertIn("font-size: clamp(13px, 1vw, 16px)", source)
+                self.assertIn("class='table-description'", source)
+                self.assertIn("_widget_callback_output_cell_1 = widgets.Output()", source)
+                self.assertGreaterEqual(
+                    source.count("_widget_callback_output_cell_1.capture(clear_output=True, wait=True)"),
+                    2,
+                )
+                self.assertEqual(source.count("display(_widget_callback_output_cell_1)"), 1)
+                self.assertGreaterEqual(source.count("apply_grid_layout(grid)"), 3)
 
     def test_migration_is_idempotent(self):
         migration = load_module(MIGRATION_PATH, "migration_013_idempotent")
@@ -203,8 +262,20 @@ class Migration013Tests(unittest.TestCase):
             if cell.get("cell_type") == "code"
         )
         self.assertIn("GRID_COLUMN_WIDTHS = (", source)
-        self.assertIn('"3.0fr "', source)
-        self.assertGreaterEqual(source.count("apply_grid_column_widths(grid)"), 2)
+        self.assertIn("minmax(220px, 3.0fr)", source)
+        self.assertIn('grid.layout.width = "100%"', source)
+        self.assertIn('grid.layout.overflow = "auto"', source)
+        self.assertIn("font-size: clamp(12px, 0.9vw, 15px)", source)
+        self.assertIn("font-size: clamp(13px, 1vw, 16px)", source)
+        self.assertIn("class='table-description'", source)
+        self.assertIn("_widget_callback_output_cell_1 = widgets.Output()", source)
+        self.assertGreaterEqual(
+            source.count("_widget_callback_output_cell_1.capture(clear_output=True, wait=True)"),
+            2,
+        )
+        self.assertEqual(source.count("display(_widget_callback_output_cell_1)"), 1)
+        self.assertGreaterEqual(source.count("apply_grid_layout(grid)"), 3)
+        compile(source, "Welcome_template.ipynb", "exec")
 
 
 if __name__ == "__main__":
