@@ -250,12 +250,9 @@ class Migration013Tests(unittest.TestCase):
     def test_repository_bump_version_matches_migration_resource(self):
         self.assertEqual(BUMP_VERSION_PATH.read_bytes(), RESOURCE_BUMP_VERSION_PATH.read_bytes())
 
-    def test_repository_welcome_template_has_responsive_column_widths(self):
-        notebook = json.loads(
-            (REPO_ROOT / ".tools/templates/Welcome_template.ipynb").read_text(
-                encoding="utf-8"
-            )
-        )
+    def test_released_0_1_13_welcome_fixture_has_original_responsive_layout(self):
+        fixture = REPO_ROOT / "tests/fixtures/welcome_0_1_13.ipynb"
+        notebook = json.loads(fixture.read_text(encoding="utf-8"))
         source = "\n".join(
             "".join(cell.get("source", []))
             for cell in notebook.get("cells", [])
@@ -275,8 +272,7 @@ class Migration013Tests(unittest.TestCase):
         )
         self.assertEqual(source.count("display(_widget_callback_output_cell_1)"), 1)
         self.assertGreaterEqual(source.count("apply_grid_layout(grid)"), 3)
-        compile(source, "Welcome_template.ipynb", "exec")
-
+        compile(source, "welcome_0_1_13.ipynb", "exec")
 
 if __name__ == "__main__":
     unittest.main()
