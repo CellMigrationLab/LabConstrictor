@@ -112,7 +112,7 @@ IF NOT ERRORLEVEL 1 (
     echo Found PYTHON_PROJ_NAME_lc_tools: registering the tools of PROJECT_NAME for Napari and Fiji. >> "%LOG_FILE%"
     "%PYTHON_EXE%" -m pip install "%LC_TOOLS_SPEC%" >> "%LOG_FILE%" 2>&1
     IF NOT ERRORLEVEL 1 "%PYTHON_EXE%" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "%PREFIX%" --module PYTHON_PROJ_NAME_lc_tools --display-name "PROJECT_NAME" >> "%LOG_FILE%" 2>&1
-    IF ERRORLEVEL 1 echo WARNING: tool registration failed; PROJECT_NAME itself is installed. Run "labconstrictor-tools doctor" for details. >> "%LOG_FILE%"
+    IF ERRORLEVEL 1 echo WARNING: tool registration failed - see the pip and register output above in this file; PROJECT_NAME itself is installed. >> "%LOG_FILE%"
 )
 
 "%PYTHON_EXE%" "%PROJECT_ROOT%\include_path.py" --path "%PREFIX%" --files "%PROJECT_ROOT%\notebook_launcher.json" --keyword "BASE_PATH_KEYWORD" >> "%LOG_FILE%" 2>&1
