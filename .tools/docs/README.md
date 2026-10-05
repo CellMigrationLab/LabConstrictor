@@ -14,6 +14,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Create executable installers](executable_creation.md)
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
 - [Notebook usage after installation](notebook_usage.md)
+- [Expose tools to Napari and Fiji (experimental)](tools_bridge.md)
 
 ## Notebook authoring tips
 
