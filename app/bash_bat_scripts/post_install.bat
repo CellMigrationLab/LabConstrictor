@@ -106,7 +106,9 @@ IF EXIST "%PROJECT_ROOT%\setup.py" (
 REM Optional: expose the app's tools to Napari, Fiji and the command line (LabConstrictor tools bridge).
 REM If the app's package ships a module named <package>_lc_tools, install labconstrictor-tools and register that module.
 REM This step must never fail the installation. LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
-IF NOT DEFINED LC_TOOLS_SPEC SET "LC_TOOLS_SPEC=labconstrictor-tools"
+REM Default source: the GitHub archive of labconstrictor-tools (a plain zip: no git needed on the user's computer), because the package
+REM is not on PyPI yet. Once it is, use "labconstrictor-tools" here.
+IF NOT DEFINED LC_TOOLS_SPEC SET "LC_TOOLS_SPEC=https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/heads/main.zip"
 SET "LC_APP_VERSION="
 IF EXIST "%PROJECT_ROOT%\construct.yaml" FOR /F "usebackq tokens=1,* delims=: " %%A IN (`findstr /B /C:"version:" "%PROJECT_ROOT%\construct.yaml"`) DO SET "LC_APP_VERSION=%%~B"
 IF NOT DEFINED LC_APP_VERSION (
