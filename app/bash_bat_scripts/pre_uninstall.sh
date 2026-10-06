@@ -3,6 +3,6 @@ set -e
 echo "Running pre_uninstall" 
 # best effort: a failure must not stop the uninstall, but it is reported (a stale entry can stay in the Napari/Fiji list)
 if ! "BASE_PATH/bin/python" -m labconstrictor_tools unregister --name "PROJECT_NAME" --prefix "BASE_PATH" > /dev/null 2>&1; then
-    echo "WARNING: could not remove PROJECT_NAME from the LabConstrictor tools registry; Napari/Fiji may still list it (run: labconstrictor-tools unregister --name PROJECT_NAME)." >&2
+    echo "WARNING: could not remove PROJECT_NAME from the LabConstrictor tools registry; Napari/Fiji may still list it (run: \"BASE_PATH/bin/python\" -m labconstrictor_tools unregister --name PROJECT_NAME)." >&2
 fi
 "BASE_PATH/bin/python" -c "from menuinst.api import remove; import os; remove(os.path.join(r'BASE_PATH', 'PROJECT_NAME', 'notebook_launcher.json'))"
