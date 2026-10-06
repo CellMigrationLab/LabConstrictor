@@ -24,7 +24,11 @@ command line, with forms generated automatically from the function signatures. N
    other than PyPI (a wheel, a git URL, a mirror).
 3. Test your tools before releasing: `labconstrictor-tools check --module mytool_lc_tools` and
    `labconstrictor-tools test --module mytool_lc_tools --cases lc_tests/cases.json`.
-4. Install the Napari plugin (`napari-labconstrictor`) or the Fiji jar (`labconstrictor-fiji`) once per machine.
+4. Install the Napari plugin (`napari-labconstrictor`) or the Fiji plugin (`labconstrictor-fiji`) once per machine. Neither is on PyPI or a Fiji update site yet: see the READMEs of
+   [napari-labconstrictor](https://github.com/CellMigrationLab/napari-labconstrictor) and [LabConstrictor-Fiji](https://github.com/CellMigrationLab/LabConstrictor-Fiji) for the install commands.
+5. Optional: make a long form readable with `Group("...")`, `Advanced()` and `EnabledWhen(...)` markers, and say "nothing found" with `ToolError("no_match", ...)` (see the authoring guide in the Tools repository).
 
 Documentation and source: https://github.com/CellMigrationLab/LabConstrictor-Tools.
+The registered version is read from the `version:` line of `construct.yaml`. The Windows hook (`post_install.bat`) has not yet been run on a real Windows computer; if you can help, follow the
+[human test protocol](https://github.com/CellMigrationLab/LabConstrictor-Tools/blob/main/docs/HUMAN_TEST_PROTOCOL.md).
 Troubleshooting: `labconstrictor-tools doctor`, `labconstrictor-tools logs`, and `~/.labconstrictor/logs/labconstrictor.log`.
