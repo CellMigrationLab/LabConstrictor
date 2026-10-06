@@ -74,6 +74,8 @@ fi
 # --- Optional: expose the app's tools to Napari, Fiji and the command line (LabConstrictor tools bridge) -------------------
 # If the app's package ships a module named <package>_lc_tools, install labconstrictor-tools and register that module.
 # This step must never fail the installation. LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
+# Default source: the GitHub archive of labconstrictor-tools (a plain zip: no git needed on the user's computer), because the package
+# is not on PyPI yet. Once it is, use "labconstrictor-tools" here.
 LC_TOOLS_MODULE="PYTHON_PROJ_NAME_lc_tools"
 if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('$LC_TOOLS_MODULE') else 1)" >> "$LOG_FILE" 2>&1; then
     lc_note() { echo "$*" >> "$LOG_FILE" || :; }  # a full or unwritable log must not fail the installation
@@ -83,7 +85,7 @@ if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, s
         lc_note "WARNING: no version: line at the start of a line in construct.yaml - registering the tools with version 0."
         LC_APP_VERSION=0
     fi
-    if "$PYTHON_EXE" -m pip install "${LC_TOOLS_SPEC:-labconstrictor-tools}" >> "$LOG_FILE" 2>&1 \
+    if "$PYTHON_EXE" -m pip install "${LC_TOOLS_SPEC:-https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/heads/main.zip}" >> "$LOG_FILE" 2>&1 \
         && "$PYTHON_EXE" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "$PREFIX" \
             --module "$LC_TOOLS_MODULE" --version "$LC_APP_VERSION" --display-name "PROJECT_NAME" >> "$LOG_FILE" 2>&1; then
         lc_note "Tools registered (labconstrictor-tools list shows them)."
