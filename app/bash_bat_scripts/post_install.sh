@@ -76,14 +76,19 @@ fi
 # This step must never fail the installation. LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
 LC_TOOLS_MODULE="PYTHON_PROJ_NAME_lc_tools"
 if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('$LC_TOOLS_MODULE') else 1)" >> "$LOG_FILE" 2>&1; then
-    echo "Found $LC_TOOLS_MODULE: registering the tools of PROJECT_NAME for Napari and Fiji" >> "$LOG_FILE"
+    lc_note() { echo "$*" >> "$LOG_FILE" || :; }  # a full or unwritable log must not fail the installation
+    lc_note "Found $LC_TOOLS_MODULE: registering the tools of PROJECT_NAME for Napari and Fiji"
     LC_APP_VERSION="$(sed -n 's/^version: *//p' "$PROJECT_ROOT/construct.yaml" 2>/dev/null | head -1 | tr -d "\"'\r" || true)"
+    if [ -z "$LC_APP_VERSION" ]; then
+        lc_note "WARNING: no version: line at the start of a line in construct.yaml - registering the tools with version 0."
+        LC_APP_VERSION=0
+    fi
     if "$PYTHON_EXE" -m pip install "${LC_TOOLS_SPEC:-labconstrictor-tools}" >> "$LOG_FILE" 2>&1 \
         && "$PYTHON_EXE" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "$PREFIX" \
-            --module "$LC_TOOLS_MODULE" --version "${LC_APP_VERSION:-0}" --display-name "PROJECT_NAME" >> "$LOG_FILE" 2>&1; then
-        echo "Tools registered (labconstrictor-tools list shows them)." >> "$LOG_FILE"
+            --module "$LC_TOOLS_MODULE" --version "$LC_APP_VERSION" --display-name "PROJECT_NAME" >> "$LOG_FILE" 2>&1; then
+        lc_note "Tools registered (labconstrictor-tools list shows them)."
     else
-        echo "WARNING: tool registration failed - see the pip and register output above in this file; PROJECT_NAME itself is installed." >> "$LOG_FILE"
+        lc_note "WARNING: tool registration failed - see the pip and register output above in this file; PROJECT_NAME itself is installed."
     fi
 fi
 
