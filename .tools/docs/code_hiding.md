@@ -27,3 +27,7 @@ Clicking this button runs the corresponding code cell without revealing the code
 Depending on your intialisation your code cells will be hidden by default or shown by default. In either case, the visibility of code cells can be toggled using the `Show/Hide Code` button in the top toolbar:
 
 ![Show Hide Code Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
+
+## Where is this controlled?
+
+Hiding code cells is done by a small script, [`hide_code_cells.py`](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/templates/hide_code_cells.py). In your own repository it is `app/python_scripts/hide_code_cells.py`, and it runs when you upload or change a notebook. To switch the feature on or off, set `HIDE_CODE_DISABLED` in that file (`False` hides the code cells), or initialise your repository again with the [repository initialiser](https://labconstrictor-form.streamlit.app/) and choose the other option.
