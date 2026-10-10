@@ -15,6 +15,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Create executable installers](executable_creation.md)
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
 - [Notebook usage after installation](notebook_usage.md)
+- [Troubleshooting an installed app](troubleshooting_installed_app.md)
 
 ## Notebook authoring tips
 
@@ -25,6 +26,6 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Accept a Pull Request](accept_pull_request.md)
 - [GitHub actions/workflows overview](workflow_status.md)
 - [Configure automatic template synchronization](template_synchronization.md)
-- [Troubleshooting](troubleshooting.md)
+- [Troubleshooting repository setup](troubleshooting.md)
 - [Create a personal access token for notebook access](personal_access_token.md)
 
