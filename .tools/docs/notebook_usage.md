@@ -22,7 +22,7 @@ You might be used to work with notebooks on JupyterLab (in case you need so guid
 
 ## 4. Accessing your Notebooks
 
-Once you run the welcome notebook, a dashboard will show a list of available notebooks. It looks similar to the screenshot in the [Welcome Notebook](#welcome-notebook) step.
+Once you run the welcome notebook, a dashboard will show a list of available notebooks. It looks similar to the screenshot in the [Welcome Notebook](#2-welcome-notebook) step.
 
 In the last column of the dashboard, you'll see a button called `Open the Notebook`. Click it to open that notebook in a new tab and run it just like you did with the welcome notebook.
 
