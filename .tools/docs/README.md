@@ -14,6 +14,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Generate notebook requirements](notebook_requirements.md)
 - [Upload your notebooks](notebook_upload.md)   
 - [Create executable installers](executable_creation.md)
+- [Install an app](install.md)
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
 - [Notebook usage after installation](notebook_usage.md)
 - [Troubleshooting an installed app](troubleshooting_installed_app.md)
@@ -22,6 +23,10 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Write notebooks that run in both Google Colab and JupyterLab](notebook_portability.md)
 - [Hide code cells in notebooks](code_hiding.md)
+
+## Examples
+
+- [LabConstrictor use cases](use_cases.md)
 
 ## GitHub management
 

@@ -1,4 +1,4 @@
-# Accept a Pull Request (PR) on GitHub
+# Accept a pull request
 
 Follow these steps or watch the GIF at the end to learn how to accept a Pull Request (PR) on GitHub. LabConstrictor template updates are delivered this way after you complete the [automatic synchronization setup](template_synchronization.md).
 

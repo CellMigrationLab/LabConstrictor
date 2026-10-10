@@ -1,4 +1,4 @@
-# Obtain the requirements of your Notebook
+# Generate the requirements of your notebook
 
 You can get your Jupyter notebook’s requirements automatically with Option 1 or manually with Option 2.
 

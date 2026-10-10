@@ -1,4 +1,4 @@
-# Write Notebooks That Run Well in Both Google Colab and JupyterLab
+# Write notebooks that run in both Google Colab and JupyterLab
 
 LabConstrictor ships notebooks as desktop apps built on JupyterLab. At the same time, many collaborators and reviewers prefer Google Colab for quick, cloud-based runs. Writing your notebook to work in both environments makes it easier for users to:
 

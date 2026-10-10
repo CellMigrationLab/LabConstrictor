@@ -1,4 +1,4 @@
-# Hiding Code Cells in Jupyter Notebooks
+# Hide code cells in notebooks
 
 LabConstrictor gives the option to hide code cells in Jupyter notebooks, making them cleaner and avoiding overwhelming users with too much code. 
 

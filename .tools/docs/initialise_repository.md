@@ -1,4 +1,4 @@
-# Initialising your repository
+# Initialise your repository
 
 Now that your repository is set up, you can start to customise it (bellow you can find a GIF with the whole process). To get started, you will need:
 

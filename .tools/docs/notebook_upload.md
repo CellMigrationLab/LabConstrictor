@@ -1,4 +1,4 @@
-# Add or Update a Notebook
+# Add or update a notebook
 
 If you want to add or update a notebook in your project repository, just follow these steps to upload it smoothly.
 
