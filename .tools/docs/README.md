@@ -8,6 +8,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Create a new repository from this template](create_repository.md)
 - [Enable automatic template updates](template_synchronization.md)
 - [Initialise your repository](initialise_repository.md)
+- [Customise the installer images](installer_images.md)
 - [Describe your app for the App Centre](app_manifest.md)
 - [Upload external code (optional)](external_code_upload.md)
 - [Generate notebook requirements](notebook_requirements.md)
@@ -20,6 +21,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 ## Notebook authoring tips
 
 - [Write notebooks that run in both Google Colab and JupyterLab](notebook_portability.md)
+- [Hide code cells in notebooks](code_hiding.md)
 
 ## GitHub management
 
