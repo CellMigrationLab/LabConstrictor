@@ -2,7 +2,7 @@
 
 After uploading your notebooks to the repository, follow these steps to create executable files for sharing.
 
-### ⚠️ Please check before proceeding:
+## ⚠️ Please check before proceeding:
 
 Open the Actions tab in your repository and check that no workflows are running. If one is in progress, wait until it finishes. Starting a release while other jobs are running may cause build conflicts.
 

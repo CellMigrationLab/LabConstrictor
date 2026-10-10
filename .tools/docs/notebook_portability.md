@@ -11,7 +11,7 @@ Below are practical patterns to keep notebooks portable and readable across both
 
 ## 1. Keep explanatory text visible when code is hidden
 
-LabConstrictor apps often hide code cells to present an app-like UI (check [here](code_hiding.md) to know more). 
+LabConstrictor apps often hide code cells to present an app-like UI (see [Hide code cells in notebooks](code_hiding.md)). 
 
 If you place `# @title` **at the top of the cell** in Colab, it would give a header to the code cell on Google Colab while remaining visible in local JupyterLab sessions. Follow the example below to keep your notebook clear and user-friendly in both environments:
 
@@ -55,7 +55,7 @@ else:
 
 ## 4. Avoid Colab-only UI helpers
 
-Avoid using Colab forms (check [here](https://colab.research.google.com/notebooks/forms.ipynb) to know more) as they won’t work in JupyterLab. Instead, we recommend using ipywidgets or simple input prompts that work in both environments. This ensures your notebook remains interactive and user-friendly regardless of where it’s run.
+Avoid using Colab forms (see [Google's guide to Colab forms](https://colab.research.google.com/notebooks/forms.ipynb)) as they won’t work in JupyterLab. Instead, we recommend using ipywidgets or simple input prompts that work in both environments. This ensures your notebook remains interactive and user-friendly regardless of where it’s run.
 
 For example, you could turn this Colab form:
 
