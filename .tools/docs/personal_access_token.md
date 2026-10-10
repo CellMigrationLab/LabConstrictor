@@ -1,4 +1,4 @@
-# Generate a GitHub Personal Access Token
+# Generate a GitHub personal access token
 
 > Looking for the token used by the automatic template update workflow? Follow the dedicated [automatic template synchronization guide](template_synchronization.md). It uses a repository-scoped fine-grained token with a different purpose and secret name.
 

@@ -1,4 +1,4 @@
-# 📋 Before Getting Started with LabConstrictor
+# Before getting started with LabConstrictor
 
 Welcome to LabConstrictor! This guide will walk you through the basics and show you what you need to get started.
 

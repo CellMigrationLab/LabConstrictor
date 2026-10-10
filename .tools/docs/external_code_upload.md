@@ -1,4 +1,4 @@
-# Adding External Code
+# Upload external code
 
 If you want to use your own Python modules or scripts in Jupyter notebooks, follow these steps to upload them easily.
 

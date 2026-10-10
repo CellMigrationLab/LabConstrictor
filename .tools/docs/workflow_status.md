@@ -1,4 +1,4 @@
-# Check Workflow Status & Troubleshooting
+# Check the status of GitHub workflows
 
 When you upload a notebook or make a release, GitHub Actions starts a workflow to check your code and build the installers. The template synchronization workflow additionally requires the one-time [`LABCONSTRICTOR_SYNC_TOKEN` setup](template_synchronization.md).
 

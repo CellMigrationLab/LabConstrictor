@@ -1,4 +1,4 @@
-# LabConstrictor Use Cases
+# LabConstrictor use cases
 
 Here are some tools that have already been created using LabConstrictor:
  - [VLab4Mic](#vlab4mic)

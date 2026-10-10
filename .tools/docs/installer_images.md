@@ -1,4 +1,4 @@
-# Installer Images Customisation
+# Customise the installer images
 
 The generated installer and desktop app can be customised with you own images. This will help to give your app a more professional look and feel. This customisation is optional and can be done when initialising your repository or at any time later. 
 

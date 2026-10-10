@@ -1,4 +1,4 @@
-# Usage of Notebooks After Installation
+# Use notebooks after installation
 
 After you install the desktop application, this guide will show you how to use the Jupyter notebooks that come with it.
 

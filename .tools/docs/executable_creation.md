@@ -1,4 +1,4 @@
-# Create Installer Files 
+# Create installer files
 
 After uploading your notebooks to the repository, follow these steps to create executable files for sharing.
 
