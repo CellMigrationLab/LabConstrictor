@@ -23,7 +23,7 @@ In both cases the Python environment that you use for the notebook, needs to run
   
 ![Download Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Download_Notebook.png)
   
-* **Google Colab:** Open the notebook directly in Google Colab by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
+* **Google Colab:** Open the notebook directly in Google Colab by opening the [Requirements Generator in Colab](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Generator.ipynb).
 
 ### 2. Run the Requirements Generator
 
@@ -57,7 +57,7 @@ python_version: 3.11.1
 
 We recommend using **Google Colab** for this step, as you do not need a specific Python environment to run the validator.
 
-* **Google Colab (Recommended):** Open the notebook directly by clicking [here](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Validator.ipynb).
+* **Google Colab (Recommended):** Open the notebook directly by opening the [Requirements Validator in Colab](https://colab.research.google.com/github/CellMigrationLab/LabConstrictor/blob/main/.tools/notebooks/Requirements_Validator.ipynb).
 * **Locally:** Download the [Requirements_Validator.ipynb](https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/main/.tools/notebooks/Requirements_Validator.ipynb) and open it in any Python environment that has `ipywidgets` installed.
 
 ### 3. Run the Requirements Validator

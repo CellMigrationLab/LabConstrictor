@@ -12,13 +12,13 @@ You can provide the following images for customisation:
 
 When preparing your images, please ensure they meet the recommended size and format for optimal display. Here are some examples of custom images used in an installer:
 
-#### Logo:
+## Logo:
 ![LabConstrictor Logo](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/LabConstrictor_Logo.png)
 
-#### Banner:
+## Banner:
 ![LabConstrictor Banner](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/LabConstrictor_Banner.png)
 
-#### Header:
+## Header:
 ![LabConstrictor Header](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/LabConstrictor_Header.png)
 
 ## Default Installer

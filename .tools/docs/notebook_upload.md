@@ -154,7 +154,7 @@ If you need help merging the pull request, see the [Accept a Pull Request](accep
 
 ---
 
-# How to Update an Existing Notebook
+## How to update an existing notebook
 
 Updating a notebook works the same way as adding a new one:
 
