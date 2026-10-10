@@ -35,7 +35,7 @@ Follow the instructions provided inside the notebook to generate the `requiremen
 
 ### 1. Create a `requirements.yaml` File
 
-You will need to create a `requirements.yaml` file similar to the [example requirements.yaml file](https://www.google.com/search?q=../templates/requirements.yaml). This file must contain the following three fields:
+You will need to create a `requirements.yaml` file similar to the [example requirements.yaml file](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/templates/requirements.yaml). This file must contain the following three fields:
 
 * **`dependencies`:** A list of all packages used in the notebook along with their versions. The list needs to be indexed with a hyphen (`-`) followed by a space before each package.
 * **`python_version`:** The version of Python used in the notebook (e.g., `3.11.1`).

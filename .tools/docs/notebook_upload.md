@@ -138,11 +138,11 @@ Follow the steps in the [Obtain requirements of the notebook](notebook_requireme
 ## 3. Upload to the repository
 
 1. Open the [LabConstrictor website](https://labconstrictor-form.streamlit.app/). If you see a `Zzzz` message for inactivity, click `Yes, get this app back up!`.
-2.  Select **Go to update flow**.
+2.  Select **Upload/Update notebook**.
 3. Upload your notebook file (`.ipynb`) and the `requirements.yaml` file you created.
 4.  Click **Validate submission**.
 5. Enter your repository URL and your personal access token.
-    * *(Don't have a token? See [How to create a personal access token](../personal_access_token.md))*
+    * *(Don't have a token? See [How to create a personal access token](personal_access_token.md))*
 6. Click Create pull request.
 
 
