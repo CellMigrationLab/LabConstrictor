@@ -18,9 +18,14 @@ Open the Actions tab in your repository and check that no workflows are running.
 
 ## 2. Publish the release
 
-Once you have fillAfter entering all required information, click `Publish release`. This action will start the automated workflow to create installer executable files for your notebooks. To monitor the process, see [How to check the automatic workflow status](workflow_status.md).he executable files
+Once you have entered all the required information, click `Publish release`. This action will start the automated workflow to create installer executable files for your notebooks. To monitor the process, see [How to check the automatic workflow status](workflow_status.md).
 
-When the automated workflow completes, download the installer by following the instructions in [How to download the executable files](download_executable.md).
+When the automated workflow completes, open your repository's **Releases** page, open the release you published and download the installers from its **Assets** list.
+
+## 3. After the release
+
+- Try your installer yourself: [Install an app](install.md), then [Use notebooks after installation](notebook_usage.md).
+- List your app in the App Centre: [Describe your app for the App Centre](app_manifest.md).
 
 
 ---

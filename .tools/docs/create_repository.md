@@ -1,6 +1,6 @@
 # Create your repository
 
-To start, click the `Use this template` button at the top of the page. This will let you create a new repository using the LabConstrictor template.
+To start, open the [LabConstrictor template on GitHub](https://github.com/CellMigrationLab/LabConstrictor) and click the `Use this template` button at the top of the page. This will let you create a new repository using the LabConstrictor template.
 
 
 1. Click the green **Use this template** button at the top right of the main repository page.
@@ -25,7 +25,7 @@ Write a brief description of what your notebooks do (for example, "Automated cel
 
 * **Visibility:**
     * **Public:** Select this if you want to share your installer right away.
-    * **Private:** Select this if you’re still working on the tools or want to keep the code within your lab.
+    * **Private:** Select this if you’re still working on the tools or want to keep the code within your lab. A private repository cannot be listed in the App Centre: make it public before you submit your app.
 
 4. Click **Create repository**. 🎉 That’s it! Your repository is now set up and ready to go.
 
