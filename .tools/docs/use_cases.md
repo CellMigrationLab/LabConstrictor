@@ -17,8 +17,4 @@ Here are some tools that have already been created using LabConstrictor:
 
 Determining whether a microscopy experiment can resolve a specific feature of a protein assembly remains difficult because researchers must balance imaging modality, labelling strategy, and probe choice. We present VLab4Mic, a simulation platform that predicts structural resolvability before experiments. Starting from atomic models from the PDB or AlphaFold predictions, VLab4Mic places antibodies, nanobodies, chemical linkers, or fluorescent proteins on epitopes, applies stochastic labelling and steric constraints, and generates virtual samples for widefield, confocal, AiryScan, Stimulated Emission Depletion (STED), and Single-Molecule Localisation Microscopy (SMLM). Comparisons with nuclear pore complex data show realistic agreement across modalities. Case studies show that HIV capsid appearance depends strongly on orientation, and that STED and SMLM distinguish domed from flat clathrin lattices, whereas confocal and AiryScan struggle. VLab4Mic thereby helps researchers predict which biological questions are experimentally tractable with a given imaging configuration before spending time finetuning imaging parameters at the microscope.
 
-<p align="center">
-  <a href="https://bsky.app/profile/henriqueslab.bsky.social/post/3mnw2p2j5pk24">
-    <img src="https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor/doc_source/Use_Cases/VLab4Mic_Bluesky.png" alt="Bluesky post" width="50%">
-  </a>
-</p>
+A Bluesky post about VLab4Mic: [VLab4Mic on Bluesky](https://bsky.app/profile/henriqueslab.bsky.social/post/3mnw2p2j5pk24).
