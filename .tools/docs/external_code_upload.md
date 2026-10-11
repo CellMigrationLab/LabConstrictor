@@ -66,7 +66,7 @@ from PYTHON_PROJ_NAME.subpackage import submodule1
 
 [← Previous](app_manifest.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[Next →](notebook_requirements.md)
+[Next →](keep_app_up_to_date.md)
 
 
 </div>
