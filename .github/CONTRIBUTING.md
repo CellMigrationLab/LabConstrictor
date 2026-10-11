@@ -16,7 +16,7 @@ Thank you for your interest in contributing to LabConstrictor!
 - Follow existing code style and conventions
 - Write clear, descriptive commit messages
 - Include tests for new features
-- Update documentation as needed
+- Update documentation as needed: if you change a button label, form field, workflow or artifact name, installer name or file path, update the `.tools/docs` page that names it and say which in the pull request. Bump `template_version` if users must act, and check that the screenshots are still valid
 - Keep pull requests focused and manageable
 
 ## Code Review
