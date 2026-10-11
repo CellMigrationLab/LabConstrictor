@@ -17,10 +17,10 @@ If the workflow fails, don’t worry. The system creates an error log that’s r
 1.  **Download the Log:**
     * Click on the failed workflow run.
     * Scroll down to the bottom of the page to the **Artifacts** section.
-    * Download the artifact (usually a `.zip` file) and unzip it.
+    * Download the log file listed there (it is a plain `.log` text file, nothing to unzip).
 
 2.  **Copy & Paste into AI:**
-    * Open the text file inside the folder.
+    * Open the log file in any text editor.
     * **This file is already formatted as a prompt.** It includes all the context and error details you need.
     * Just **copy all the text** and paste it into your preferred AI tool (like ChatGPT, Gemini, or Claude). The AI will explain the error and show you how to fix your notebook or `requirements.yaml`.
 

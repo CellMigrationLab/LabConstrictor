@@ -24,7 +24,7 @@ LabConstrictor includes helper cells that track notebook versions and notify use
 
 ### ✨ User-Friendly Experience
 
-Installers handle the setup process, allowing users to launch your notebooks with a desktop app. The installers take care of the setup, so users can open your notebooks with a desktop app. The app shows a Welcome Dashboard where users can check versions and pick notebooks. Notebooks have hidden code and a play button to run cells, giving a clean, app-like feel. private or public, giving you full control over who can access and use your notebooks.
+The installers take care of the setup, so users can open your notebooks with a desktop app. The app shows a Welcome Dashboard where users can check versions and pick notebooks. Notebooks have hidden code and a play button to run cells, giving a clean, app-like feel. Your repository can be private or public, giving you full control over who can access and use your notebooks.
 
 ### 📱 Offline Usage
 

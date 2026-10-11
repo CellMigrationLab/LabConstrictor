@@ -7,7 +7,7 @@ If you want to add or update a notebook in your project repository, just follow 
 To ensure your notebook works with the versioning tracking provided by the LabConstrictor application, please follow these three steps to prepare your notebook:
 
 1. First, create a cell at the top of your notebook (see our [JupyterLab guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md) if you need help with that). 
-2. Then, copy and paste the code bellow into that cell.
+2. Then, copy and paste the code below into that cell.
 3. Finally, update the `current_version` variable with the version of your notebook (for example, "0.0.2") and the `notebook_name` variable with the name of your notebook file (without the .ipynb extension).
 
 > IMPORTANT NOTE: Each time you change the notebook's logic, update the version number on `current_version` variable so users can see there is a new version.
@@ -140,10 +140,10 @@ Follow the steps in the [Obtain requirements of the notebook](notebook_requireme
 1. Open the [LabConstrictor website](https://labconstrictor-form.streamlit.app/). If you see a `Zzzz` message for inactivity, click `Yes, get this app back up!`.
 2.  Select **Upload/Update notebook**.
 3. Upload your notebook file (`.ipynb`) and the `requirements.yaml` file you created.
-4.  Click **Validate submission**.
-5. Enter your repository URL and your personal access token.
+4. Click **➕ Validate & Add Submission**. If the notebook and its requirements pass the checks, the notebook appears in the **📃 Submission list**. You can repeat steps 3 and 4 to add more notebooks to the list before uploading.
+5. In the **⬆️ Upload it to GitHub** section, enter your repository URL and your personal access token.
     * *(Don't have a token? See [How to create a personal access token](personal_access_token.md))*
-6. Click Create pull request.
+6. Click **🚀 Create pull request**.
 
 
 ## 4. Merge and Verify

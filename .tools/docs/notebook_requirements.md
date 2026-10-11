@@ -18,7 +18,7 @@ You can get your Jupyter notebook’s requirements automatically with Option 1 o
 
 In both cases the Python environment that you use for the notebook, needs to run without errors. Knowing this please choose the option that best suits your case:
 
-* **Locally:** Go to the [Requirements_Generator.ipynb](../notebooks/Requirements_Generator.ipynb) notebook, download it (clicking on the button indicated on the screenshot bellow ⬇️) and open it in your local Python environment (conda or virtualenv).
+* **Locally:** Go to the [Requirements_Generator.ipynb](../notebooks/Requirements_Generator.ipynb) notebook, download it (clicking on the button indicated on the screenshot below ⬇️) and open it in your local Python environment (conda or virtualenv).
   > **Note**: When using it locally, the Python environment where you open the requirements generator notebook needs to be exactly the one you use to run the target notebook whose requirements you want to extract. For example, if you have multiple conda environments, you need to make sure that you use the same conda environment that you use to run the target notebook.
   
 ![Download Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Download_Notebook.png)

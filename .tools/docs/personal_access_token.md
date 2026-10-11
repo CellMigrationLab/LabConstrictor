@@ -6,42 +6,24 @@ If you want to work with GitHub repositories from your notebook, like cloning, e
 
 ![Gif of generating a GitHub token](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/GitHub_Access_Token.gif)
 
-To see the full steps, follow the instructions below that match the type of access you want.
+> The LabConstrictor repository form accepts only a classic token, which starts with `ghp_`. A fine-grained token (it starts with `github_pat_`) is rejected.
 
-## For Read & Write Access
+To see the full steps, follow the instructions below.
+
+## Create the token
 
 1. Go to https://github.com/ and sign in.  
 2. Click your profile icon (top right) ➔ **Settings**  
 3. In the left sidebar, select **Developer settings** ➔ **Personal access tokens** ➔ **Tokens (classic)**  
 4. On the top right side (at the same level as `Personal access tokens (classic)`), click on  **Generate new token** ➔ **Generate new token (classic)**  
 5. Give your token a descriptive **Name** (e.g., `Notebook RW Token`) and set an **Expiration** if desired  
-6. Under **Scopes**, check:  
-   - **repo**  
-     - **contents**  
-       > Grants read & write access to repository contents (needed for cloning, editing, and pushing files)
+6. Under **Scopes**, tick **repo**  
    - *(Optional: To only work with public repositories, select **public_repo** instead of **repo**)*  
 7. Click **Generate token** at the bottom  
 8. **Copy** your new token right away. You won’t be able to see it again later!  
 9. Paste the token into your notebook’s `GitHub-token` field, so API calls authenticate as the chosen owner.  
 
----
-
-## For Read-Only Access
-
-1. Go to https://github.com/ and sign in.  
-2. Click your profile icon (top right) ➔ **Settings**  
-3. In the left sidebar, select **Developer settings** ➔ **Personal access tokens** ➔ **Tokens (classic)**  
-4. Click **Generate new token (classic)**  
-5. For **Resource owner**, select the owner of the repository (your user or organisation)  
-6. Give your token a descriptive **Name** (e.g., `Notebook Read-Only Token`) and set an **Expiration** if desired  
-7. Under **Scopes**, check:  
-   - **repo**  
-     - **contents**  
-       > Grants **read-only** access to repository contents (needed for cloning or viewing files only)  
-   - *(Optional: For public repositories, select **public_repo** instead of **repo**)*  
-8. Click **Generate token** at the bottom  
-9. **Copy** your new token immediately—you won’t see it again!  
-10. Paste the token into your notebook’s `GitHub-token` field for authentication.  
+A classic token with the **repo** scope can read and write your repositories, so keep it private.
 
 
 ---
