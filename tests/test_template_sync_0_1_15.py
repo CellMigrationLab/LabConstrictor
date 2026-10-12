@@ -46,7 +46,7 @@ class MigrationTests(unittest.TestCase):
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.15", text)
+        self.assertIn("to: 0.1.15", text)  # the current template_version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_14_to_v0_1_15.py", text)
 
 
