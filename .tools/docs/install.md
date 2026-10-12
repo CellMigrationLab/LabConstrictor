@@ -1,6 +1,6 @@
 # Install an app
 
-Installing takes about 6-8 minutes and you only do it once. Download the installer for your system from the app's page in the [App Centre](https://labconstrictor.cellmig.org/apps/) (or from the app's GitHub release) and follow the steps for your system.
+Installing takes about 6-8 minutes and you only do it once. You need an internet connection while installing: the installer downloads the app's Python packages. Download the installer for your system from the app's page in the [App Centre](https://labconstrictor.cellmig.org/apps/) (or from the app's GitHub release) and follow the steps for your system.
 
 > **Check where it comes from.** The installers are not code-signed yet, so your system will warn you. Download only from the app's own GitHub release (the address starts with `https://github.com/` followed by the app's owner and repository, as shown on the app's page), and run it only if you trust that owner. A listing in the App Centre checks that the files come from the app's repository; it is not a security audit.
 
