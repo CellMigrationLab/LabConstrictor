@@ -15,7 +15,11 @@ So the real path of a template change to a user is: template `main` (version bum
 
 What the installer does with the scripts (from `construct.yaml` and the `constructor` sources):
 
-* `post_install.sh/.bat` are run by the installer at the end of every install (`pkgs/post_install.*`). On Linux and macOS `bash installer.sh -u -p <prefix>` updates an existing prefix and runs `post_install` again; without `-u` the installer refuses an existing folder. On Windows the `.exe` can be run again on the same folder (not verified, see below).
+* `post_install.sh/.bat` are run by the installer at the end of every install (`pkgs/post_install.*`). **How a user gets the new installer onto an existing install differs by system** (observed in the first run of the LabConstrictor-Tools workflow `smoke_migration.yml`, run 38298832113, with NucleiSky):
+  * Linux: `bash installer.sh -u -p <prefix>` updates the existing prefix in place and runs `post_install` again (works).
+  * macOS: the same `-u` stops in `post_install` because menuinst refuses an existing shortcut ("App already exists at ~/Applications/<app>.app"). This is how the template behaves today, independent of the hooks. Run the app's `uninstall.sh` first, then the new installer.
+  * Windows: the silent installer exits with code 2 when the folder already holds an install. Uninstall first (Settings > Apps), then install the new version.
+  So "update" on macOS and Windows means uninstall and install again; user data outside the install folder is not touched (the scripts only remove the install folder).
 * `pre_uninstall.bat` is copied by the Windows installer to `<prefix>\pre_uninstall.bat` and run by the uninstaller (constructor's `pre_uninstall` exists on Windows only).
 * `pre_uninstall.sh` and `uninstall.sh` are plain `extra_files` copied to the prefix on Linux and macOS (constructor has no uninstall hook there). `post_install` fills the `BASE_PATH` token with the real prefix.
 
@@ -45,7 +49,7 @@ Rules:
 
 ## 3. What cannot be migrated (honest answer)
 
-* **A copy that is already installed cannot be changed by a template version.** Its `post_install` already ran; the Linux/macOS `pre_uninstall.sh`/`uninstall.sh` and the Windows `pre_uninstall.bat` in the prefix are old files. They change only when a newer installer is run over the prefix (`-u`, or the `.exe` again) or after an uninstall and a fresh install. There is no mechanism in the template, and none is added here, that edits files inside someone's prefix: it would need code that runs on the user's computer without the user installing anything.
+* **A copy that is already installed cannot be changed by a template version.** Its `post_install` already ran; the Linux/macOS `pre_uninstall.sh`/`uninstall.sh` and the Windows `pre_uninstall.bat` in the prefix are old files. They change only when a newer installer is run over the prefix (`-u` on Linux) or after an uninstall and a fresh install (macOS, Windows). There is no mechanism in the template, and none is added here, that edits files inside someone's prefix: it would need code that runs on the user's computer without the user installing anything.
 * **An app only gets tools if a release contains `src/<package>_lc_tools/`.** The tool module is a file of the installer (`extra_files`); an installed app whose installer did not ship it has nothing to register, whatever the scripts say. So "apps pick up the hooks when they update" means: the app owner merges the sync pull request **and publishes a new release**, and users install it.
 * **Old installs keep uninstalling the old way.** Uninstalling an app installed from an old installer does not unregister anything (it never registered). That is harmless. The reverse case is the risk: an app registered by a new installer and then removed by deleting its folder by hand leaves an entry in `~/.labconstrictor/apps` (see `labconstrictor-tools doctor`).
 * **Repositories that did not receive the sync** (no `LABCONSTRICTOR_SYNC_TOKEN`, workflow disabled, sync pull request not merged) stay on their version and do not get the hooks; they can copy the files by hand from `.tools/docs/tools_bridge.md`.
@@ -55,4 +59,4 @@ Rules:
 ## 4. Test plan
 
 * Template tests (`tests/test_template_sync_0_1_16.py`): old scripts of 0.1.15 become byte-identical to the 0.1.16 template scripts rendered for the app; second run changes nothing; hooks already present are untouched; CRLF/LF preserved; customised and missing files skipped without failing; user files untouched; the `sync.py` entry point; the migrated bash scripts run against a stub Python (register, failed registration, no tools module, uninstall unregisters and removes only the prefix, failed unregister only warns).
-* LabConstrictor-Tools workflow `smoke_migration.yml`: an app at an old template version is installed, migrated by this branch, a new installer is built and installed over it, `labconstrictor-tools list` and `doctor` are checked, then the app is uninstalled, on Linux, macOS and Windows.
+* LabConstrictor-Tools workflow `smoke_migration.yml`: an app at an old template version is built and installed, migrated by this branch with `sync.py`, a new installer is built and the install is updated to it (in place on Linux, uninstall then install on macOS and Windows), `labconstrictor-tools list` and `doctor` are checked, then the app is uninstalled, on Linux, macOS and Windows.
