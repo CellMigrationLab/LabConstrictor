@@ -208,6 +208,25 @@ def _migrate_docs(helpers: Any, repo_root: Path, replacements: dict[str, str]) -
     return results
 
 
+def detect_package(helpers: Any, repo_root: Path) -> str | None:
+    """The app's Python package name. The 0.1.10 helper gives up when src/ holds two packages, which is exactly the case of an
+    app that has a <package>_lc_tools module next to its package, so the tools packages are ignored here."""
+    src = repo_root / "src"
+    if src.is_dir():
+        candidates = sorted(
+            child.name
+            for child in src.iterdir()
+            if child.is_dir()
+            and child.name.isidentifier()
+            and not child.name.endswith("_lc_tools")
+            and (child / "__init__.py").is_file()
+        )
+        if len(candidates) == 1:
+            return candidates[0]
+    name = helpers.detect_python_package_name(repo_root)
+    return None if name == "PYTHON_PROJ_NAME" else name
+
+
 def has_tools_module(repo_root: Path) -> bool:
     src = repo_root / "src"
     if not src.is_dir():
@@ -225,13 +244,20 @@ def migrate(repo_root: Path, context: dict[str, Any]) -> None:
         log(f"SKIPPED: could not read the app name from construct.yaml ({exc}); nothing was changed.")
         return
 
+    package = detect_package(helpers, repo_root)
+    if package:
+        replacements["PYTHON_PROJ_NAME"] = package
+    else:
+        log("could not tell the app's Python package from src/ or setup.py: the post_install hook is skipped (add it by hand), the other files are migrated.")
+
     log("app has a <package>_lc_tools module: the hooks will register it." if has_tools_module(repo_root)
         else "app has no <package>_lc_tools module: the hooks are added but stay inert until you add one (see .tools/docs/tools_bridge.md).")
 
     steps: list[tuple[Path, Callable[[], str]]] = []
     resources = {path: _resource_lines(helpers, path, replacements) for path in (POST_INSTALL_SH, POST_INSTALL_BAT, PRE_UNINSTALL_SH, PRE_UNINSTALL_BAT)}
-    steps.append((POST_INSTALL_SH, lambda: _migrate_post_install_sh(helpers, repo_root, resources[POST_INSTALL_SH])))
-    steps.append((POST_INSTALL_BAT, lambda: _migrate_post_install_bat(helpers, repo_root, resources[POST_INSTALL_BAT])))
+    if package:  # without the package name the block would carry an unreplaced token and silently do nothing
+        steps.append((POST_INSTALL_SH, lambda: _migrate_post_install_sh(helpers, repo_root, resources[POST_INSTALL_SH])))
+        steps.append((POST_INSTALL_BAT, lambda: _migrate_post_install_bat(helpers, repo_root, resources[POST_INSTALL_BAT])))
     steps.append((PRE_UNINSTALL_SH, lambda: _migrate_pre_uninstall(helpers, repo_root, resources[PRE_UNINSTALL_SH], PRE_UNINSTALL_SH, lambda l: l.startswith("# best effort: a failure must not stop"))))
     steps.append((PRE_UNINSTALL_BAT, lambda: _migrate_pre_uninstall(helpers, repo_root, resources[PRE_UNINSTALL_BAT], PRE_UNINSTALL_BAT, lambda l: "labconstrictor_tools unregister" in l)))
     steps.append((UNINSTALL_SH, lambda: _migrate_uninstall_sh(helpers, repo_root, replacements)))

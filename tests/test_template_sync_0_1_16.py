@@ -218,6 +218,28 @@ class MigrationBehaviourTests(MigrationCase):
         (self.repo / "src/demoapp_lc_tools/__init__.py").write_text("", encoding="utf-8")
         self.assertIn("app has a <package>_lc_tools module", self.run_migration())
 
+    def test_a_tools_module_next_to_the_package_does_not_hide_the_package_name(self) -> None:
+        """Found by the Tools smoke run on NucleiSky: with src/<pkg> and src/<pkg>_lc_tools the 0.1.10 helper cannot name the package."""
+        (self.repo / "src/demoapp_lc_tools").mkdir()
+        (self.repo / "src/demoapp_lc_tools/__init__.py").write_text("", encoding="utf-8")
+        self.install_old_scripts()
+        self.run_migration()
+        for name in ("post_install.sh", "post_install.bat"):
+            text = self.script(name).read_text(encoding="utf-8")
+            self.assertIn("demoapp_lc_tools", text, name)
+            self.assertNotIn("PYTHON_PROJ_NAME", text, name)
+
+    def test_an_undetectable_package_skips_post_install_but_migrates_the_rest(self) -> None:
+        (self.repo / "src/other").mkdir()  # two packages and no setup.py: cannot tell which one is the app
+        (self.repo / "src/other/__init__.py").write_text("", encoding="utf-8")
+        self.install_old_scripts()
+        before = {n: self.script(n).read_bytes() for n in ("post_install.sh", "post_install.bat")}
+        output = self.run_migration()
+        for name, data in before.items():
+            self.assertEqual(self.script(name).read_bytes(), data, name)
+        self.assertIn("could not tell the app's Python package", output)
+        self.assertEqual(self.script("pre_uninstall.sh").read_bytes(), self.expected("pre_uninstall.sh"))
+
     def test_the_sync_entry_point_runs_the_chain_step(self) -> None:
         """The way the Sync workflow runs it: .template_sync/sync.py from 0.1.15 to 0.1.16 on a copy of the repository."""
         self.install_old_scripts()
