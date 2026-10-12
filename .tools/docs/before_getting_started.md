@@ -24,7 +24,7 @@ LabConstrictor includes helper cells that track notebook versions and notify use
 
 ### ✨ User-Friendly Experience
 
-Installers handle the setup process, allowing users to launch your notebooks with a desktop app. The installers take care of the setup, so users can open your notebooks with a desktop app. The app shows a Welcome Dashboard where users can check versions and pick notebooks. Notebooks have hidden code and a play button to run cells, giving a clean, app-like feel. private or public, giving you full control over who can access and use your notebooks.
+The installers take care of the setup, so users can open your notebooks with a desktop app. The app shows a Welcome Dashboard where users can check versions and pick notebooks. Notebooks have hidden code and a play button to run cells, giving a clean, app-like feel. Your repository can be private or public, giving you full control over who can access and use your notebooks.
 
 ### 📱 Offline Usage
 
@@ -34,7 +34,7 @@ If your notebooks don’t need internet access, users can run the desktop apps o
 
 To get started with LabConstrictor, you only need the following:
 
-- **🐙 GitHub Account:** You’ll need a GitHub account to make a new repository from the LabConstrictor template. After creating it, complete the one-time [automatic synchronization setup](template_synchronization.md) so it can receive future template improvements.
+- **🐙 GitHub Account:** You’ll need a GitHub account to make a new repository from the LabConstrictor template.
 - **📒 Jupyter Notebooks:** Have your Jupyter notebooks ready to package into desktop apps.
 - **🐍 Python Environment:** You’ll need a Python environment (local or online) where your notebooks run without errors. This is needed to create and check requirement files. Alternatively, you can create the requirement files yourself, but this may be prone to errors.
 - **(Optional) 🖼️ Images, logo and icons:** for branding your executable installer. We recommend following the [images guidelines](./installer_images.md) for further information and guidance.

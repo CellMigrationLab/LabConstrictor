@@ -32,3 +32,14 @@ In case you do not provide any images during the initialisation of your reposito
 When you provide your own images, the installer will reflect your custom branding:
 
 ![Customised Installer Images](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Customisation_Custom.png)
+
+---
+
+<div align="center">
+
+[← Previous](executable_creation.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](app_manifest.md)
+
+
+</div>

@@ -10,7 +10,7 @@ To open the application, go to the Start Menu on Windows or Linux, or the Applic
 
 When you start the application, a terminal will pop up.
 
-> Don't be scared by the terminal, is normal for keeping your Jupyter Lab session. **Do not close the terminal** until you have finnisehd working with your notebooks.  When so click on the terminal and type `Ctrl + C` or `Cmd + C` to stop the Jupyter Lab session and close the terminal.
+> Don't be scared by the terminal, it is normal: it keeps your Jupyter Lab session running. **Do not close the terminal** until you have finished working with your notebooks. When you have, click on the terminal window and press `Ctrl+C` to stop the Jupyter Lab session and close the terminal.
 
 After some seconds, Jupyter Lab will open in your default web browser. The welcome notebook will appear automatically:
 
@@ -18,13 +18,13 @@ After some seconds, Jupyter Lab will open in your default web browser. The welco
 
 ## 3. How to Run Notebooks?
 
-You might be used to work with notebooks on JupyterLab (in case you need so guidance on JupyterLab check [this guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md)). Still, LabConstrisctor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.
+You might be used to work with notebooks on JupyterLab (in case you need some guidance on JupyterLab check [this guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md)). Still, LabConstrictor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.
 
 ## 4. Accessing your Notebooks
 
 Once you run the welcome notebook, a dashboard will show a list of available notebooks. It looks similar to the screenshot in the [Welcome Notebook](#2-welcome-notebook) step.
 
-In the last column of the dashboard, you'll see a button called `Open the Notebook`. Click it to open that notebook in a new tab and run it just like you did with the welcome notebook.
+In the last column of the dashboard, you'll see a button called `Open the notebook`. Click it to open that notebook in a new tab and run it just like you did with the welcome notebook.
 
 
 ---

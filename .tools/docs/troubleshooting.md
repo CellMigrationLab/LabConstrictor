@@ -27,3 +27,14 @@ Repositories created before template version `0.1.12` also need the one-time wor
 ### Bad credentials or authentication failed
 
 The token may have expired or been revoked. Create a replacement token and update the existing `LABCONSTRICTOR_SYNC_TOKEN` secret.
+
+---
+
+<div align="center">
+
+[← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](personal_access_token.md)
+
+
+</div>

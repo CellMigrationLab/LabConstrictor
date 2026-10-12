@@ -26,6 +26,7 @@ When the automated workflow completes, open your repository's **Releases** page,
 
 - Try your installer yourself: [Install an app](install.md), then [Use notebooks after installation](notebook_usage.md).
 - List your app in the App Centre: [Describe your app for the App Centre](app_manifest.md).
+- Receive future template improvements as pull requests: [Keep your app up to date](keep_app_up_to_date.md).
 
 
 ---
@@ -34,7 +35,7 @@ When the automated workflow completes, open your repository's **Releases** page,
 
 [← Previous](notebook_upload.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[Next →](download_executable.md)
+[Next →](installer_images.md)
 
 
 </div>

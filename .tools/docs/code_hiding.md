@@ -24,7 +24,7 @@ Clicking this button runs the corresponding code cell without revealing the code
 
 ## How to hide or show code cells?
 
-Depending on your intialisation your code cells will be hidden by default or shown by default. In either case, the visibility of code cells can be toggled using the `Show/Hide Code` button in the top toolbar:
+Depending on your initialisation your code cells will be hidden by default or shown by default. In either case, the visibility of code cells can be toggled using the `Show/Hide Code` button in the top toolbar:
 
 ![Show Hide Code Button](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Notebook_ShowHide_Button.png)
 
