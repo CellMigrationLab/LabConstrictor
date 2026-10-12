@@ -229,6 +229,16 @@ class MigrationBehaviourTests(MigrationCase):
             self.assertIn("demoapp_lc_tools", text, name)
             self.assertNotIn("PYTHON_PROJ_NAME", text, name)
 
+    def test_several_shim_packages_are_resolved_by_the_tools_module_name(self) -> None:
+        """NucleiSky has src/nucleisky, nucleisky2d, nucleisky3d and nucleisky_lc_tools (no usable setup.py name)."""
+        for package in ("demoapp2d", "demoapp3d", "demoapp_lc_tools"):
+            (self.repo / "src" / package).mkdir()
+            (self.repo / "src" / package / "__init__.py").write_text("", encoding="utf-8")
+        self.install_old_scripts()
+        self.run_migration()
+        self.assertIn("demoapp_lc_tools", self.script("post_install.sh").read_text(encoding="utf-8"))
+        self.assertNotIn("PYTHON_PROJ_NAME", self.script("post_install.bat").read_text(encoding="utf-8"))
+
     def test_an_undetectable_package_skips_post_install_but_migrates_the_rest(self) -> None:
         (self.repo / "src/other").mkdir()  # two packages and no setup.py: cannot tell which one is the app
         (self.repo / "src/other/__init__.py").write_text("", encoding="utf-8")

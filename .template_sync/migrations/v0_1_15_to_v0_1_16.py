@@ -210,9 +210,19 @@ def _migrate_docs(helpers: Any, repo_root: Path, replacements: dict[str, str]) -
 
 def detect_package(helpers: Any, repo_root: Path) -> str | None:
     """The app's Python package name. The 0.1.10 helper gives up when src/ holds two packages, which is exactly the case of an
-    app that has a <package>_lc_tools module next to its package, so the tools packages are ignored here."""
+    app that has a <package>_lc_tools module next to its package (and apps may have several shim packages), so the name of the
+    single <package>_lc_tools module wins, then the single package that is not a tools module."""
     src = repo_root / "src"
     if src.is_dir():
+        # The tools module is the one thing the hook registers, so its name is the best answer when there is exactly one.
+        tools = []
+        for child in src.iterdir():
+            module = child.name if child.is_dir() and (child / "__init__.py").is_file() else child.stem if child.suffix == ".py" else ""
+            if module.endswith("_lc_tools") and len(module) > len("_lc_tools"):
+                tools.append(module[: -len("_lc_tools")])
+        tools = sorted(set(tools))
+        if len(tools) == 1:
+            return tools[0]
         candidates = sorted(
             child.name
             for child in src.iterdir()
