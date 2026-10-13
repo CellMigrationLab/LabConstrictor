@@ -78,7 +78,8 @@ class MigrationCase(unittest.TestCase):
 
     def expected(self, name: str) -> bytes:
         """The template script of this version rendered for the app, with the line endings of the app's file."""
-        source = self.helpers.read_text(ROOT / "app/bash_bat_scripts" / name)
+        # the template scripts of 0.1.16 are history: the resources of this migration hold them (the template moved on in 0.1.17)
+        source = self.helpers.read_text(self.migration.RESOURCE_ROOT / "app/bash_bat_scripts" / name)
         newline = "\r\n" if "\r\n" in source else "\n"
         return self.helpers.render_template(source, self.replacements, newline).encode()
 
@@ -100,19 +101,16 @@ class MigrationCase(unittest.TestCase):
 
 
 class TemplateConsistencyTests(unittest.TestCase):
-    def test_resources_are_identical_to_the_template_files(self) -> None:
+    def test_resources_exist(self) -> None:
+        # A migration's resources are history: the template files move on (0.1.17 changes the post_install scripts and the Tools guide).
         migration = load(MIGRATION_PATH, "migration_0_1_16_resources")
         for relative in migration.MANAGED_FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual(
-                    (migration.RESOURCE_ROOT / relative).read_bytes(),
-                    (ROOT / relative).read_bytes(),
-                    "update .template_sync/resources/v0_1_15_to_v0_1_16 when the template file changes",
-                )
+                self.assertTrue((migration.RESOURCE_ROOT / relative).is_file())
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.16", text)
+        self.assertIn("to: 0.1.16", text)  # the current template_version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_15_to_v0_1_16.py", text)
 
     def test_chains_from_every_older_version_reach_0_1_16(self) -> None:
@@ -159,7 +157,7 @@ class MigrationBehaviourTests(MigrationCase):
             self.script(name).write_bytes(self.expected(name))
         self.install_manifest_check()
         (self.repo / ".tools/docs/tools_bridge.md").write_bytes(
-            self.helpers.render_template((ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8"), self.replacements, "\n").encode()
+            self.helpers.render_template((self.migration.RESOURCE_ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8"), self.replacements, "\n").encode()
         )
         (self.repo / ".tools/docs/README.md").write_text("- [Tools](tools_bridge.md)\n", encoding="utf-8")
         before = snapshot(self.repo)
@@ -273,6 +271,8 @@ class MigrationBehaviourTests(MigrationCase):
         """The way the Sync workflow runs it: .template_sync/sync.py from 0.1.15 to 0.1.16 on a copy of the repository."""
         self.install_old_scripts()
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
+        manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at this step
+        manifest.write_text(manifest.read_text(encoding="utf-8").replace("template_version: 0.1.17", "template_version: 0.1.16"), encoding="utf-8")
         result = subprocess.run(
             [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", "0.1.15", "--to-version", "0.1.16", "--repository-root", str(self.repo)],
             capture_output=True, text=True,

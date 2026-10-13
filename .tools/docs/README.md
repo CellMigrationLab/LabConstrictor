@@ -28,6 +28,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Keep your app up to date](keep_app_up_to_date.md)
 - [Enable automatic template updates](template_synchronization.md)
 - [Template 0.1.16: how the Tools bridge hooks reach an existing app](migration_0_1_16.md)
+- [Template 0.1.17: install Tools before the package import check](migration_0_1_17.md)
 
 ## Notebook authoring tips
 
