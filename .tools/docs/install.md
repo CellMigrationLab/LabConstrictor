@@ -6,6 +6,10 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 
 > A command prompt window opens during installation on Windows; this is normal, do not close it.
 
+## Before you install
+
+- **Install path.** The install path must contain no space: the installer refuses a path with a space. Use a path such as `C:\LabConstrictor\<app>` on Windows or `~/labconstrictor/<app>` on macOS and Linux.
+
 ## Install on Windows
 
 1. Download the `.exe` file and double-click it.
@@ -26,6 +30,11 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 1. Download the `.sh` file.
 2. Open a terminal in the download folder and run `bash` followed by the name of the file you downloaded, for example: `bash MyApp-0.1.0-Linux-x86_64.sh`
 3. Follow the prompts, then launch the app from your applications menu.
+
+## Update an installed app
+
+- **macOS and Windows.** On macOS and Windows, update an app by uninstalling the old version first and then installing the new one: the installer does not install over an existing install.
+- **Linux.** On Linux, running the installer with `-u` updates in place only if the previous install finished; otherwise delete `<prefix>/pkgs` or uninstall the app and install it again.
 
 ## Next
 

@@ -27,6 +27,8 @@ OLD_SCRIPTS = FIXTURES / "template_0_1_15_scripts"
 APPS_0_1_16 = FIXTURES / "template_0_1_16_apps"
 BRIDGE_TEST = FIXTURES / "bridge_test_hooks"
 SCRIPT_NAMES = ("post_install.sh", "post_install.bat")
+OLD_PIN = "v0.2.0-rc.1"  # the pin of template 0.1.17 (the resources of this migration)
+TEMPLATE_PIN = "v0.3.0-alpha.1"  # the pin of the live template since 0.1.18
 
 CONSTRUCT = """name: Demo_App
 version: 1.2.3
@@ -95,7 +97,8 @@ class MigrationCase(unittest.TestCase):
             self.script(name).write_bytes(self.render(self.old_migration.RESOURCE_ROOT / "app/bash_bat_scripts" / name))
 
     def expected(self, name: str) -> bytes:
-        return self.render(ROOT / "app/bash_bat_scripts" / name)
+        # what the 0.1.17 migration converges to: the scripts of template 0.1.17 (its resources). The live template moved on (0.1.18 pin).
+        return self.render(self.migration.RESOURCE_ROOT / "app/bash_bat_scripts" / name)
 
     def run_migration(self) -> str:
         buffer = StringIO()
@@ -106,18 +109,16 @@ class MigrationCase(unittest.TestCase):
 
 class TemplateConsistencyTests(unittest.TestCase):
     def test_resources_are_identical_to_the_template_files(self) -> None:
+        """Since template 0.1.18 the live files carry the new Tools pin, so the resources of 0.1.17 (frozen: they are what 0.1.17 delivers)
+        must equal the live files except for that pin; the byte-for-byte check against the live files is made for the 0.1.18 resources."""
         migration = load(MIGRATION_PATH, "migration_0_1_17_resources")
         for relative in migration.MANAGED_FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual(
-                    (migration.RESOURCE_ROOT / relative).read_bytes(),
-                    (ROOT / relative).read_bytes(),
-                    "update .template_sync/resources/v0_1_16_to_v0_1_17 when the template file changes",
-                )
+                live = (ROOT / relative).read_bytes().replace(TEMPLATE_PIN.encode(), OLD_PIN.encode())
+                self.assertEqual((migration.RESOURCE_ROOT / relative).read_bytes(), live)
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.17", text)
         self.assertIn("script: migrations/v0_1_16_to_v0_1_17.py", text)
 
     def test_chains_from_every_older_version_reach_0_1_17(self) -> None:
@@ -144,10 +145,12 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertLess(install, check)
         self.assertLess(check, register)
         self.assertEqual(sh.count("-m pip install \"${LC_TOOLS_SPEC"), 1)
-        self.assertEqual(sh.count("v0.2.0-rc.1"), 1)
+        self.assertEqual(sh.count(TEMPLATE_PIN), 1)
+        self.assertNotIn(OLD_PIN, sh)
         bat = (ROOT / "app/bash_bat_scripts/post_install.bat").read_bytes().decode()
         self.assertEqual(bat.count("\n"), bat.count("\r\n"), "post_install.bat must stay CRLF")
-        self.assertEqual(bat.count("v0.2.0-rc.1"), 1)
+        self.assertEqual(bat.count(TEMPLATE_PIN), 1)
+        self.assertNotIn(OLD_PIN, bat)
         self.assertLess(bat.index("CALL :install_lc_tools"), bat.index('-c "import PYTHON_PROJ_NAME;'))
         self.assertLess(bat.index('-c "import PYTHON_PROJ_NAME;'), bat.index("-m labconstrictor_tools register"))
         self.assertEqual(bat.count("\n:install_lc_tools\r\n"), 1)
@@ -197,6 +200,8 @@ class MigrationBehaviourTests(MigrationCase):
             newline = "\r\n" if "\r\n" in source else "\n"
             self.script(name).write_bytes(self.helpers.render_template(source, self.replacements, newline).encode())
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
+        manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at this step
+        manifest.write_text(manifest.read_text(encoding="utf-8").replace("template_version: 0.1.18", "template_version: 0.1.17"), encoding="utf-8")
         result = subprocess.run(
             [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", "0.1.15", "--to-version", "0.1.17", "--repository-root", str(self.repo)],
             capture_output=True, text=True,
@@ -268,7 +273,7 @@ class MigrationBehaviourTests(MigrationCase):
         self.assertFalse((self.repo / ".tools/docs/tools_bridge.md").exists())
         (self.repo / ".tools/docs/tools_bridge.md").write_text("old guide\n", encoding="utf-8")
         self.run_migration()
-        self.assertEqual((self.repo / ".tools/docs/tools_bridge.md").read_bytes(), self.render(ROOT / ".tools/docs/tools_bridge.md", "\n"))
+        self.assertEqual((self.repo / ".tools/docs/tools_bridge.md").read_bytes(), self.render(self.migration.RESOURCE_ROOT / ".tools/docs/tools_bridge.md", "\n"))
 
 
 class RealAppScriptsTests(MigrationCase):
