@@ -65,6 +65,22 @@ fi
 if [ -f "$PROJECT_ROOT/setup.py" ]; then
     echo "Found setup.py, installing PROJECT_NAME package locally without build isolation" >> "$LOG_FILE"
     "$PYTHON_EXE" -m pip install --no-deps --no-build-isolation "$PROJECT_ROOT" >> "$LOG_FILE" 2>&1
+    # Tools first, only for an app whose package ships a <package>_lc_tools module: the app package may import labconstrictor_tools
+    # at module level, so labconstrictor-tools must be installed BEFORE the import check below. A failed install is only a WARNING
+    # (it never fails the installation by itself). LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
+    # Default source: the GitHub archive of the labconstrictor-tools release TAG below (a plain zip: no git needed on the user's computer),
+    # because the package is not on PyPI yet. Once it is, use "labconstrictor-tools" here. To move the pin, change only this tag.
+    LC_TOOLS_PIN="v0.2.0-rc.1"
+    LC_TOOLS_MODULE="PYTHON_PROJ_NAME_lc_tools"
+    LC_TOOLS_READY=0
+    if "$PYTHON_EXE" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('$LC_TOOLS_MODULE') else 1)" >> "$LOG_FILE" 2>&1; then
+        echo "Found $LC_TOOLS_MODULE: installing labconstrictor-tools before the import check of PROJECT_NAME" >> "$LOG_FILE" || :
+        if "$PYTHON_EXE" -m pip install "${LC_TOOLS_SPEC:-https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/tags/${LC_TOOLS_PIN}.zip}" >> "$LOG_FILE" 2>&1; then
+            LC_TOOLS_READY=1
+        else
+            echo "WARNING: labconstrictor-tools could not be installed - see the pip output above in this file; the tools of PROJECT_NAME will not be registered (the import check below fails only if the package needs labconstrictor-tools at import time)." >> "$LOG_FILE" || :
+        fi
+    fi
     "$PYTHON_EXE" -c "import PYTHON_PROJ_NAME; print('PROJECT_NAME import successful:', PYTHON_PROJ_NAME.__file__)" >> "$LOG_FILE" 2>&1
 else
     echo "No setup.py detected; this project does not bundle an optional Python package." >> "$LOG_FILE"
@@ -74,10 +90,7 @@ fi
 # --- Optional: expose the app's tools to Napari, Fiji and the command line (LabConstrictor tools bridge) -------------------
 # If the app's package ships a module named <package>_lc_tools, install labconstrictor-tools and register that module.
 # This step must never fail the installation. LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
-# Default source: the GitHub archive of the labconstrictor-tools release TAG below (a plain zip: no git needed on the user's computer),
-# because the package is not on PyPI yet. Once it is, use "labconstrictor-tools" here. To move the pin, change only this tag.
-LC_TOOLS_PIN="v0.2.0-rc.1"
-LC_TOOLS_MODULE="PYTHON_PROJ_NAME_lc_tools"
+# labconstrictor-tools is installed above, before the import check of the package (LC_TOOLS_PIN, LC_TOOLS_MODULE and LC_TOOLS_READY are set there).
 if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('$LC_TOOLS_MODULE') else 1)" >> "$LOG_FILE" 2>&1; then
     lc_note() { echo "$*" >> "$LOG_FILE" || :; }  # a full or unwritable log must not fail the installation
     lc_note "Found $LC_TOOLS_MODULE: registering the tools of PROJECT_NAME for Napari and Fiji"
@@ -86,7 +99,7 @@ if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, s
         lc_note "WARNING: no version: line at the start of a line in construct.yaml - registering the tools with version 0."
         LC_APP_VERSION=0
     fi
-    if "$PYTHON_EXE" -m pip install "${LC_TOOLS_SPEC:-https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/tags/${LC_TOOLS_PIN}.zip}" >> "$LOG_FILE" 2>&1 \
+    if [ "${LC_TOOLS_READY:-0}" = 1 ] \
         && "$PYTHON_EXE" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "$PREFIX" \
             --module "$LC_TOOLS_MODULE" --version "$LC_APP_VERSION" --display-name "PROJECT_NAME" >> "$LOG_FILE" 2>&1; then
         lc_note "Tools registered (labconstrictor-tools list shows them)."
