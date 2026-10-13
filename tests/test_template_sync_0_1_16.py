@@ -82,6 +82,13 @@ class MigrationCase(unittest.TestCase):
         newline = "\r\n" if "\r\n" in source else "\n"
         return self.helpers.render_template(source, self.replacements, newline).encode()
 
+    def install_manifest_check(self) -> None:
+        """The manifest check files as the migration leaves them."""
+        for relative in self.migration.MANIFEST_CHECK_FILES:
+            destination = self.repo / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes((self.migration.RESOURCE_ROOT / relative).read_bytes())
+
     def run_migration(self) -> str:
         buffer = StringIO()
         with redirect_stdout(buffer):
@@ -150,6 +157,7 @@ class MigrationBehaviourTests(MigrationCase):
     def test_apps_that_already_carry_the_hooks_are_left_alone(self) -> None:
         for name in SCRIPT_NAMES:
             self.script(name).write_bytes(self.expected(name))
+        self.install_manifest_check()
         (self.repo / ".tools/docs/tools_bridge.md").write_bytes(
             self.helpers.render_template((ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8"), self.replacements, "\n").encode()
         )
@@ -209,7 +217,7 @@ class MigrationBehaviourTests(MigrationCase):
         for p, data in owned.items():
             self.assertEqual((self.repo / p).read_bytes(), data, p)
         added = set(snapshot(self.repo)) - before_names
-        self.assertEqual(added, {".tools/docs/tools_bridge.md"})
+        self.assertEqual(added, {".tools/docs/tools_bridge.md"} | {str(p) for p in self.migration.MANIFEST_CHECK_FILES})
 
     def test_the_hooks_are_reported_inert_without_a_tools_module(self) -> None:
         self.install_old_scripts()
@@ -249,6 +257,17 @@ class MigrationBehaviourTests(MigrationCase):
             self.assertEqual(self.script(name).read_bytes(), data, name)
         self.assertIn("could not tell the app's Python package", output)
         self.assertEqual(self.script("pre_uninstall.sh").read_bytes(), self.expected("pre_uninstall.sh"))
+
+    def test_a_stale_schema_copy_is_replaced_and_the_app_manifest_is_not_touched(self) -> None:
+        self.install_old_scripts()
+        schema = self.repo / ".tools/schema/labconstrictor-app.schema.json"
+        schema.parent.mkdir(parents=True, exist_ok=True)
+        schema.write_text('{"additionalProperties": false, "properties": {}}\n', encoding="utf-8")
+        manifest = self.repo / "labconstrictor-app.yaml"
+        before = manifest.read_bytes()
+        self.run_migration()
+        self.assertEqual(schema.read_bytes(), (ROOT / ".tools/schema/labconstrictor-app.schema.json").read_bytes())
+        self.assertEqual(manifest.read_bytes(), before)
 
     def test_the_sync_entry_point_runs_the_chain_step(self) -> None:
         """The way the Sync workflow runs it: .template_sync/sync.py from 0.1.15 to 0.1.16 on a copy of the repository."""

@@ -34,6 +34,7 @@ In the **app repository**, in this order (each file independently):
 | `app/bash_bat_scripts/pre_uninstall.sh` / `.bat` | the `unregister` call (with a warning if a registry entry stays) is inserted before the `menuinst ... remove` line |
 | `app/bash_bat_scripts/uninstall.sh` | only if it is exactly the 0.1.15 text: a failed `pre_uninstall` and a failed `rm -rf` are reported (exit 1 if the folder cannot be removed) |
 | `.tools/docs/tools_bridge.md`, `.tools/docs/README.md` | the guide and its index entry |
+| `.tools/schema/labconstrictor-app.schema.json`, `.tools/python/check_app_manifest.py`, `.tools/docs/app_manifest.md`, `.github/workflows/check_app_manifest.yml` | the App Centre manifest check, refreshed as template-managed files (byte copies, as in 0.1.15). The 0.1.15 schema copy was stale and rejected `inputs`, `outputs`, `limitations`, `status` and `distribution.platforms`; the copy is now the Site schema. The app's own `labconstrictor-app.yaml` is never touched |
 
 `construct.yaml` needs no change: `pre_uninstall.sh`, `uninstall.sh` and the post/pre scripts are already listed, and `bump_constructor.py` adds every file under `src/` (including `src/<package>_lc_tools/`) at release time. The tool module itself (`src/<package>_lc_tools/`) belongs to the app author and is not created by the migration.
 

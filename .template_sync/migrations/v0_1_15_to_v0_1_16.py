@@ -7,6 +7,8 @@ only ever changed by installing a newer installer, see .tools/docs/migration_0_1
 * app/bash_bat_scripts/pre_uninstall.sh / .bat  unregister it on uninstall
 * app/bash_bat_scripts/uninstall.sh             report a failed pre-uninstall or a failed removal
 * .tools/docs/tools_bridge.md and its entry in .tools/docs/README.md
+* the App Centre manifest check (.tools/schema/labconstrictor-app.schema.json, .tools/python/check_app_manifest.py, .tools/docs/app_manifest.md,
+  .github/workflows/check_app_manifest.yml), whose 0.1.15 schema copy was stale; labconstrictor-app.yaml itself is never touched
 
 Rules this migration keeps:
 
@@ -39,7 +41,15 @@ DOCS_INDEX = Path(".tools/docs/README.md")
 
 # Resource files: copies of the template files of 0.1.16 (a test checks they stay identical to the template).
 # Scripts are used as the source of the hook blocks; the doc is copied.
-MANAGED_FILES = (POST_INSTALL_SH, POST_INSTALL_BAT, PRE_UNINSTALL_SH, PRE_UNINSTALL_BAT, UNINSTALL_SH, TOOLS_DOC)
+# Template-owned App Centre manifest check (as in 0.1.15). The 0.1.15 copy of the schema rejected the fields inputs, outputs, limitations,
+# status and distribution.platforms. labconstrictor-app.yaml itself belongs to the app and is never created, changed or removed here.
+MANIFEST_CHECK_FILES = (
+    Path(".tools/schema/labconstrictor-app.schema.json"),
+    Path(".tools/python/check_app_manifest.py"),
+    Path(".tools/docs/app_manifest.md"),
+    Path(".github/workflows/check_app_manifest.yml"),
+)
+MANAGED_FILES = (POST_INSTALL_SH, POST_INSTALL_BAT, PRE_UNINSTALL_SH, PRE_UNINSTALL_BAT, UNINSTALL_SH, TOOLS_DOC) + MANIFEST_CHECK_FILES
 
 INDEX_ENTRY = "- [Expose tools to Napari and Fiji (experimental)](tools_bridge.md)"
 HOOK_MARKER = "labconstrictor_tools"
@@ -237,6 +247,24 @@ def detect_package(helpers: Any, repo_root: Path) -> str | None:
     return None if name == "PYTHON_PROJ_NAME" else name
 
 
+def _migrate_manifest_check(repo_root: Path) -> list[str]:
+    """Bring the template-owned manifest check files to this version (byte copies; unchanged files are not rewritten)."""
+    results = []
+    for relative in MANIFEST_CHECK_FILES:
+        source = RESOURCE_ROOT / relative
+        if not source.is_file():
+            raise FileNotFoundError(f"Template resource not found: {source}")
+        destination = repo_root / relative
+        data = source.read_bytes()
+        if destination.is_file() and destination.read_bytes() == data:
+            results.append(f"{relative}: unchanged")
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(data)
+        results.append(f"{relative}: written")
+    return results
+
+
 def has_tools_module(repo_root: Path) -> bool:
     src = repo_root / "src"
     if not src.is_dir():
@@ -292,6 +320,14 @@ def migrate(repo_root: Path, context: dict[str, Any]) -> None:
             log(line)
     except (OSError, ValueError, UnicodeDecodeError) as exc:
         log(f"docs SKIPPED: {exc}")
+
+    try:
+        for line in _migrate_manifest_check(repo_root):
+            if line.endswith("written"):
+                changed += 1
+            log(line)
+    except OSError as exc:
+        log(f"manifest check files SKIPPED: {exc}")
 
     if changed:
         log(f"done: {changed} file(s) changed. Review the pull request before merging; the tools register after a NEW installer of the app is installed.")

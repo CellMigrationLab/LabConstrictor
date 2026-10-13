@@ -19,8 +19,16 @@ description: |-
   Separate paragraphs with a blank line.
 kind: analysis            # analysis, segmentation, simulation, game, training or utility
 hosts: [notebook, napari] # where its tools can also run: notebook, napari, fiji, qupath
-distribution:             # at least one way to get the app
+status: Available         # optional: Experimental, Available or Deprecated
+inputs:                   # optional short lists (1 to 6 items of 5 to 200 characters each)
+  - TIFF images, one channel per file
+outputs:
+  - Label masks and a CSV table
+limitations:
+  - Not tested on 3D data
+distribution:             # at least one way to get the app: installer, colab or pip
   installer: true         # the installers LabConstrictor builds for each release
+  platforms: [windows-x86_64, macos-arm64, linux-x86_64]  # optional, needs installer: offer only these installers
   colab:
     - label: Notebook
       url: https://colab.research.google.com/github/you/my-app/blob/main/notebooks/App/App.ipynb
@@ -28,7 +36,7 @@ distribution:             # at least one way to get the app
 icon: app/logo/logo.png   # optional: a square PNG in your repository
 ```
 
-The first line makes editors with YAML support (for example VS Code) check the file as you type. More optional fields exist (authors, DOI, license, screenshots, a quick start); the full list is in the [schema](https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json). Everything is plain text: no HTML or Markdown.
+The first line makes editors with YAML support (for example VS Code) check the file as you type. `inputs`, `outputs` and `limitations` are short summaries for the app page (a list of one to six sentences, not README copy). More optional fields exist (authors, DOI, license, screenshots, a quick start); the full list is in the [schema](https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json). Everything is plain text: no HTML or Markdown.
 
 ## The automatic check
 
@@ -36,6 +44,7 @@ The **Check App Centre manifest** workflow runs when you change the file and whe
 
 - If the file is missing, it shows a warning and passes.
 - If the file is invalid, it fails and says what to fix. This never stops your installers from being built.
+- It rejects fields it does not know (this catches typos, so the schema is not loosened); the template keeps its copy of the schema in step with the App Centre, see [Keep your app up to date](keep_app_up_to_date.md).
 - It also checks that the icon and screenshots you name exist in the repository.
 
 ## Get listed
