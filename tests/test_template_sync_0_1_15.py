@@ -24,14 +24,10 @@ class MigrationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.migration = load_module(MIGRATION_PATH, "migration_0_1_15")
 
-    def test_resources_are_identical_to_the_template_files(self) -> None:
+    def test_resources_exist(self) -> None:
+        # A migration's resources are history: the template files move on (the schema copy is refreshed by the 0.1.16 migration).
         for relative in self.migration.MANAGED_FILES:
-            with self.subTest(file=str(relative)):
-                self.assertEqual(
-                    (self.migration.RESOURCE_ROOT / relative).read_bytes(),
-                    (ROOT / relative).read_bytes(),
-                    "update .template_sync/resources/v0_1_14_to_v0_1_15 when the template file changes",
-                )
+            self.assertTrue((self.migration.RESOURCE_ROOT / relative).is_file(), relative)
 
     def test_migration_adds_the_check_and_leaves_the_app_manifest_alone(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -46,7 +42,7 @@ class MigrationTests(unittest.TestCase):
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.15", text)
+        self.assertIn("to: 0.1.15", text)  # the current template_version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_14_to_v0_1_15.py", text)
 
 
