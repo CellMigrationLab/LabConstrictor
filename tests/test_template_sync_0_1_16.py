@@ -354,6 +354,25 @@ class MigratedScriptsRunTests(MigrationCase):
         self.assertIn("--module demoapp_lc_tools --version 1.2.3", recorded)
         self.assertIn("Tools registered", (prefix / "menuinst_debug.log").read_text(encoding="utf-8"))
 
+    def test_the_default_tools_source_is_the_pinned_tag_archive(self) -> None:
+        prefix = self.make_prefix("pin")
+        self.migrated(prefix)
+        calls = prefix / "calls.txt"
+        env = {"STUB_CALLS": str(calls), "LC_TOOLS_SPEC": ""}
+        result = subprocess.run(["bash", str(self.hook_harness(prefix))], capture_output=True, text=True, stdin=subprocess.DEVNULL,
+                                env={**{k: v for k, v in os.environ.items() if k != "LC_TOOLS_SPEC"}, **env})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        recorded = calls.read_text(encoding="utf-8")
+        self.assertIn("-m pip install https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/tags/v0.2.0-rc.1.zip", recorded)
+        self.assertNotIn("heads/main", recorded)
+
+    def test_the_pin_is_written_once_per_script_and_never_a_branch(self) -> None:
+        for name in ("post_install.sh", "post_install.bat"):
+            text = (ROOT / "app/bash_bat_scripts" / name).read_text(encoding="utf-8")
+            self.assertEqual(text.count("v0.2.0-rc.1"), 1, name)
+            self.assertNotIn("refs/heads/", text, name)
+            self.assertIn("refs/tags/", text, name)
+
     def test_a_failing_registration_never_fails_the_install(self) -> None:
         prefix = self.make_prefix("fail")
         self.migrated(prefix)

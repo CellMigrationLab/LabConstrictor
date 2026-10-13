@@ -46,7 +46,7 @@ Rules:
 * **Never deletes.** It writes only the files in the table (no `.orig`, nothing removed); notebooks, `src/`, requirements, `construct.yaml` and `labconstrictor-app.yaml` are not touched. Line endings of each file are kept.
 * **Logs.** Every step prints one line prefixed `[migration 0.1.16]` in the "Run template migrations" step of the workflow.
 * **Version.** `template_version` goes to 0.1.16 (the template's rule: bump when users must act; a sync pull request is only opened when the version is higher).
-* **Not pinned yet.** The inserted block installs Tools from `.../archive/refs/heads/main.zip` exactly as in the template 0.1.15 scripts (`LC_TOOLS_SPEC` overrides it). Pinning to a tag (`refs/tags/v0.2.0-rc.1.zip`, tag created by the maintainer later) is a separate change of that one string in the template scripts and in this migration's resources.
+* **Pinned to a tag.** The inserted block installs Tools from `.../archive/refs/tags/v0.2.0-rc.1.zip` (one variable, `LC_TOOLS_PIN`, at the start of the block in `post_install.sh` and `post_install.bat`), not from the moving `refs/heads/main.zip`; `LC_TOOLS_SPEC` still overrides it exactly as before. Amending the 0.1.16 resources for this was safe: when it was done no app repository had synced to 0.1.16 (NucleiSky, CellTracksColab and GuessTheCondition were at 0.1.15 with an open sync pull request to 0.1.15 and no 0.1.16 branch; VLab4Mic has no `.template_sync`). Moving the pin later is a one-string change, see `tools_bridge.md`.
 
 ## 3. What cannot be migrated (honest answer)
 

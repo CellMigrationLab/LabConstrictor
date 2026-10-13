@@ -21,14 +21,18 @@ command line, with forms generated automatically from the function signatures. N
 2. The installer (`post_install`) detects the module, installs `labconstrictor-tools` and registers the app
    (`labconstrictor-tools register ...`). `pre_uninstall` unregisters it. A failure in this step is logged to
    `menuinst_debug.log` and never fails the installation.
-   **Where `labconstrictor-tools` comes from.** It is not on PyPI yet, so by default the installer downloads the GitHub archive
-   `https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/heads/main.zip` (a plain zip: git is not needed on the user's computer).
+   **Where `labconstrictor-tools` comes from.** It is not on PyPI yet, so by default the installer downloads the GitHub archive of a **pinned release tag**,
+   `https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/tags/v0.2.0-rc.1.zip` (a plain zip: git is not needed on the user's computer).
    Set the environment variable `LC_TOOLS_SPEC` when the installer runs to install it from somewhere else (a wheel, a git URL, a mirror, or the
-   name `labconstrictor-tools` once it is published on PyPI).
-   **Not pinned (important).** `refs/heads/main.zip` is the current main branch at the moment each person installs, so two installers built from the
-   same app release can get different versions of the tools package, and a change to Tools main reaches every new installation. A pin to a tagged
-   release through `LC_TOOLS_SPEC` is planned (LabConstrictor roadmap, section 18, phase 0.2); it is documented here, not implemented yet.
-   Until then, an app that needs a fixed version can set `LC_TOOLS_SPEC` to a tag archive URL in its own `post_install` scripts.
+   name `labconstrictor-tools` once it is published on PyPI); it overrides the pin completely.
+   **Pinned (important).** Two installers built from the same app release get the same version of the tools package, and a change to Tools `main`
+   does not reach new installations until the pin is moved on purpose.
+   **How to move the pin.** The tag name is written in one place per script: the variable `LC_TOOLS_PIN` (`LC_TOOLS_PIN="v0.2.0-rc.1"` in
+   `app/bash_bat_scripts/post_install.sh`, `SET "LC_TOOLS_PIN=v0.2.0-rc.1"` in `post_install.bat`). To use a new release: create and test the tag in
+   LabConstrictor-Tools (procedure in its `docs/OPERATIONS.md`), change that string in both scripts and in the copies under
+   `.template_sync/resources/` of the latest migration (the test `test_resources_are_identical_to_the_template_files` fails when they differ),
+   update the tag in this paragraph, and bump `template_version` so apps receive the change. Apps already migrated need a new migration to change the
+   string in their own scripts.
 3. Test your tools before releasing: `labconstrictor-tools check --module mytool_lc_tools` and
    `labconstrictor-tools test --module mytool_lc_tools --cases lc_tests/cases.json`.
 4. Install the Napari plugin (`napari-labconstrictor`) or the Fiji plugin (`labconstrictor-fiji`) once per machine. Neither is on PyPI or a Fiji update site yet: see the READMEs of
