@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json
+schema: 1
+name: NucleiSky
+summary: Align microscopy images in 2D and 3D by matching the geometry of nuclei, like stars in a constellation.
+description: |-
+  Instead of relying on pixel intensity, NucleiSky matches the geometry of the cells. It finds the calibrated similarity transform that best overlaps two landmark constellations, so a high-magnification region can be located in a whole slide or a thick tissue volume.
+kind: analysis
+hosts: [notebook]
+distribution:
+  installer: true
+  colab:
+    - label: 2D app
+      url: https://colab.research.google.com/github/cellmigrationlab/NucleiSky/blob/main/notebooks/NucleiSky2DApp/NucleiSky2DApp.ipynb
+    - label: 3D app
+      url: https://colab.research.google.com/github/cellmigrationlab/NucleiSky/blob/main/notebooks/NucleiSky3DApp/NucleiSky3DApp.ipynb
+    - label: 2D Python API example (requires your data)
+      url: https://colab.research.google.com/github/CellMigrationLab/NucleiSky/blob/main/notebooks/NucleiSky2D_API_Workflow_Example/NucleiSky2D_API_Workflow_Example.ipynb
+    - label: 3D Python API example (synthetic demo or your data)
+      url: https://colab.research.google.com/github/CellMigrationLab/NucleiSky/blob/main/notebooks/NucleiSky3D_API_Workflow_Example/NucleiSky3D_API_Workflow_Example.ipynb
+    - label: 2D benchmarking (requires reference image)
+      url: https://colab.research.google.com/github/CellMigrationLab/NucleiSky/blob/main/notebooks/NucleiSky2DBenchmarking/NucleiSky2DBenchmarking.ipynb
+    - label: 3D benchmarking (requires reference volume)
+      url: https://colab.research.google.com/github/CellMigrationLab/NucleiSky/blob/main/notebooks/NucleiSky3DBenchmarking/NucleiSky3DBenchmarking.ipynb
+  pip: nucleisky
+license: MIT
+icon: app/logo/Gemini_Generated_Image_kc5ezfkc5ezfkc5e.png
+docs_url: https://github.com/CellMigrationLab/NucleiSky/blob/main/docs/index.md
+categories: [registration, ROI matching]
+doi: 10.1242/jcs.265152
+inputs:
+  - "2D app: two 2D images, a reference image and a partial view (ROI) to place into it"
+  - "2D pixel size (µm/px) or 3D voxel size (z, y, x in µm): check acquisition metadata and supply missing calibration"
+  - "Image files: TIFF / OME-TIFF, NPY, Zarr / OME-Zarr, or standard image formats such as PNG / JPEG"
+  - "Nuclei label masks: built-in segmentation (threshold, Cellpose, InstanSeg) or your own masks"
+outputs:
+  - "The saved transform (JSON / JSONL): scale, rotation and translation, with the match quality"
+  - "The aligned image, exported as TIFF (aligned_on_full_px.tif) or OME-Zarr (aligned_on_full_px.zarr)"
+  - "A quality-control overlay figure with an error map (1-SSIM)"
+  - "Optional nuclei segmentation masks (TIFF)"
+limitations:
+  - "Only a similarity transform (one uniform scale, one rotation, one translation); no shear, non-uniform scaling or local elastic warping"
+  - "2D matching needs one grayscale plane (RGB is converted); select a channel or project Z-stacks/time series first"
+  - "Needs enough nuclei: in practice at least about 10 points to overcome spatial ambiguity"
+  - "The crop and the full image must truly overlap; without overlap the matching fails"
+  - "Repetitive patterns (for example muscle fibers) can give a high inlier score but a wrong location"
+  - "3D: requires ZYX axes and correct voxel spacing; cannot correct anisotropic tissue shrinkage; at least 4 nuclei needed"
+quickstart:
+  - "2D app notebook, Step 0: run the first cell to initialize the environment (Google Colab installs the libraries automatically)"
+  - "Step 1: choose the reference image and a partial view; enter the pixel size if the metadata has none"
+  - "Step 2: segment nuclei (or load masks) and extract centroids; for 3D, check ZYX axis order and voxel spacing"
+  - "Step 3: run adaptive matching or a single matcher, and inspect the overlay before trusting an alignment"
+  - "Step 4: save and reuse the transform to align other channels or images from the same dataset"
+screenshots:
+  - path: docs/assets/2D_QC.jpg
+    caption: "2D quality-control figure: the crop, the matching region of the full image, their overlay and an error map (1-SSIM), both ways"

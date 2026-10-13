@@ -1,0 +1,33 @@
+name: Check App Centre schema copy
+
+# The template keeps a copy of the App Centre manifest schema (.tools/schema/labconstrictor-app.schema.json). The authority is the
+# LabConstrictor-Site repository. This check fails when the copy is stale, so that apps do not get a check that rejects fields
+# the App Centre accepts. It runs only in the template repository itself (not in the apps created from it).
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  pull_request:
+    paths:
+      - .tools/schema/**
+      - tests/test_app_manifest_schema.py
+      - .github/workflows/check_schema_drift.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    if: github.repository == 'CellMigrationLab/LabConstrictor'
+    name: Schema copy equals the Site schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install pytest pyyaml==6.0.2 jsonschema==4.23.0
+      - name: Compare with the Site and run the manifest tests
+        env:
+          LC_SCHEMA_DRIFT_REQUIRED: '1'
+        run: python -m pytest tests/test_app_manifest_schema.py -q
