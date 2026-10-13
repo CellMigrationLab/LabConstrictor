@@ -281,6 +281,223 @@ class MigrationBehaviourTests(MigrationCase):
         self.assertEqual(self.script("post_install.sh").read_bytes(), self.expected("post_install.sh"))
 
 
+FIXTURES = Path(__file__).resolve().parent / "fixtures/bridge_test_hooks"
+PIN = "v0.2.0-rc.1"
+UNPINNED = "https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/heads/main.zip"
+PINNED_PREFIX = "https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/tags/"
+DOCS_URL = "https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_16.md"
+
+
+class PinRewriteTests(MigrationCase):
+    """Apps whose hook came from the bridge-test branch (NucleiSky PR 32, VLab4Mic) have the unpinned Tools source: it is pinned."""
+
+    APPS = ("vlab4mic", "ns_pr32")
+
+    def install_fixture(self, app: str, crlf: bool = False) -> dict[str, bytes]:
+        originals = {}
+        for name in ("post_install.sh", "post_install.bat"):
+            data = (FIXTURES / app / name).read_bytes()
+            if crlf:
+                data = data.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+            self.script(name).write_bytes(data)
+            originals[name] = data
+        return originals
+
+    def test_the_fixtures_are_the_unpinned_bridge_test_text(self) -> None:
+        for app in self.APPS:
+            for name in ("post_install.sh", "post_install.bat"):
+                text = (FIXTURES / app / name).read_text(encoding="utf-8")
+                self.assertIn(UNPINNED, text, f"{app}/{name}")
+                self.assertNotIn("LC_TOOLS_PIN", text, f"{app}/{name}")
+
+    def test_the_unpinned_source_of_the_real_apps_is_rewritten_to_the_pinned_tag(self) -> None:
+        template_sh = (ROOT / "app/bash_bat_scripts/post_install.sh").read_text(encoding="utf-8")
+        self.assertIn(f'LC_TOOLS_PIN="{PIN}"', template_sh, "the tests expect the pin the template scripts carry")
+        for app in self.APPS:
+            for crlf in (False, True):
+                with self.subTest(app=app, crlf=crlf):
+                    originals = self.install_fixture(app, crlf)
+                    output = self.run_migration()
+                    newline = b"\r\n" if crlf else b"\n"
+                    sh = self.script("post_install.sh").read_bytes()
+                    bat = self.script("post_install.bat").read_bytes()
+                    self.assertNotIn(b"refs/heads/main.zip", sh + bat)
+                    self.assertIn(("${LC_TOOLS_SPEC:-" + PINNED_PREFIX + "${LC_TOOLS_PIN}.zip}").encode(), sh)
+                    self.assertIn(('SET "LC_TOOLS_SPEC=' + PINNED_PREFIX + '%LC_TOOLS_PIN%.zip"').encode(), bat)
+                    self.assertIn(f'LC_TOOLS_PIN="{PIN}"'.encode() + newline, sh)
+                    self.assertIn(f'SET "LC_TOOLS_PIN={PIN}"'.encode() + newline, bat)
+                    # the pin line comes before the line that uses it
+                    self.assertLess(sh.index(b"LC_TOOLS_PIN="), sh.index(b"${LC_TOOLS_PIN}"))
+                    self.assertLess(bat.index(b"SET \"LC_TOOLS_PIN="), bat.index(b"%LC_TOOLS_PIN%"))
+                    # surgical: undoing exactly the rewrite gives back the app's file byte for byte, line endings included
+                    for name, data in (("post_install.sh", sh), ("post_install.bat", bat)):
+                        restored = b"".join(
+                            l for l in data.splitlines(keepends=True)
+                            if b"Pinned release tag of labconstrictor-tools" not in l
+                            and not l.lstrip().startswith((b"LC_TOOLS_PIN=", b'SET "LC_TOOLS_PIN='))
+                        )
+                        restored = restored.replace(PINNED_PREFIX.encode() + b"${LC_TOOLS_PIN}.zip", UNPINNED.encode())
+                        restored = restored.replace(PINNED_PREFIX.encode() + b"%LC_TOOLS_PIN%.zip", UNPINNED.encode())
+                        self.assertEqual(restored, originals[name], name)
+                        if crlf:
+                            self.assertNotIn(b"\n", data.replace(b"\r\n", b""), name)
+                    self.assertIn(f"{migration_tag()} app/bash_bat_scripts/post_install.sh: updated", output)
+                    self.assertIn(f"{migration_tag()} app/bash_bat_scripts/post_install.bat: updated", output)
+                    if shutil.which("bash") and not crlf:
+                        subprocess.run(["bash", "-n", str(self.script("post_install.sh"))], check=True)
+
+    def test_a_second_run_changes_nothing(self) -> None:
+        for app in self.APPS:
+            with self.subTest(app=app):
+                self.install_fixture(app)
+                self.run_migration()
+                after_first = snapshot(self.repo)
+                output = self.run_migration()
+                self.assertEqual(snapshot(self.repo), after_first)
+                self.assertNotIn("post_install.sh: updated", output)
+                self.assertNotIn("post_install.bat: updated", output)
+
+    def test_a_customised_tools_source_is_left_alone_with_a_skipped_line(self) -> None:
+        fork = "https://github.com/someone/LabConstrictor-Tools/archive/refs/heads/main.zip"
+        variants = {
+            "other_url": lambda sh, bat: (sh.replace(UNPINNED, fork), bat.replace(UNPINNED, fork)),
+            "other_branch": lambda sh, bat: (sh.replace("refs/heads/main.zip", "refs/heads/dev.zip"), bat.replace("refs/heads/main.zip", "refs/heads/dev.zip")),
+            "other_variable": lambda sh, bat: (sh.replace("LC_TOOLS_SPEC:-", "MY_SPEC:-"), bat.replace("IF NOT DEFINED LC_TOOLS_SPEC SET", "SET")),
+            "two_sources": lambda sh, bat: (sh + "# old: " + UNPINNED + "\n", bat + "REM old: " + UNPINNED + "\n"),
+        }
+        for label, edit in variants.items():
+            with self.subTest(variant=label):
+                self.install_fixture("vlab4mic")
+                sh = self.script("post_install.sh").read_text(encoding="utf-8")
+                bat = self.script("post_install.bat").read_text(encoding="utf-8")
+                new_sh, new_bat = edit(sh, bat)
+                self.script("post_install.sh").write_bytes(new_sh.encode())
+                self.script("post_install.bat").write_bytes(new_bat.encode())
+                before = snapshot(self.repo)
+                output = self.run_migration()
+                for name in ("post_install.sh", "post_install.bat"):
+                    self.assertEqual(hashlib.sha256(self.script(name).read_bytes()).hexdigest(), before[f"app/bash_bat_scripts/{name}"], name)
+                    self.assertIn(f"app/bash_bat_scripts/{name}: already has the Tools bridge hook: unchanged. SKIPPED the pin", output)
+                self.assertIn(DOCS_URL, output)
+
+    def test_the_template_scripts_are_already_pinned_and_untouched(self) -> None:
+        for name in ("post_install.sh", "post_install.bat"):
+            self.script(name).write_bytes(self.expected(name))
+        before = snapshot(self.repo)
+        output = self.run_migration()
+        for name in ("post_install.sh", "post_install.bat"):
+            self.assertEqual(hashlib.sha256(self.script(name).read_bytes()).hexdigest(), before[f"app/bash_bat_scripts/{name}"])
+        self.assertNotIn("SKIPPED the pin", output)
+        self.assertNotIn("post_install.sh: updated", output)
+
+    def test_the_pin_is_also_applied_when_the_package_cannot_be_detected(self) -> None:
+        shutil.rmtree(self.repo / "src")
+        self.install_fixture("ns_pr32")
+        output = self.run_migration()
+        self.assertNotIn(b"refs/heads/main.zip", self.script("post_install.sh").read_bytes())
+        self.assertNotIn(b"refs/heads/main.zip", self.script("post_install.bat").read_bytes())
+        self.assertIn("could not tell the app's Python package", output)
+
+
+def migration_tag() -> str:
+    return "[migration 0.1.16]"
+
+
+class NucleiSkyLikePackageTests(MigrationCase):
+    """NucleiSky: src/nucleisky, nucleisky2d, nucleisky3d, a setup.py shim without a name and pyproject.toml with name = "nucleisky"."""
+
+    PYPROJECT = '[build-system]\nrequires = ["setuptools>=68"]\n\n[project]\nname = "{name}"\nversion = "0.0.1"\n'
+    SHIM = '"""Compatibility shim."""\n\nfrom setuptools import setup\n\n\nsetup()\n'
+
+    def make_tree(self, packages=("nucleisky", "nucleisky2d", "nucleisky3d"), name="nucleisky") -> None:
+        shutil.rmtree(self.repo / "src")
+        for package in packages:
+            (self.repo / "src" / package).mkdir(parents=True)
+            (self.repo / "src" / package / "__init__.py").write_text("", encoding="utf-8")
+        (self.repo / "setup.py").write_text(self.SHIM, encoding="utf-8")
+        if name is not None:
+            (self.repo / "pyproject.toml").write_text(self.PYPROJECT.format(name=name), encoding="utf-8")
+
+    def test_the_project_name_of_pyproject_decides_when_the_other_methods_cannot(self) -> None:
+        self.make_tree()
+        self.assertEqual(self.helpers.detect_python_package_name(self.repo), "PYTHON_PROJ_NAME", "the 0.1.10 helper still cannot tell")
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "nucleisky")
+
+    def test_the_whole_migration_uses_it(self) -> None:
+        self.make_tree()
+        self.install_old_scripts()
+        output = self.run_migration()
+        self.assertIn("nucleisky_lc_tools", self.script("post_install.sh").read_text(encoding="utf-8"))
+        self.assertIn("nucleisky_lc_tools", self.script("post_install.bat").read_text(encoding="utf-8"))
+        self.assertNotIn("PYTHON_PROJ_NAME", self.script("post_install.sh").read_text(encoding="utf-8"))
+        self.assertNotIn("could not tell", output)
+
+    def test_hyphens_become_underscores(self) -> None:
+        self.make_tree(packages=("demo_app", "demo_app2d"), name="demo-app")
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "demo_app")
+
+    def test_the_package_directory_must_exist(self) -> None:
+        self.make_tree(name="something-else")
+        self.assertIsNone(self.migration.detect_package(self.helpers, self.repo))
+        (self.repo / "src/something_else").mkdir()  # a directory, but not a package of the project: still accepted only by name
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "something_else")
+
+    def test_no_name_or_no_project_table_or_a_broken_file_decides_nothing(self) -> None:
+        for label, content in {
+            "no_project_table": '[tool.x]\nname = "nucleisky"\n',
+            "no_name": '[project]\nversion = "1"\n',
+            "broken": "[project\nname = nucleisky\n",
+            "not_an_identifier": '[project]\nname = "nucleisky 2d"\n',
+        }.items():
+            with self.subTest(case=label):
+                self.make_tree(name=None)
+                (self.repo / "pyproject.toml").write_text(content, encoding="utf-8")
+                self.assertIsNone(self.migration.detect_package(self.helpers, self.repo))
+
+    def test_the_other_methods_keep_priority(self) -> None:
+        self.make_tree(packages=("nucleisky", "nucleisky2d", "other_lc_tools"), name="nucleisky")
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "other", "the single tools module still wins")
+        self.make_tree(packages=("nucleisky",), name="different")
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "nucleisky", "the single package still wins")
+        self.make_tree(packages=("nucleisky", "nucleisky2d"), name="nucleisky")
+        (self.repo / "setup.py").write_text('from setuptools import setup\nsetup(name="nucleisky2d")\n', encoding="utf-8")
+        self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "nucleisky2d", "a name in setup.py still wins")
+
+    def test_the_fallback_also_works_without_tomllib(self) -> None:
+        self.make_tree(name=None)
+        (self.repo / "pyproject.toml").write_text('[tool.a]\nname = "wrong"\n\n[project]\n# comment\nname = \'nucleisky\'\n\n[tool.b]\nname = "x"\n', encoding="utf-8")
+        saved = sys.modules.get("tomllib", "absent")
+        sys.modules["tomllib"] = None  # makes `import tomllib` raise ImportError
+        try:
+            self.assertEqual(self.migration.detect_package(self.helpers, self.repo), "nucleisky")
+        finally:
+            if saved == "absent":
+                del sys.modules["tomllib"]
+            else:
+                sys.modules["tomllib"] = saved
+
+
+class DocsReferenceTests(MigrationCase):
+    def test_the_docs_index_entry_goes_right_after_the_external_code_upload_entry(self) -> None:
+        self.install_old_scripts()
+        self.run_migration()
+        lines = (self.repo / ".tools/docs/README.md").read_text(encoding="utf-8").splitlines()
+        position = next(i for i, l in enumerate(lines) if "external_code_upload.md" in l)
+        self.assertEqual(lines[position + 1], self.migration.INDEX_ENTRY)
+        self.assertIn("other.md", lines[position + 2])
+
+    def test_no_message_points_to_a_file_that_is_not_in_the_app_repository(self) -> None:
+        """migration_0_1_16.md is a template doc the migration never copies: it may only be named by its GitHub URL."""
+        self.install_old_scripts()
+        self.script("uninstall.sh").write_text("#!/bin/bash\nrm -rf custom\n", encoding="utf-8")
+        output = self.run_migration()
+        self.assertIn("uninstall.sh: SKIPPED", output)
+        self.assertIn(DOCS_URL, output)
+        for text in (output, MIGRATION_PATH.read_text(encoding="utf-8")):
+            self.assertEqual(text.count("migration_0_1_16.md"), text.count(DOCS_URL), "every mention must be the full URL")
+        self.assertFalse((self.repo / ".tools/docs/migration_0_1_16.md").exists())
+
+
 @unittest.skipUnless(shutil.which("bash"), "bash is not available")
 class MigratedScriptsRunTests(MigrationCase):
     """Run the migrated bash scripts against a stub Python (no installer, no network)."""
