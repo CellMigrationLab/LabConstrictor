@@ -4,7 +4,7 @@ Runs the LIVE post_install.sh (Linux, macOS) or post_install.bat (Windows) of th
 the app package `demoapp` and its tools module `demoapp_lc_tools`) with the real labconstrictor-tools installed by the script itself
 (LC_TOOLS_SPEC, or the pinned tag when it is not set), then reads the registry entry `<LC_HOME>/apps/DemoApp.json`.
 
-Cases: the real manifests of the apps (tests/fixtures/manifests), a manifest without a hosts: line and no manifest at all. For each, the `hosts`
+Cases: the real manifests of the apps (tests/fixtures/manifests), a manifest with a quoted hosts key and a BOM, a manifest without a hosts: line and no manifest at all. For each, the `hosts`
 of the entry must equal the `hosts:` line of the manifest (in the declared order), and for the last two the entry must have no `hosts` and
 the installer log must carry the sentence "declares no hosts". Anything else is a failure, never a skip.
 
@@ -174,6 +174,11 @@ def main() -> int:
             target.write_bytes(manifest.read_bytes())
             entry, log = install_case(script, prefix, base / f"home_{manifest.stem}")
             check_declared(manifest.name, manifest, entry, log)
+        target.write_bytes(b"\xef\xbb\xbfschema: 1\nname: Demo\n\"hosts\": [notebook, napari]\n")
+        entry, log = install_case(script, prefix, base / "home_bom_quoted_key")
+        if entry.get("hosts") != ["notebook", "napari"]:
+            raise AssertionError(f"BOM and quoted hosts key: registry hosts {entry.get('hosts')!r}")
+        print("OK manifest with a BOM and a quoted hosts key: hosts ['notebook', 'napari']", flush=True)
         target.write_text("schema: 1\nname: Demo\n", encoding="utf-8")
         entry, log = install_case(script, prefix, base / "home_no_hosts_line")
         check_undeclared("manifest without a hosts: line", entry, log)

@@ -100,8 +100,9 @@ if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, s
         LC_APP_VERSION=0
     fi
     # Hosts of the app: the app's labconstrictor-app.yaml (bundled by construct.yaml extra_files) goes to Tools with --app-manifest, so that
-    # Napari, Fiji and QuPath list the app only in the hosts its hosts: line names. Without the file, or without a hosts: line, the app is
-    # registered without hosts (every host lists it) and the log says so, with the sentence Tools uses for it.
+    # Napari, Fiji and QuPath list the app only in the hosts its hosts: line names. Without the file the app is registered
+    # without hosts (every host lists it) and the log says so, with the sentence Tools uses for it. Tools itself reads the file: a manifest
+    # without a hosts: line (or with an invalid one) is answered by Tools, whose message goes to this log.
     LC_APP_MANIFEST="$PROJECT_ROOT/labconstrictor-app.yaml"
     LC_HOSTS_ARGS=()
     LC_NO_HOSTS="'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest (or --hosts) to choose"
@@ -109,11 +110,7 @@ if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, s
         lc_note "WARNING: $LC_APP_MANIFEST was not found (add labconstrictor-app.yaml to extra_files in construct.yaml), so PROJECT_NAME is registered without hosts. $LC_NO_HOSTS"
     else
         LC_HOSTS_ARGS=(--app-manifest "$LC_APP_MANIFEST")
-        if grep -q '^hosts[[:space:]]*:' "$LC_APP_MANIFEST"; then
-            lc_note "Passing the hosts of $LC_APP_MANIFEST to Tools (--app-manifest)."
-        else
-            lc_note "WARNING: $LC_APP_MANIFEST has no hosts: line, so PROJECT_NAME is registered without hosts. $LC_NO_HOSTS"
-        fi
+        lc_note "Passing the hosts of $LC_APP_MANIFEST to Tools (--app-manifest); Tools logs the same sentence if the file declares no hosts."
     fi
     if [ "${LC_TOOLS_READY:-0}" = 1 ] \
         && "$PYTHON_EXE" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "$PREFIX" \

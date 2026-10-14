@@ -73,7 +73,7 @@ class LiveScriptTests(unittest.TestCase):
         log = self.install()
         self.assertTrue(self.registered().endswith(f"--app-manifest {manifest}"), self.registered())
         self.assertIn("--name DemoApp", self.registered())
-        self.assertIn(f"Passing the hosts of {manifest} to Tools (--app-manifest).", log)
+        self.assertIn(f"Passing the hosts of {manifest} to Tools (--app-manifest); Tools logs the same sentence if the file declares no hosts.", log)
         self.assertNotIn("WARNING", log)
 
     def test_a_missing_manifest_is_logged_with_the_sentence_and_registers_without_hosts(self) -> None:
@@ -84,15 +84,14 @@ class LiveScriptTests(unittest.TestCase):
         self.assertIn("add labconstrictor-app.yaml to extra_files in construct.yaml", log)
         self.assertIn(NO_HOSTS, log)
 
-    def test_a_manifest_without_a_hosts_line_is_logged_with_the_sentence_and_still_passed(self) -> None:
+    def test_a_manifest_without_a_hosts_line_is_still_passed_and_tools_decides(self) -> None:
         manifest = self.root / "labconstrictor-app.yaml"
         manifest.write_text("schema: 1\nname: Demo\n", encoding="utf-8")
         log = self.install()
         self.assertIn(f"--app-manifest {manifest}", self.registered())
-        self.assertIn(f"WARNING: {manifest} has no hosts: line", log)
-        self.assertIn(NO_HOSTS, log)
+        self.assertNotIn("WARNING", log, "the hook has no opinion of the file's content: Tools reads it and logs its own sentence")
 
-    def test_a_manifest_with_crlf_and_a_spaced_hosts_key_counts_as_declared(self) -> None:
+    def test_a_manifest_with_crlf_and_a_spaced_hosts_key_is_passed(self) -> None:
         manifest = self.root / "labconstrictor-app.yaml"
         manifest.write_bytes(b"schema: 1\r\nhosts : [notebook]\r\n")
         log = self.install()
@@ -103,7 +102,7 @@ class LiveScriptTests(unittest.TestCase):
 class TemplateTextTests(unittest.TestCase):
     def test_the_bat_script_has_the_same_sentence_and_both_register_lines(self) -> None:
         text = BAT.read_text(encoding="utf-8").replace("^", "")
-        self.assertEqual(text.count("'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest (or --hosts) to choose"), 2)
+        self.assertEqual(text.count("'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest (or --hosts) to choose"), 1)
         self.assertEqual(text.count('--app-manifest "%LC_APP_MANIFEST%"'), 1)
         self.assertEqual(text.count("labconstrictor_tools register"), 2)
 

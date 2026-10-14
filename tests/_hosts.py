@@ -11,9 +11,9 @@ import re
 SH_START = "# Hosts of the app:"
 SH_ARGS = ' ${LC_HOSTS_ARGS[@]+"${LC_HOSTS_ARGS[@]}"}'
 BAT_PRE_START = "REM Hosts of the app:"
-BAT_PRE_LAST = 'IF DEFINED LC_APP_MANIFEST findstr'
+BAT_PRE_LAST = 'IF EXIST "%PROJECT_ROOT%\\labconstrictor-app.yaml"'
 BAT_LOGS_START = "    REM Which hosts list the app"
-BAT_LOG_LINE = re.compile(r"^    IF (NOT )?DEFINED LC_APP_MANIFEST (IF (NOT )?DEFINED LC_APP_HAS_HOSTS )?echo ")
+BAT_LOG_LINE = re.compile(r"^    IF (NOT )?DEFINED LC_APP_MANIFEST echo ")
 
 
 def _drop_range(lines: list[str], start: str, last: str) -> list[str]:
