@@ -6,6 +6,10 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 
 > A command prompt window opens during installation on Windows; this is normal, do not close it.
 
+## Before you install
+
+- **Install path.** The install path must contain no space: the installer refuses a path with a space. Use a path such as `C:\LabConstrictor\<app>` on Windows or `~/labconstrictor/<app>` on macOS and Linux.
+
 ## Install on Windows
 
 1. Download the `.exe` file and double-click it.
@@ -26,6 +30,15 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 1. Download the `.sh` file.
 2. Open a terminal in the download folder and run `bash` followed by the name of the file you downloaded, for example: `bash MyApp-0.1.0-Linux-x86_64.sh`
 3. Follow the prompts, then launch the app from your applications menu.
+
+## Update an installed app
+
+- **macOS and Windows.** On macOS and Windows, update an app by uninstalling the old version first and then installing the new one: the installer does not install over an existing install.
+- **Linux.** On Linux, running the installer with `-u` updates in place only if the previous install finished; otherwise delete `<prefix>/pkgs` or uninstall the app and install it again.
+
+## Where the app is listed
+
+If the app ships tools for Napari, Fiji or QuPath, the installer registers them with LabConstrictor Tools and passes the `hosts:` line of the app's `labconstrictor-app.yaml` (the installer bundles that file). A host lists the app only if the line names it: with `hosts: [notebook, napari]` the app is listed in Napari, and not in Fiji or QuPath. Without the file, or without a `hosts:` line, the app is registered without hosts, every host lists it, and `menuinst_debug.log` in the install folder says so (`'<app>' declares no hosts, so it is listed in every host; ...`).
 
 ## Next
 

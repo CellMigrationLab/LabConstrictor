@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json
+schema: 1
+name: Guess the Condition
+summary: A blinded test of whether experimental conditions can be told apart by eye, with statistics across biological repeats.
+description: |-
+  You see randomised images without their condition and guess it. The app records your guesses and decision times, then reports whether the conditions can be told apart across biological repeats, with accuracy against chance and a confusion matrix.
+kind: utility
+hosts: [notebook, napari, fiji]
+distribution:
+  installer: true
+  colab:
+    - label: Interactive game
+      url: https://colab.research.google.com/github/CellMigrationLab/GuessTheCondition/blob/main/notebooks/GuessTheCondition/GuessTheCondition.ipynb
+    - label: Python API example (synthetic data)
+      url: https://colab.research.google.com/github/CellMigrationLab/GuessTheCondition/blob/main/notebooks/GuessTheCondition_API_Example/GuessTheCondition_API_Example.ipynb
+license: MIT
+icon: app/logo/guessthecondition.png
+categories: [experimental design, blinding]
+inputs:
+  - "TIFF images (.tif or .tiff): one folder per condition, inside it one folder per biological repeat"
+  - "2D images, multi-channel images (shown side by side), and z-stacks or time series (shown as a maximum projection)"
+outputs:
+  - "Whether the conditions can be told apart across biological repeats, with n and the 95% interval"
+  - "Accuracy of every repeat and of every condition against chance, the confusion matrix and the decision times (a SuperPlot)"
+  - "A PDF report with the text, the figures and the tables"
+  - "game_results.csv and session.json, in a folder with your name inside the results folder"
+limitations:
+  - "Every channel is contrast-stretched on its own, so conditions must be told apart by what the images show, not by overall brightness"
+  - "With one or two repeats there is no verdict about the experiment; a randomization test is exploratory and does not generalise to new repeats"
+  - "The test on all images pooled is exploratory: it counts every image as independent, so its false-positive chance is higher than stated"
+quickstart:
+  - "Prepare your images: one folder per condition, inside it one folder per biological repeat"
+  - "Step 1: give your name, the folder with your experiment, a folder for the results and the share of the images you want to guess"
+  - "Step 2: press Start / continue, choose the condition you think each image comes from and press Submit guess"
+  - "Step 3: run the analysis cell when you have guessed enough images"

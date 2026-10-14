@@ -116,6 +116,28 @@ def ensure_requirements_in_extra_files(construct_data: dict):
     # Update the construct data with the modified extra_files
     construct_data["extra_files"] = extra_files
 
+
+APP_MANIFEST = "labconstrictor-app.yaml"
+
+
+def ensure_app_manifest_in_extra_files(construct_data: dict, manifest_path: Path = Path(APP_MANIFEST)) -> bool:
+    """Bundle labconstrictor-app.yaml in the installer, so post_install can pass its hosts: line to Tools (--app-manifest).
+
+    The mapping is added only when the file exists (it is optional, and a mapping to a missing file would fail the installer build).
+    Returns True when the mapping was added. A mapping whose file is gone is reported, never removed.
+    """
+    extra_files = construct_data.setdefault("extra_files", [])
+    mapped = any(isinstance(item, dict) and APP_MANIFEST in item for item in extra_files)
+    if manifest_path.exists() and not mapped:
+        extra_files.append({APP_MANIFEST: f"{extract_project_folder(extra_files)}/{APP_MANIFEST}"})
+        debug(f"Added mapping for {APP_MANIFEST} (its hosts: line goes to Tools at install time)")
+        return True
+    if mapped and not manifest_path.exists():
+        debug(f"WARNING: extra_files maps {APP_MANIFEST} but the file does not exist: the installer build will fail until it is added or the mapping is removed")
+    elif not mapped:
+        debug(f"{APP_MANIFEST} not found: the app will be registered without hosts (listed in every host)")
+    return False
+
 def ensure_extra_files(construct_data: dict, notebooks_root: Path, src_root: Path) -> int:
     extra_files = construct_data.get("extra_files")
     if extra_files is None:
@@ -274,6 +296,7 @@ def main():
     data = load_construct(construct_path)
     # Check if the requirements files are included in extra_files, if not, add them
     ensure_requirements_in_extra_files(data)
+    ensure_app_manifest_in_extra_files(data)
 
     # Update extra_files with notebooks and src files
     ntbk_added, src_added = ensure_extra_files(data, notebooks_root, src_root)

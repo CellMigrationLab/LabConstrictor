@@ -1,0 +1,18 @@
+# Configuration of ruff for the template's own Python (.template_sync, .tools/python, tests), run by .github/workflows/tests.yml.
+# A separate file (not pyproject.toml) so that nothing changes for `pip install` of an app package built from this repository.
+# The configuration describes the state of the code at template 0.1.18: nothing was reformatted or rewritten to satisfy a tool, because the
+# migrations are frozen history and the files under .template_sync/resources are byte copies that tests compare with the live files.
+line-length = 160
+target-version = "py311"
+extend-exclude = ["tests/fixtures", ".template_sync/resources"]
+
+[lint]
+# ruff's default rule set (pycodestyle E4/E7/E9, pyflakes F) except:
+#  * E741 (ambiguous variable name `l`): used throughout the migrations and tests as the loop variable over lines.
+ignore = ["E741"]
+
+[lint.per-file-ignores]
+# unused imports in files that are frozen history or shipped to apps unchanged
+".template_sync/migrations/v0_1_5_to_v0_1_6.py" = ["F401"]
+".template_sync/sync.py" = ["F401"]
+".tools/python/update_changelog.py" = ["F401"]

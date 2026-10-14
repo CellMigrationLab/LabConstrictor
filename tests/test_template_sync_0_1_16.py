@@ -272,7 +272,7 @@ class MigrationBehaviourTests(MigrationCase):
         self.install_old_scripts()
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
         manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at this step
-        manifest.write_text(manifest.read_text(encoding="utf-8").replace("template_version: 0.1.17", "template_version: 0.1.16"), encoding="utf-8")
+        manifest.write_text(manifest.read_text(encoding="utf-8").replace("template_version: 0.1.18", "template_version: 0.1.16"), encoding="utf-8")
         result = subprocess.run(
             [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", "0.1.15", "--to-version", "0.1.16", "--repository-root", str(self.repo)],
             capture_output=True, text=True,
@@ -311,8 +311,8 @@ class PinRewriteTests(MigrationCase):
                 self.assertNotIn("LC_TOOLS_PIN", text, f"{app}/{name}")
 
     def test_the_unpinned_source_of_the_real_apps_is_rewritten_to_the_pinned_tag(self) -> None:
-        template_sh = (ROOT / "app/bash_bat_scripts/post_install.sh").read_text(encoding="utf-8")
-        self.assertIn(f'LC_TOOLS_PIN="{PIN}"', template_sh, "the tests expect the pin the template scripts carry")
+        template_sh = (self.migration.RESOURCE_ROOT / "app/bash_bat_scripts/post_install.sh").read_text(encoding="utf-8")
+        self.assertIn(f'LC_TOOLS_PIN="{PIN}"', template_sh, "the tests expect the pin the scripts of this migration carry")
         for app in self.APPS:
             for crlf in (False, True):
                 with self.subTest(app=app, crlf=crlf):
@@ -585,7 +585,7 @@ class MigratedScriptsRunTests(MigrationCase):
 
     def test_the_pin_is_written_once_per_script_and_never_a_branch(self) -> None:
         for name in ("post_install.sh", "post_install.bat"):
-            text = (ROOT / "app/bash_bat_scripts" / name).read_text(encoding="utf-8")
+            text = (self.migration.RESOURCE_ROOT / "app/bash_bat_scripts" / name).read_text(encoding="utf-8")
             self.assertEqual(text.count("v0.2.0-rc.1"), 1, name)
             self.assertNotIn("refs/heads/", text, name)
             self.assertIn("refs/tags/", text, name)

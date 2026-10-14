@@ -1,0 +1,49 @@
+name: LabConstrictorPlayground
+version: 0.0.3
+
+environment_file: environment.yaml
+installer_type: all
+license_file: LICENSE
+
+welcome_image: app/logo/logo.png
+header_image: app/logo/logo.png
+icon_image: app/logo/labconstrictor_playground.png
+
+conclusion_text: 'Thank you! You have successfully installed LabConstrictorPlayground 0.0.3.'
+
+keep_pkgs: false
+register_python: false
+initialize_conda: false
+
+extra_files:
+- .tools/meta/src_change.yaml: LabConstrictorPlayground/src_change.yaml
+- app/bash_bat_scripts/pre_uninstall.sh: pre_uninstall.sh
+- app/bash_bat_scripts/uninstall.sh: uninstall.sh
+- app/logo/labconstrictor_playground.icns: LabConstrictorPlayground/labconstrictor_playground.icns
+- app/logo/labconstrictor_playground.ico: LabConstrictorPlayground/labconstrictor_playground.ico
+- app/logo/labconstrictor_playground.png: LabConstrictorPlayground/labconstrictor_playground.png
+- app/menuinst/Welcome.ipynb: LabConstrictorPlayground/notebooks/Welcome.ipynb
+- app/menuinst/notebook_launcher.json: LabConstrictorPlayground/notebook_launcher.json
+- app/python_scripts/hide_code_cells.py: LabConstrictorPlayground/hide_code_cells.py
+- app/python_scripts/include_path.py: LabConstrictorPlayground/include_path.py
+- app/python_scripts/launch_jupyter.py: LabConstrictorPlayground/launch_jupyter.py
+- construct.yaml: LabConstrictorPlayground/construct.yaml
+- notebooks/LabConstrictorPlayground/LabConstrictorPlayground.ipynb: LabConstrictorPlayground/notebooks/LabConstrictorPlayground/LabConstrictorPlayground.ipynb
+- notebooks/notebook_latest_versions.yaml: LabConstrictorPlayground/notebook_latest_versions.yaml
+- requirements.txt: LabConstrictorPlayground/requirements.txt
+- requirements_gpu.txt: LabConstrictorPlayground/requirements_gpu.txt
+- setup.py: LabConstrictorPlayground/setup.py
+- src/labconstrictor_playground/__init__.py: LabConstrictorPlayground/src/labconstrictor_playground/__init__.py
+- src/labconstrictor_playground/checks.py: LabConstrictorPlayground/src/labconstrictor_playground/checks.py
+- src/labconstrictor_playground/data.py: LabConstrictorPlayground/src/labconstrictor_playground/data.py
+- src/labconstrictor_playground/stress.py: LabConstrictorPlayground/src/labconstrictor_playground/stress.py
+- src/labconstrictor_playground/timing.py: LabConstrictorPlayground/src/labconstrictor_playground/timing.py
+- src/labconstrictor_playground/tour.py: LabConstrictorPlayground/src/labconstrictor_playground/tour.py
+- src/labconstrictor_playground_lc_tools/__init__.py: LabConstrictorPlayground/src/labconstrictor_playground_lc_tools/__init__.py
+
+post_install: app/bash_bat_scripts/post_install.bat # [win]
+post_install: app/bash_bat_scripts/post_install.sh # [unix]
+
+pre_uninstall: app/bash_bat_scripts/pre_uninstall.bat # [win]
+pre_uninstall: app/bash_bat_scripts/pre_uninstall.sh # [unix]
+

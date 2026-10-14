@@ -70,7 +70,7 @@ if [ -f "$PROJECT_ROOT/setup.py" ]; then
     # (it never fails the installation by itself). LC_TOOLS_SPEC can point to another source (wheel, git URL, mirror).
     # Default source: the GitHub archive of the labconstrictor-tools release TAG below (a plain zip: no git needed on the user's computer),
     # because the package is not on PyPI yet. Once it is, use "labconstrictor-tools" here. To move the pin, change only this tag.
-    LC_TOOLS_PIN="v0.2.0-rc.1"
+    LC_TOOLS_PIN="v0.3.0-alpha.1"
     LC_TOOLS_MODULE="PYTHON_PROJ_NAME_lc_tools"
     LC_TOOLS_READY=0
     if "$PYTHON_EXE" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('$LC_TOOLS_MODULE') else 1)" >> "$LOG_FILE" 2>&1; then
@@ -99,9 +99,22 @@ if [ -f "$PROJECT_ROOT/setup.py" ] && "$PYTHON_EXE" -c "import importlib.util, s
         lc_note "WARNING: no version: line at the start of a line in construct.yaml - registering the tools with version 0."
         LC_APP_VERSION=0
     fi
+    # Hosts of the app: the app's labconstrictor-app.yaml (bundled by construct.yaml extra_files) goes to Tools with --app-manifest, so that
+    # Napari, Fiji and QuPath list the app only in the hosts its hosts: line names. Without the file the app is registered
+    # without hosts (every host lists it) and the log says so, with the sentence Tools uses for it. Tools itself reads the file: a manifest
+    # without a hosts: line (or with an invalid one) is answered by Tools, whose message goes to this log.
+    LC_APP_MANIFEST="$PROJECT_ROOT/labconstrictor-app.yaml"
+    LC_HOSTS_ARGS=()
+    LC_NO_HOSTS="'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest (or --hosts) to choose"
+    if [ ! -f "$LC_APP_MANIFEST" ]; then
+        lc_note "WARNING: $LC_APP_MANIFEST was not found (add labconstrictor-app.yaml to extra_files in construct.yaml), so PROJECT_NAME is registered without hosts. $LC_NO_HOSTS"
+    else
+        LC_HOSTS_ARGS=(--app-manifest "$LC_APP_MANIFEST")
+        lc_note "Passing the hosts of $LC_APP_MANIFEST to Tools (--app-manifest); Tools logs the same sentence if the file declares no hosts."
+    fi
     if [ "${LC_TOOLS_READY:-0}" = 1 ] \
         && "$PYTHON_EXE" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "$PREFIX" \
-            --module "$LC_TOOLS_MODULE" --version "$LC_APP_VERSION" --display-name "PROJECT_NAME" >> "$LOG_FILE" 2>&1; then
+            --module "$LC_TOOLS_MODULE" --version "$LC_APP_VERSION" --display-name "PROJECT_NAME" ${LC_HOSTS_ARGS[@]+"${LC_HOSTS_ARGS[@]}"} >> "$LOG_FILE" 2>&1; then
         lc_note "Tools registered (labconstrictor-tools list shows them)."
     else
         lc_note "WARNING: tool registration failed - see the pip and register output above in this file; PROJECT_NAME itself is installed."

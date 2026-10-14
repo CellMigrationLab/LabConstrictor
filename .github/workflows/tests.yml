@@ -1,0 +1,54 @@
+name: Template tests
+
+# Tests and static checks of the template repository itself (the migrations in .template_sync, the scripts in .tools/python and the tests).
+# They run on every pull request and every push to main, without a path filter: a change to any file (a workflow, a doc, a resource copy) can
+# break a test that compares files. It does not run in the apps created from the template.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: template-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    if: github.repository == 'CellMigrationLab/LabConstrictor'
+    name: Tests, ruff and mypy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.11'
+      - name: Install the test and check tools
+        run: pip install pytest==9.1.1 pyyaml==6.0.2 jsonschema==4.23.0 ruff==0.15.20 mypy==1.20.2 types-PyYAML==6.0.12.20260906
+      - name: Tests (all tests/test_*.py, including the template_sync migration tests)
+        run: python -m pytest tests -q
+      - name: ruff (configuration in ruff.toml)
+        run: ruff check .template_sync .tools/python tests
+      - name: mypy (configuration in mypy.ini)
+        run: python -m mypy .template_sync .tools/python tests
+
+  smoke-install:
+    if: github.repository == 'CellMigrationLab/LabConstrictor'
+    name: Smoke install of post_install (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.11'
+      - name: Run the live post_install script in a fake prefix; the registry entry must carry the hosts of the app's manifest
+        run: python tests/smoke/post_install_hosts.py
