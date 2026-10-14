@@ -35,3 +35,25 @@ jobs:
         run: ruff check .template_sync .tools/python tests
       - name: mypy (configuration in mypy.ini)
         run: python -m mypy .template_sync .tools/python tests
+
+  smoke-install:
+    if: github.repository == 'CellMigrationLab/LabConstrictor'
+    name: Smoke install of post_install (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    env:
+      # THE ONE PLACE that names the Tools source for this job. Until the Tools tag v0.3.0-alpha.1 exists it is the branch of Tools PR 133
+      # (app hosts, not merged). When the tag exists, delete this variable: post_install then installs the tag it pins (LC_TOOLS_PIN), which
+      # also tests that URL.
+      LC_TOOLS_SPEC: https://github.com/CellMigrationLab/LabConstrictor-Tools/archive/refs/heads/claude/app-hosts-discovery.zip
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4
+        with:
+          python-version: '3.11'
+      - name: Run the live post_install script in a fake prefix; the registry entry must carry the hosts of the app's manifest
+        run: python tests/smoke/post_install_hosts.py

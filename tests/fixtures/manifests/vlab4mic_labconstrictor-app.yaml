@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json
+schema: 1
+name: VLab4Mic
+summary: A virtual lab to simulate fluorescence microscopy images, from molecular structures to acquisition, with no coding.
+description: |-
+  Build virtual samples from molecular structures, apply fluorescent labelling and simulate image acquisition across microscopy modalities, before stepping into the microscope room.
+
+  This is the desktop installer distribution of VLab4Mic. Two of its tools also run in napari and Fiji.
+kind: simulation
+hosts: [notebook, napari, fiji]
+distribution:
+  installer: true
+  colab:
+    - label: Build and image a virtual sample
+      url: https://colab.research.google.com/github/CellMigrationLab/LabConstrictor-VLab4Mic/blob/main/notebooks/VLab4Mic_main/VLab4Mic_main.ipynb
+    - label: Parameter sweeps
+      url: https://colab.research.google.com/github/CellMigrationLab/LabConstrictor-VLab4Mic/blob/main/notebooks/VLab4Mic_parameter_sweeps/VLab4Mic_parameter_sweeps.ipynb
+license: MIT
+icon: app/logo/vlab4mic_icon.png
+categories: [microscopy simulation, experiment design]
+docs_url: https://github.com/CellMigrationLab/LabConstrictor-VLab4Mic#readme
+homepage: https://vlab4mic.henriqueslab.org/
+doi: 10.64898/2026.06.02.729521
+inputs:
+  - "Molecular structures: choose a PDB ID or provide a .cif/.pdb file; configure probe, labelling and acquisition"
+  - "Image comparison: a reference and simulated 2D image with their pixel sizes (napari/Fiji tools)"
+outputs:
+  - "Simulated and noiseless fluorescence microscopy images, with pixel size"
+  - "Image comparison scores (SSIM and Pearson correlation) when using the comparison tool"
+limitations:
+  - The napari and Fiji tools return one frame; multi-frame runs, parameter sweeps and advanced probe design require notebooks
+  - In the default 1000 nm field a widefield image at 100 nm per pixel has only 10 x 10 pixels; raise Sample size XY
+quickstart:
+  - "Install and launch VLab4Mic, then open the Welcome dashboard in JupyterLab"
+  - "Open VLab4Mic_main to select a molecular structure, fluorescent probe and imaging modality"
+  - "Run the acquisition and inspect the simulated and noiseless images"
+  - "Use VLab4Mic_parameter_sweeps when you need to compare multiple parameter combinations"

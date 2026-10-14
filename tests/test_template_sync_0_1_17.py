@@ -17,6 +17,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
 
+from _hosts import strip_hosts
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_16_to_v0_1_17.py"
@@ -110,11 +111,11 @@ class MigrationCase(unittest.TestCase):
 class TemplateConsistencyTests(unittest.TestCase):
     def test_resources_are_identical_to_the_template_files(self) -> None:
         """Since template 0.1.18 the live files carry the new Tools pin, so the resources of 0.1.17 (frozen: they are what 0.1.17 delivers)
-        must equal the live files except for that pin; the byte-for-byte check against the live files is made for the 0.1.18 resources."""
+        must equal the live files except for that pin and for the app-hosts lines (a 0.1.18 step, removed by tests/_hosts.py); the byte-for-byte check against the live files is made for the 0.1.18 resources."""
         migration = load(MIGRATION_PATH, "migration_0_1_17_resources")
         for relative in migration.MANAGED_FILES:
             with self.subTest(file=str(relative)):
-                live = (ROOT / relative).read_bytes().replace(TEMPLATE_PIN.encode(), OLD_PIN.encode())
+                live = strip_hosts(relative.name, (ROOT / relative).read_bytes()).replace(TEMPLATE_PIN.encode(), OLD_PIN.encode())
                 self.assertEqual((migration.RESOURCE_ROOT / relative).read_bytes(), live)
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:

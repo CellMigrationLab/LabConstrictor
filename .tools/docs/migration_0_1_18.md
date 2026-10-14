@@ -10,6 +10,7 @@ Design note for the 0.1.18 migration (`.template_sync/migrations/v0_1_17_to_v0_1
 | GitHub Actions | Every third-party `uses:` in the workflows is pinned by the commit SHA of the tag it named (the tag stays as a trailing comment). No version is upgraded. |
 | Install guide | `.tools/docs/install.md` states three install rules (section 4). |
 | Tools guide | `.tools/docs/tools_bridge.md` names the new pinned tag. |
+| App hosts | The installer bundles the app's `labconstrictor-app.yaml` and `post_install` passes it to `labconstrictor-tools register --app-manifest`, so the `hosts:` line of the app decides which hosts list it (section 7). |
 | Template CI | Only in the template repository itself: the workflow `.github/workflows/tests.yml` runs the template's tests, `black`, `ruff` and `mypy`. It does not run in apps (it checks `github.repository`) and is not delivered by the migration. |
 
 The pinned tag `v0.3.0-alpha.1` of LabConstrictor-Tools must exist before an installer built from this template is used: the installer downloads the archive of that tag.
@@ -22,6 +23,7 @@ Every step is independent, idempotent, never deletes, never raises for a customi
 * **Workflows.** Five files: `check_app_manifest.yml`, `release_constructor.yml`, `sync_template.yml`, `update_on_notebook_change.yml`, `update_on_src_change.yaml`. A file is replaced by the pinned template file **only if it is still identical to the previous template version** (line endings are ignored when comparing). A file that is already the pinned template file is unchanged. A file that the app customised (or pinned in part) is skipped, and the message lists the third-party actions that are still pinned by tag only, so the maintainer can pin them by hand with the table in section 3. A workflow that is not in the repository is not created.
 * **Install guide.** If `.tools/docs/install.md` exists, the sections "Before you install" and "Update an installed app" are inserted before `## Install on Windows` and before `## Next` (each only if its heading is missing); if an anchor line is missing the step is skipped with a message.
 * **Tools guide.** `.tools/docs/tools_bridge.md` is rewritten only if it is still the 0.1.17 text.
+* **App hosts.** See section 7.
 
 Changing files under `.github/workflows/` needs the synchronization token to have the `workflows=write` permission, as for every earlier workflow change ([template_synchronization.md](template_synchronization.md)).
 
@@ -56,3 +58,22 @@ Stated in `.tools/docs/install.md` with this wording (a test checks that every d
 
 * Installed copies are not changed: a new installer must be built and run.
 * The Windows script is not run by the template tests; the end-to-end check is `smoke_migration.yml` of LabConstrictor-Tools on a Windows runner.
+
+## 7. App hosts: the installer passes the `hosts:` line to Tools
+
+Problem found by the Tools readiness check: Tools lists an app in a host (Napari, Fiji, QuPath) only for the hosts its registry entry names, but the installer never told Tools. `labconstrictor-app.yaml` was not in the installer and `post_install` called `register` without `--app-manifest`, so every registered app had no `hosts` and every host listed it.
+
+What the template does now:
+
+* **Bundle.** `bump_constructor.py` adds `labconstrictor-app.yaml: <project folder>/labconstrictor-app.yaml` to `extra_files` in `construct.yaml` when the file exists in the repository (a mapping to a missing file would fail the installer build, so it is not added otherwise; an existing mapping whose file is gone is reported, not removed).
+* **Register.** In `post_install.sh` / `.bat` the Tools hook passes `--app-manifest <install folder>/labconstrictor-app.yaml` to `register`. If the file is not in the installation, or has no `hosts:` line, the app is registered without hosts and `menuinst_debug.log` says so with the sentence Tools uses: `'<app>' declares no hosts, so it is listed in every host; register it with --app-manifest (or --hosts) to choose`. There is no silent fallback; a manifest with an invalid `hosts:` line makes `register` refuse (Tools exit code 2), which the hook logs as `WARNING: tool registration failed`.
+
+What the migration does in an app repository (same rules as above: surgical, idempotent, never deletes, never raises, line endings kept):
+
+* `construct.yaml`: adds the `extra_files` entry **only if** the repository has a `labconstrictor-app.yaml` and the entry is not there yet, with the project folder read from the `Welcome.ipynb` entry. No manifest: `SKIPPED` with the instruction (add the file, then the entry). An `extra_files` that is not a block list, or no readable project folder: `SKIPPED`.
+* `post_install.sh` / `.bat`: inserts the manifest lookup and the log lines in the Tools hook and adds the argument to the app's own `register` line (the app's own arguments stay). A hook that already has `--app-manifest` or `--hosts` is unchanged. A hook of another shape (no `lc_note` before the register line in the `.sh`; a register line that is not `IF NOT ERRORLEVEL 1 ... >> LOG 2>&1` in the `.bat`) is `SKIPPED` and nothing is written.
+* `bump_constructor.py` of an app is not touched: the entry the migration writes into `construct.yaml` survives it. An app that adds its manifest later adds the mapping by hand (or takes the new `bump_constructor.py` of the template).
+
+Adopting it, per app: have a `labconstrictor-app.yaml` with a `hosts:` line at the repository root, take this template version (the synchronization pull request), build and release a new installer. Installed copies do not change: reinstall.
+
+The template CI runs the live `post_install` in a fake prefix on Linux, macOS and Windows (`tests/smoke/post_install_hosts.py`) with the real `labconstrictor-tools` and checks that the registry entry's `hosts` equals the `hosts:` line of each real manifest in `tests/fixtures/manifests`. Until the Tools tag exists the job installs Tools from the branch of Tools pull request 133 (`LC_TOOLS_SPEC` in `.github/workflows/tests.yml`, the one place to change).

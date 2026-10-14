@@ -117,12 +117,24 @@ IF NOT DEFINED LC_APP_VERSION (
     SET "LC_APP_VERSION=0"
     echo WARNING: no version: line at the start of a line in construct.yaml - registering the tools with version 0. >> "%LOG_FILE%"
 )
+REM Hosts of the app: the app's labconstrictor-app.yaml (bundled by construct.yaml extra_files) goes to Tools with --app-manifest, so that
+REM Napari, Fiji and QuPath list the app only in the hosts its hosts: line names. Without the file, or without a hosts: line, the app is
+REM registered without hosts (every host lists it) and the log says so (see the lines after "Found ... registering" below).
+SET "LC_APP_MANIFEST="
+SET "LC_APP_HAS_HOSTS="
+IF EXIST "%PROJECT_ROOT%\labconstrictor-app.yaml" SET "LC_APP_MANIFEST=%PROJECT_ROOT%\labconstrictor-app.yaml"
+IF DEFINED LC_APP_MANIFEST findstr /R /B /C:"hosts *:" "%LC_APP_MANIFEST%" >NUL 2>&1 && SET "LC_APP_HAS_HOSTS=1"
 "%PYTHON_EXE%" -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('PYTHON_PROJ_NAME_lc_tools') else 1)" >> "%LOG_FILE%" 2>&1
 IF NOT ERRORLEVEL 1 (
     echo Found PYTHON_PROJ_NAME_lc_tools: registering the tools of PROJECT_NAME for Napari and Fiji. >> "%LOG_FILE%"
+    REM Which hosts list the app (the sentence is the one Tools uses for an app without hosts). Logged before the READY check, which sets the errorlevel.
+    IF NOT DEFINED LC_APP_MANIFEST echo WARNING: labconstrictor-app.yaml was not found in "%PROJECT_ROOT%" ^(add it to extra_files in construct.yaml^), so PROJECT_NAME is registered without hosts. 'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest ^(or --hosts^) to choose >> "%LOG_FILE%"
+    IF DEFINED LC_APP_MANIFEST IF NOT DEFINED LC_APP_HAS_HOSTS echo WARNING: "%LC_APP_MANIFEST%" has no hosts: line, so PROJECT_NAME is registered without hosts. 'PROJECT_NAME' declares no hosts, so it is listed in every host; register it with --app-manifest ^(or --hosts^) to choose >> "%LOG_FILE%"
+    IF DEFINED LC_APP_MANIFEST IF DEFINED LC_APP_HAS_HOSTS echo Passing the hosts of "%LC_APP_MANIFEST%" to Tools ^(--app-manifest^). >> "%LOG_FILE%"
     REM labconstrictor-tools was installed before the import check (:install_lc_tools): register only if that worked (errorlevel 1 otherwise).
     "%PYTHON_EXE%" -c "import sys; sys.exit(0 if sys.argv[1] == '1' else 1)" "%LC_TOOLS_READY%" >> "%LOG_FILE%" 2>&1
-    IF NOT ERRORLEVEL 1 "%PYTHON_EXE%" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "%PREFIX%" --module PYTHON_PROJ_NAME_lc_tools --version "%LC_APP_VERSION%" --display-name "PROJECT_NAME" >> "%LOG_FILE%" 2>&1
+    IF NOT ERRORLEVEL 1 IF DEFINED LC_APP_MANIFEST "%PYTHON_EXE%" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "%PREFIX%" --module PYTHON_PROJ_NAME_lc_tools --version "%LC_APP_VERSION%" --display-name "PROJECT_NAME" --app-manifest "%LC_APP_MANIFEST%" >> "%LOG_FILE%" 2>&1
+    IF NOT ERRORLEVEL 1 IF NOT DEFINED LC_APP_MANIFEST "%PYTHON_EXE%" -m labconstrictor_tools register --name "PROJECT_NAME" --prefix "%PREFIX%" --module PYTHON_PROJ_NAME_lc_tools --version "%LC_APP_VERSION%" --display-name "PROJECT_NAME" >> "%LOG_FILE%" 2>&1
     IF ERRORLEVEL 1 echo WARNING: tool registration failed - see the pip and register output above in this file; PROJECT_NAME itself is installed. >> "%LOG_FILE%"
 )
 

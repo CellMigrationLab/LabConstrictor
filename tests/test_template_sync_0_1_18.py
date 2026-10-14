@@ -15,6 +15,8 @@ from io import StringIO
 from pathlib import Path
 from types import ModuleType
 
+from _hosts import strip_hosts
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_17_to_v0_1_18.py"
@@ -68,6 +70,16 @@ def load(path: Path, name: str) -> ModuleType:
 
 def snapshot(root: Path) -> dict[str, str]:
     return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(root.rglob("*")) if p.is_file()}
+
+
+def pin_view(root: Path) -> dict[str, str]:
+    """`snapshot` of the pin tests: the post_install scripts are seen without the lines of the hosts step, which has its own tests."""
+    view = {}
+    for path in sorted(root.rglob("*")):
+        if path.is_file():
+            data = path.read_bytes()
+            view[str(path.relative_to(root))] = hashlib.sha256(strip_hosts(path.name, data) if path.name.startswith("post_install.") else data).hexdigest()
+    return view
 
 
 def to_crlf(data: bytes) -> bytes:
@@ -151,7 +163,9 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertIn("github.repository == 'CellMigrationLab/LabConstrictor'", text, "it does not run in the apps created from the template")
         for command in ("pytest tests", "ruff check", "mypy .template_sync .tools/python tests"):
             self.assertIn(command, text)
-        self.assertEqual(sum(1 for _ in uses_lines(ROOT / ".github/workflows/tests.yml")), 2)
+        self.assertEqual(sum(1 for _ in uses_lines(ROOT / ".github/workflows/tests.yml")), 4, "two jobs, two actions each")
+        self.assertIn("python tests/smoke/post_install_hosts.py", text, "the smoke install of post_install runs in CI")
+        self.assertEqual(text.count("LC_TOOLS_SPEC:"), 1, "the Tools source of the smoke job is named in one place only")
 
     def test_the_install_rules_are_in_the_install_guide_with_one_wording(self) -> None:
         guide = (ROOT / ".tools/docs/install.md").read_text(encoding="utf-8")
@@ -220,15 +234,15 @@ class PinTests(MigrationCase):
                     output = self.run_migration()
                     self.assertEqual(output.count(f"updated: Tools pin {OLD_PIN} -> {NEW_PIN}"), 2, output)
                     for name, data in before.items():
-                        after = self.script(name).read_bytes()
+                        after = strip_hosts(name, self.script(name).read_bytes())
                         self.assertEqual(after, data.replace(OLD_PIN.encode(), NEW_PIN.encode()), name)
                         self.assertEqual(after.count(NEW_PIN.encode()), 1, name)
                         self.assertNotIn(OLD_PIN.encode(), after, name)
                         changed = [l for l in difflib.ndiff(data.decode().splitlines(), after.decode().splitlines()) if l[:2] in ("- ", "+ ")]
                         self.assertEqual(len(changed), 2, f"{name}: exactly the pin line changes, nothing else")
-                    snap = snapshot(self.repo)
+                    snap = pin_view(self.repo)
                     self.assertIn("no repository changes were required", self.run_migration())
-                    self.assertEqual(snapshot(self.repo), snap, "second run: nothing changes")
+                    self.assertEqual(pin_view(self.repo), snap, "second run: nothing changes")
 
     def test_the_new_template_scripts_of_the_apps_equal_the_live_template_after_the_move(self) -> None:
         """The scripts of an app are the template scripts with the app's names filled in: after the move they are the live template scripts."""
@@ -246,26 +260,26 @@ class PinTests(MigrationCase):
         for name in SCRIPT_NAMES:
             data = (APPS_0_1_17 / "nucleisky" / name).read_bytes().replace(OLD_PIN.encode(), b"v0.2.0-rc.2")
             self.script(name).write_bytes(data)
-        before = snapshot(self.repo)
+        before = pin_view(self.repo)
         output = self.run_migration()
-        self.assertEqual(snapshot(self.repo), before)
+        self.assertEqual(pin_view(self.repo), before)
         self.assertEqual(output.count("has its own pin v0.2.0-rc.2: left as it is"), 2, output)
 
     def test_unpinned_hooks_stay_as_they_are_with_a_note(self) -> None:
         for app in ("vlab4mic", "ns_pr32"):
             with self.subTest(app=app):
                 self.put_app(BRIDGE_TEST / app)
-                before = snapshot(self.repo)
+                before = pin_view(self.repo)
                 output = self.run_migration()
-                self.assertEqual(snapshot(self.repo), before)
+                self.assertEqual(pin_view(self.repo), before)
                 self.assertEqual(output.count("has no LC_TOOLS_PIN line"), 2, output)
 
     def test_an_app_that_already_has_the_new_pin_is_unchanged(self) -> None:
         for name in SCRIPT_NAMES:
             self.script(name).write_bytes((APPS_0_1_17 / "nucleisky" / name).read_bytes().replace(OLD_PIN.encode(), NEW_PIN.encode()))
-        before = snapshot(self.repo)
+        before = pin_view(self.repo)
         output = self.run_migration()
-        self.assertEqual(snapshot(self.repo), before)
+        self.assertEqual(pin_view(self.repo), before)
         self.assertEqual(output.count(f"already pins Tools {NEW_PIN}: unchanged"), 2, output)
 
     def test_two_pin_lines_are_ambiguous_and_left_alone(self) -> None:
@@ -274,7 +288,7 @@ class PinTests(MigrationCase):
         sh.write_text(text + f'\nLC_TOOLS_PIN="{OLD_PIN}"\n', encoding="utf-8")
         before = sh.read_bytes()
         output = self.run_migration()
-        self.assertEqual(sh.read_bytes(), before)
+        self.assertEqual(strip_hosts(sh.name, sh.read_bytes()), before)
         self.assertIn("has 2 LC_TOOLS_PIN lines", output)
 
     def test_only_the_exact_old_template_line_is_changed(self) -> None:
@@ -284,7 +298,7 @@ class PinTests(MigrationCase):
         text = text.replace(f'LC_TOOLS_PIN="{OLD_PIN}"', f'LC_TOOLS_PIN="{OLD_PIN}"  # my comment') + f'# was {OLD_PIN}\nMY_VAR="{OLD_PIN}"\n'
         sh.write_text(text, encoding="utf-8")
         self.run_migration()
-        after = sh.read_text(encoding="utf-8")
+        after = strip_hosts(sh.name, sh.read_bytes()).decode()
         self.assertIn(f'LC_TOOLS_PIN="{NEW_PIN}"  # my comment', after)
         self.assertIn(f"# was {OLD_PIN}\n", after)
         self.assertIn(f'MY_VAR="{OLD_PIN}"\n', after)
@@ -295,9 +309,9 @@ class PinTests(MigrationCase):
         self.assertEqual(output.count("SKIPPED, file not found"), 2)
         self.script("post_install.sh").write_text('#!/bin/bash\necho mine\nLC_TOOLS_PIN="v0.2.0-rc.1"\n', encoding="utf-8")
         self.script("post_install.bat").write_bytes(b'@ECHO OFF\r\nSET "LC_TOOLS_PIN=v0.2.0-rc.1"\r\nEXIT /B 0\r\n')
-        before = snapshot(self.repo)
+        before = pin_view(self.repo)
         output = self.run_migration()
-        self.assertEqual(snapshot(self.repo), before)
+        self.assertEqual(pin_view(self.repo), before)
         self.assertEqual(output.count("nothing to move"), 2)
 
 
