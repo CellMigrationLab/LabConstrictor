@@ -165,7 +165,7 @@ class TemplateConsistencyTests(unittest.TestCase):
             self.assertIn(command, text)
         self.assertEqual(sum(1 for _ in uses_lines(ROOT / ".github/workflows/tests.yml")), 4, "two jobs, two actions each")
         self.assertIn("python tests/smoke/post_install_hosts.py", text, "the smoke install of post_install runs in CI")
-        self.assertEqual(text.count("LC_TOOLS_SPEC:"), 1, "the Tools source of the smoke job is named in one place only")
+        self.assertNotIn("LC_TOOLS_SPEC", text, "the smoke job installs the tag pinned by post_install: no Tools source override in CI")
 
     def test_the_install_rules_are_in_the_install_guide_with_one_wording(self) -> None:
         guide = (ROOT / ".tools/docs/install.md").read_text(encoding="utf-8")
