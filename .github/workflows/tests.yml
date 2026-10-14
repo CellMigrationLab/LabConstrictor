@@ -45,11 +45,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    env:
-      # THE ONE PLACE that names the Tools source for this job. The Tools tag v0.3.0-alpha.1 (the pin of post_install) does not exist yet, so
-      # until it does the job installs Tools from the main branch of LabConstrictor-Tools (it holds the app hosts rule, Tools PR 133). When the
-      # tag exists, DELETE this variable: post_install then installs the tag it pins (LC_TOOLS_PIN), which also tests that URL.
-      LC_TOOLS_SPEC: git+https://github.com/CellMigrationLab/LabConstrictor-Tools
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4

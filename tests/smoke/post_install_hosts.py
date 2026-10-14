@@ -2,7 +2,7 @@
 
 Runs the LIVE post_install.sh (Linux, macOS) or post_install.bat (Windows) of the template for real, in a fake install prefix (a venv with
 the app package `demoapp` and its tools module `demoapp_lc_tools`) with the real labconstrictor-tools installed by the script itself
-(LC_TOOLS_SPEC, or the pinned tag when it is not set), then reads the registry entry `<LC_HOME>/apps/DemoApp.json`.
+(the pinned tag, or LC_TOOLS_SPEC when set), then reads the registry entry `<LC_HOME>/apps/DemoApp.json`.
 
 Cases: the real manifests of the apps (tests/fixtures/manifests), a manifest with a quoted hosts key and a BOM, a manifest without a hosts: line and no manifest at all. For each, the `hosts`
 of the entry must equal the `hosts:` line of the manifest (in the declared order), and for the last two the entry must have no `hosts` and
