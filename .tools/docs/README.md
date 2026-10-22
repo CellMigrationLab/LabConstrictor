@@ -30,6 +30,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.16: how the Tools bridge hooks reach an existing app](migration_0_1_16.md)
 - [Template 0.1.17: install Tools before the package import check](migration_0_1_17.md)
 - [Template 0.1.18: new Tools pin, pinned GitHub Actions, install rules](migration_0_1_18.md)
+- [Template 0.1.19: src_change.yaml in every installer, Python series in setup.py](migration_0_1_19.md)
 
 ## Notebook authoring tips
 

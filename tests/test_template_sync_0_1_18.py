@@ -112,7 +112,7 @@ class TemplateConsistencyTests(unittest.TestCase):
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.18", text)
+        self.assertIn("to: 0.1.18", text)  # the current template_version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_17_to_v0_1_18.py", text)
 
     def test_chains_from_every_older_version_reach_0_1_18(self) -> None:
@@ -441,6 +441,8 @@ class DocsTests(MigrationCase):
 class ChainTests(MigrationCase):
     def sync(self, start: str, end: str = "0.1.18") -> subprocess.CompletedProcess[str]:
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync", dirs_exist_ok=True)
+        manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at `end`
+        manifest.write_text(re.sub(r"template_version: [0-9.]+", f"template_version: {end}", manifest.read_text(encoding="utf-8")), encoding="utf-8")
         return subprocess.run(
             [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", start, "--to-version", end, "--repository-root", str(self.repo)],
             capture_output=True,
