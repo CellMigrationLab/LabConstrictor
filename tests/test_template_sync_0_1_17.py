@@ -202,7 +202,7 @@ class MigrationBehaviourTests(MigrationCase):
             self.script(name).write_bytes(self.helpers.render_template(source, self.replacements, newline).encode())
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
         manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at this step
-        manifest.write_text(manifest.read_text(encoding="utf-8").replace("template_version: 0.1.18", "template_version: 0.1.17"), encoding="utf-8")
+        manifest.write_text(re.sub(r"template_version: [0-9.]+", "template_version: 0.1.17", manifest.read_text(encoding="utf-8")), encoding="utf-8")
         result = subprocess.run(
             [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", "0.1.15", "--to-version", "0.1.17", "--repository-root", str(self.repo)],
             capture_output=True, text=True,
