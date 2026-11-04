@@ -16,6 +16,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _hosts import strip_hosts
+from _v0_1_20 import before_0_1_20
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,13 +102,14 @@ def uses_lines(path: Path) -> list[tuple[str, str, str | None]]:
 
 class TemplateConsistencyTests(unittest.TestCase):
     def test_resources_are_identical_to_the_template_files(self) -> None:
+        """The resources are frozen (they are what 0.1.18 delivers): equal to the live files without the changes of 0.1.20 (tests/_v0_1_20.py)."""
         migration = load(MIGRATION_PATH, "migration_0_1_18_resources")
         for relative in migration.MANAGED_FILES:
             with self.subTest(file=str(relative)):
                 self.assertEqual(
                     (migration.RESOURCE_ROOT / relative).read_bytes(),
-                    (ROOT / relative).read_bytes(),
-                    "update .template_sync/resources/v0_1_17_to_v0_1_18 when the template file changes",
+                    before_0_1_20(relative, (ROOT / relative).read_bytes()),
+                    "the 0.1.18 resources are frozen: a later template change needs its own migration (and tests/_v0_1_20.py-style undo)",
                 )
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
@@ -468,7 +470,10 @@ class ChainTests(MigrationCase):
             replacements = self.helpers.load_replacements(self.repo)
             newline = "\r\n" if "\r\n" in source else "\n"
             self.script(name).write_bytes(self.helpers.render_template(source, replacements, newline).encode())
-        result = self.sync("0.1.15")
+        # The chain runs up to the current template version, so the scripts must end equal to the live ones.
+        latest = re.search(r"template_version: ([0-9.]+)", (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8"))
+        assert latest is not None
+        result = self.sync("0.1.15", latest.group(1))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         replacements = self.helpers.load_replacements(self.repo)
         for name in SCRIPT_NAMES:

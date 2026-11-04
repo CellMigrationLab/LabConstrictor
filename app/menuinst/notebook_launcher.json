@@ -15,7 +15,14 @@
       ],
       "platforms": {
         "win": {
-          "icon": "ICON_ICO_IMAGE_PATH"
+          "icon": "ICON_ICO_IMAGE_PATH",
+          "command": [
+            "{{ PYTHON }}",
+            "{{ PREFIX }}/PROJECT_NAME/launch_jupyter.py",
+            "{{ PREFIX }}/PROJECT_NAME/notebooks/Welcome.ipynb",
+            "&",
+            "exit"
+          ]
         },
         "linux": {
           "icon": "ICON_IMAGE_PATH"
