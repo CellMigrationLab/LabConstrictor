@@ -66,6 +66,18 @@ Follow the instructions provided inside the notebook to validate your file. You 
 
 ---
 
+## What happens next: the lock file
+
+When you push a notebook with its `requirements.yaml`, the workflow **Updates on notebook change** merges the requirements of every notebook into `requirements.txt` (plus `requirements_gpu.txt` and, if a notebook needs them, `requirements-windows.txt`, `requirements-linux.txt` or `requirements-macos.txt`).
+
+It then writes a **lock file** next to each of them (`requirements.lock.txt`, ...). A lock file lists every package the installer installs, including the packages your packages depend on, each with its exact version, for Windows, macOS and Linux. The installer installs the lock file, so every installation of a release gets the same versions.
+
+* A lock file changes only when its requirements file, the Python version or the JupyterLab version changes. Pushing a notebook without new requirements does not move any version.
+* To move every package to its newest version, delete the `requirements*.lock.txt` files and run **Updates on notebook change** by hand (**Actions > Updates on notebook change > Run workflow**).
+* If the requirements cannot be locked, the workflow shows a warning and the installer installs the plain `requirements.txt` instead.
+
+---
+
 <div align="center">
 
 [← Previous](accept_pull_request.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 

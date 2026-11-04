@@ -10,7 +10,7 @@ To open the application, go to the Start Menu on Windows or Linux, or the Applic
 
 When you start the application, a terminal will pop up.
 
-> Don't be scared by the terminal, it is normal: it keeps your Jupyter Lab session running. **Do not close the terminal** until you have finished working with your notebooks. When you have, click on the terminal window and press `Ctrl+C` to stop the Jupyter Lab session and close the terminal.
+> Don't be scared by the terminal, it is normal: it keeps your Jupyter Lab session running. **Do not close the terminal** until you have finished working with your notebooks. When you have, stop the Jupyter Lab session with **File > Shut Down** in Jupyter Lab (or click on the terminal window and press `Ctrl+C`). The terminal then asks you to press `Enter`, and closes.
 
 After some seconds, Jupyter Lab will open in your default web browser. The welcome notebook will appear automatically:
 
