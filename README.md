@@ -57,7 +57,7 @@ Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submit
 ## 📢 Community
 
 **Using LabConstrictor?**
-We’d love to feature your project! [Open an issue](https://github.com/YOUR_USERNAME/LabConstrictor/issues) to let us know about your use case.
+We’d love to feature your project! [Open an issue](https://github.com/CellMigrationLab/LabConstrictor/issues) to let us know about your use case.
 
 ## 📚 Use Cases
 
