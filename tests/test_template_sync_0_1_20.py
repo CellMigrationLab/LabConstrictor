@@ -59,7 +59,7 @@ def steps(workflow: Path) -> dict[str, dict]:
 class TemplateConsistencyTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.20", text)
+        self.assertIn("to: 0.1.20", text)  # the current template_version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_19_to_v0_1_20.py", text)
 
     def test_chains_from_every_older_version_reach_0_1_20(self) -> None:
@@ -666,6 +666,8 @@ class ChainTests(MigrationCase):
     def test_the_sync_script_runs_the_migration_from_0_1_19(self) -> None:
         self.put_0_1_19_app()
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
+        manifest = self.repo / ".template_sync/manifest.yaml"  # sync.py checks the target against the manifest: stop the chain at 0.1.20
+        manifest.write_text(re.sub(r"template_version: [0-9.]+", "template_version: 0.1.20", manifest.read_text(encoding="utf-8")), encoding="utf-8")
         command = [sys.executable, str(self.repo / ".template_sync/sync.py"), "--from-version", "0.1.19", "--to-version", "0.1.20", "--repository-root", str(self.repo)]
         result = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

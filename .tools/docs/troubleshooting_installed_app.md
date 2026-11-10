@@ -17,6 +17,16 @@ The solution is to go to the Control Panel and uninstall it from there. To do th
 
 This should remove the app even if the previous error message appears.
 
+## Windows asks for administrator rights for python.exe while uninstalling
+
+Uninstalling an app made with template 0.1.20 or earlier may show a User Account Control prompt: "Do you want to allow this app from an unknown publisher to make changes to your device? python.exe", with the program location `"<app folder>\python.exe" -m conda.core.initialize ...`.
+
+The prompt is not needed. Click **No**. The uninstaller then shows a "Failed to clean AutoRun" error with Abort, Retry and Ignore: click **Ignore**. The uninstall finishes normally and nothing outside the app folder is changed. Clicking **Yes** does not help: the same step fails again and shows the same error, and **Retry** asks a second time.
+
+Do not click **Abort**, even though it is the default button: it stops the uninstall halfway and leaves the app folder on disk. If that happened, run `Uninstall-<AppName>.exe` in the app folder again.
+
+The cause is a conda bug in the tool that built the installer (conda/conda#16856). Installers built with template 0.1.21 or later do not have it; see [migration_0_1_21.md](migration_0_1_21.md).
+
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 
 LabConstrictor-based installers include a TLS-resilient launcher. It attempts

@@ -32,6 +32,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.18: new Tools pin, pinned GitHub Actions, install rules](migration_0_1_18.md)
 - [Template 0.1.19: src_change.yaml in every installer, Python series in setup.py](migration_0_1_19.md)
 - [Template 0.1.20: lock files, no lost workflow pushes, a launcher that starts fresh](migration_0_1_20.md)
+- [Template 0.1.21: no administrator prompt when uninstalling on Windows](migration_0_1_21.md)
 
 ## Notebook authoring tips
 
