@@ -70,6 +70,8 @@ Follow the instructions provided inside the notebook to validate your file. You 
 
 When you push a notebook with its `requirements.yaml`, the workflow **Updates on notebook change** merges the requirements of every notebook into `requirements.txt` (plus `requirements_gpu.txt` and, if a notebook needs them, `requirements-windows.txt`, `requirements-linux.txt` or `requirements-macos.txt`).
 
+The installer uses `requirements_gpu.txt` when it finds an NVIDIA GPU on Windows or Linux. In that file `tensorflow` becomes `tensorflow[and-cuda]` on Linux only: TensorFlow has had no Windows GPU build since version 2.10, and its CUDA packages exist only for Linux, so Windows keeps plain `tensorflow` (CPU).
+
 It then writes a **lock file** next to each of them (`requirements.lock.txt`, ...). A lock file lists every package the installer installs, including the packages your packages depend on, each with its exact version, for Windows, macOS and Linux. The installer installs the lock file, so every installation of a release gets the same versions.
 
 * A lock file changes only when its requirements file, the Python version or the JupyterLab version changes. Pushing a notebook without new requirements does not move any version.
