@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import shutil
 import subprocess
 import sys
@@ -43,7 +44,8 @@ def old_text() -> str:
 class TemplateConsistencyTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.21", text)
+        # 0.1.21 or any later version (the chain test below checks that 0.1.21 stays reachable).
+        self.assertRegex(text, r"template_version: 0\.1\.(2[1-9]|[3-9][0-9])\b")
         self.assertIn("script: migrations/v0_1_20_to_v0_1_21.py", text)
 
     def test_chains_from_every_older_version_reach_0_1_21(self) -> None:
@@ -146,6 +148,9 @@ class ChainTests(MigrationCase):
     def test_the_sync_script_runs_the_migration_from_0_1_20(self) -> None:
         path = self.put(old_text())
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
+        # sync.py refuses a target other than the manifest version: pin the copy to 0.1.21 (later templates add migrations).
+        manifest = self.repo / ".template_sync/manifest.yaml"
+        manifest.write_text(re.sub(r"template_version: [0-9.]+", "template_version: 0.1.21", manifest.read_text(encoding="utf-8")), encoding="utf-8")
         sync = str(self.repo / ".template_sync/sync.py")
         command = [sys.executable, sync, "--from-version", "0.1.20", "--to-version", "0.1.21", "--repository-root", str(self.repo)]
         result = subprocess.run(command, capture_output=True, text=True)
