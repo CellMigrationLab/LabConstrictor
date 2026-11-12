@@ -28,13 +28,15 @@ limitations:
   - Not tested on 3D data
 distribution:             # at least one way to get the app: installer, colab or pip
   installer: true         # the installers LabConstrictor builds for each release
-  platforms: [windows-x86_64, macos-arm64, linux-x86_64]  # optional, needs installer: offer only these installers
+  platforms: [windows-x86_64, macos-arm64, linux-x86_64]  # optional, needs installer: build and offer only these installers
   colab:
     - label: Notebook
       url: https://colab.research.google.com/github/you/my-app/blob/main/notebooks/App/App.ipynb
   pip: my-app             # the name on PyPI
 icon: app/logo/logo.png   # optional: a square PNG in your repository
 ```
+
+`platforms` also decides which installers your releases build (template 0.1.24 or later): leave a system out when your app cannot run there, for example `macos-x86_64` (Intel Macs) for an app that needs TensorFlow 2.17 or later. The release then builds no installer for it and the download page has no button for it. Without `platforms`, every installer is built: Windows, Linux, and Macs with Apple silicon or Intel (`windows-x86_64`, `linux-x86_64`, `macos-arm64`, `macos-x86_64`). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
 
 The first line makes editors with YAML support (for example VS Code) check the file as you type. `inputs`, `outputs` and `limitations` are short summaries for the app page (a list of one to six sentences, not README copy). More optional fields exist (authors, DOI, license, screenshots, a quick start); the full list is in the [schema](https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json). Everything is plain text: no HTML or Markdown.
 

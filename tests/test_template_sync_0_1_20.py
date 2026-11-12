@@ -18,6 +18,8 @@ from unittest import mock
 
 import yaml
 
+from _v0_1_24 import before_0_1_24
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_19_to_v0_1_20.py"
@@ -78,8 +80,8 @@ class TemplateConsistencyTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 self.assertEqual(
                     (MIGRATION.RESOURCE_ROOT / relative).read_bytes(),
-                    (ROOT / relative).read_bytes(),
-                    "update .template_sync/resources/v0_1_19_to_v0_1_20 when the template file changes",
+                    before_0_1_24(relative, (ROOT / relative).read_bytes()),
+                    "the 0.1.20 resources are frozen: a later template change needs its own migration (and a tests/_v0_1_24.py-style undo)",
                 )
 
     def test_the_previous_resources_are_the_0_1_19_files(self) -> None:
@@ -552,7 +554,7 @@ class MigrationCase(unittest.TestCase):
         return self.rendered(text)
 
     def new(self, relative: Path) -> str:
-        return self.rendered(lf(ROOT / relative))
+        return self.rendered(before_0_1_24(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n"))
 
     ALL = (
         *MIGRATION.REPLACED_FILES,

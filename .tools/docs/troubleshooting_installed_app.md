@@ -27,6 +27,12 @@ Do not click **Abort**, even though it is the default button: it stops the unins
 
 The cause is a conda bug in the tool that built the installer (conda/conda#16856). Installers built with template 0.1.21 or later do not have it; see [migration_0_1_21.md](migration_0_1_21.md).
 
+## The notebook fails with "No module named ..." although the installation finished
+
+If someone once ran `python -m ipykernel install --user` on the computer (common with Anaconda or pip setups), Jupyter has a personal "python3" kernel in the user's folder (`~/.local/share/jupyter/kernels/python3` on Linux, `~/Library/Jupyter/kernels/python3` on macOS, `%APPDATA%\jupyter\kernels\python3` on Windows). Apps made with template 0.1.23 or earlier then run their notebooks in that other Python, and the first cell that imports the app fails with `ModuleNotFoundError: No module named '<app>'`.
+
+Install a release made with template 0.1.24 or later: its launcher always uses the app's own kernel. Until then, removing that personal kernel folder also works, but it affects the other Jupyter installations that use it. See [migration_0_1_24.md](migration_0_1_24.md).
+
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 
 LabConstrictor-based installers include a TLS-resilient launcher. It attempts
