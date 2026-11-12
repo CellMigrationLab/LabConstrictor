@@ -38,3 +38,9 @@ The token may have expired or been revoked. Create a replacement token and updat
 
 
 </div>
+
+## The release stops at "check_placeholders.py"
+
+The release workflow checks, before it builds the installers, that no template placeholder (`PROJECT_NAME`, `PYTHON_PROJ_NAME`, `UNDERSCORED_PROJECT_NAME`, ...) is left in a file the installer ships. An installer built with one would fail on the users' computers (for example `No module named 'PYTHON_PROJ_NAME'` at the end of the installation).
+
+The log of the failed step lists each file and line. Replace the placeholder there with your app's value: `PYTHON_PROJ_NAME` is the Python package of the app (usually its folder in `src/`), `PROJECT_NAME` the app name. For `app/menuinst/Welcome.ipynb`, edit `.tools/templates/Welcome_template.ipynb` instead: the Welcome notebook is made from it at every release. Commit, then publish the release again. See [migration_0_1_23.md](migration_0_1_23.md).

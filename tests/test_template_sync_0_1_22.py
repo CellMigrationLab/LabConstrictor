@@ -200,6 +200,9 @@ class ChainTests(MigrationCase):
     def test_the_sync_script_runs_the_migration_from_0_1_21(self) -> None:
         merge = self.put(MERGE, old_merge())
         shutil.copytree(ROOT / ".template_sync", self.repo / ".template_sync")
+        # sync.py refuses a target other than the manifest version: pin the copy to 0.1.22 (later templates add migrations).
+        manifest = self.repo / ".template_sync/manifest.yaml"
+        manifest.write_text(re.sub(r"template_version: [0-9.]+", "template_version: 0.1.22", manifest.read_text(encoding="utf-8")), encoding="utf-8")
         sync = str(self.repo / ".template_sync/sync.py")
         command = [sys.executable, sync, "--from-version", "0.1.21", "--to-version", "0.1.22", "--repository-root", str(self.repo)]
         result = subprocess.run(command, capture_output=True, text=True)
