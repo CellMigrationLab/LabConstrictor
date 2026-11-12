@@ -21,7 +21,7 @@ from pathlib import Path
 
 DOCS_URL = "https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_23.md"
 
-# The placeholders the initialisation replaces (keys of placeholder_map in LabConstrictor_streamlit's initializer.py,
+# The placeholders the initialisation replaces (keys of conversion_table in LabConstrictor_streamlit's placeholders.py,
 # plus the launcher icon paths it fills in itself). VERSION_NUMBER is also rewritten by bump_version.py, which runs before this check.
 INIT_PLACEHOLDERS = (
     "LOWER_PROJ_NAME",

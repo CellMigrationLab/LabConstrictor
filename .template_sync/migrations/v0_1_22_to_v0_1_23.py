@@ -23,6 +23,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import re
+from functools import partial
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Callable
@@ -181,7 +182,7 @@ def migrate(repo_root: Path, context: dict[str, Any]) -> None:
         log(f"{name}: {status}")
 
     for relative, wanted in PLACEHOLDER_FILES.items():
-        report(relative, lambda relative=relative, wanted=wanted: _replace_placeholders(helpers, repo_root / relative, wanted, values))
+        report(relative, partial(_replace_placeholders, helpers, repo_root / relative, wanted, values))
     report(CHECK_SCRIPT, lambda: _create_check_script(helpers, repo_root))
     report(RELEASE_WORKFLOW, lambda: _add_check_step(helpers, repo_root / RELEASE_WORKFLOW))
 
