@@ -18,7 +18,7 @@ Apps that reached 0.1.16 through the migrations are not affected by the first ro
 
 | Part | Change |
 |---|---|
-| The form (`LabConstrictor_streamlit`) | The three files are added to its placeholder lists. Its test initialises the template's current `main` and fails when any placeholder is left, so a placeholder added to the template later is caught too. |
+| The form (`LabConstrictor_streamlit`) | The three files are added to its placeholder lists (`placeholders.py`), and the form refuses to open its pull request when a placeholder is left in a file the installer ships. Its tests initialise a clone of the template's `main` (in its CI, also every week), so a placeholder added to the template later is caught too. |
 | `.tools/python/check_placeholders.py` (new) | Fails when an initialisation placeholder is left in a file the installer ships (`app/**`, `construct.yaml`, `setup.py`, `environment.yaml`), and names the file, the line and the fix. It also refuses the raw, uninitialised template. Placeholders filled in later on purpose are not checked: `BASE_PATH_KEYWORD` (at install), `PYTHON_VERSION` and `JUPYTERLAB_VERSION` (by the requirements workflow). |
 | `.github/workflows/release_constructor.yml` | Runs the check in both jobs, right after `bump_Welcome_notebook.py`: before the version commit and before any installer is built. |
 
