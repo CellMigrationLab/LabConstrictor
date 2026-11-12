@@ -43,6 +43,9 @@ PINS = {
     ("stefanzweifel/git-auto-commit-action", "v5"): "b863ae1933cb653a53c021fe36dbb774e1fb9403",
     ("softprops/action-gh-release", "v2"): "3bb12739c298aeb8a4eeaf626c5b8d85266b0e65",
     ("peter-evans/create-pull-request", "v6"): "c5a7806660adbe173f04e3e038b0ccdcd758773c",
+    # publish_pypi.yml (template 0.1.25)
+    ("actions/download-artifact", "v8.0.2"): "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+    ("pypa/gh-action-pypi-publish", "v1.14.3"): "7245906fb61fa33a13554f9d5fb856fe61758086",
 }
 USES = re.compile(r"^\s*(?:-\s+)?uses:\s*(\S+)@(\S+)(?:[ \t]+#[ \t]*(\S+))?\s*$")
 
