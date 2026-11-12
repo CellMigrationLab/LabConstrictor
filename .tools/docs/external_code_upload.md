@@ -70,7 +70,7 @@ It is **off until you turn it on**, and GitHub stores no password or token for i
 
 | | |
 |---|---|
-| Name | The `name=` of `setup.py` (`PYTHON_PROJ_NAME`, unless you changed it). If `labconstrictor-app.yaml` has `distribution.pip`, it must be the same name. |
+| Name | The `name=` of `setup.py`: the name of the package, given when the repository was initialised (unless you changed it). If `labconstrictor-app.yaml` has `distribution.pip`, it must be the same name. |
 | Version | The release tag without the `v`: release `v1.2.0` publishes 1.2.0. |
 | Code | Every package in `src/` (a folder with an `__init__.py`). |
 | Dependencies | Each line of `requirements.txt`, as it is written (exact versions included). Options (`-r`, `--extra-index-url`), paths and URLs are left out, with a warning in the log: PyPI refuses dependencies given as URLs. |
@@ -110,7 +110,7 @@ Delete the variable `PYPI_PUBLISH` (**Settings** > **Secrets and variables** > *
 - **A version can be uploaded only once**, even after it was deleted from PyPI. The workflow checks this before it builds anything and stops with a clear message; to publish a fix, make a new release with a higher version.
 - **The release writes its version into `setup.py`** (the "Update version" commit of the release workflow), so the file and PyPI agree.
 - **To approve each upload by hand**, open **Settings** > **Environments** > **pypi** (GitHub creates it at the first run) and add **Required reviewers**.
-- **A repository that already publishes to PyPI with a workflow of its own** does not get `publish_pypi.yml` from the template update, so nothing is uploaded twice. See [migration_0_1_25.md](migration_0_1_25.md).
+- **A repository that already publishes to PyPI with a workflow of its own** does not get `publish_pypi.yml` from the template update, so nothing is uploaded twice. See [the design note of template 0.1.25](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_25.md).
 - If the workflow fails, see [Troubleshooting](troubleshooting.md#publishing-to-pypi-fails).
 
 ---

@@ -28,17 +28,6 @@ Repositories created before template version `0.1.12` also need the one-time wor
 
 The token may have expired or been revoked. Create a replacement token and update the existing `LABCONSTRICTOR_SYNC_TOKEN` secret.
 
----
-
-<div align="center">
-
-[← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[Next →](personal_access_token.md)
-
-
-</div>
-
 ## The release stops at "check_placeholders.py"
 
 The release workflow checks, before it builds the installers, that no template placeholder (`PROJECT_NAME`, `PYTHON_PROJ_NAME`, `UNDERSCORED_PROJECT_NAME`, ...) is left in a file the installer ships. An installer built with one would fail on the users' computers (for example `No module named 'PYTHON_PROJ_NAME'` at the end of the installation).
@@ -66,4 +55,15 @@ The workflow **Publish the Python package to PyPI** (`publish_pypi.yml`) runs at
 | `setup.py still has the template placeholder ...` | Replace the placeholder in `setup.py` (the log says which), commit, and publish a new release. |
 | The upload job waits | The `pypi` environment has required reviewers (Settings > Environments > pypi): one of them approves the upload in the run. |
 
-After a fix, re-run the failed jobs of the run if nothing in the repository changed (a publisher fixed on pypi.org); otherwise publish a new release. See [migration_0_1_25.md](migration_0_1_25.md).
+After a fix, re-run the failed jobs of the run if nothing in the repository changed (a publisher fixed on pypi.org); otherwise publish a new release. See [the design note of template 0.1.25](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_25.md).
+
+---
+
+<div align="center">
+
+[← Previous](workflow_status.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[Next →](personal_access_token.md)
+
+
+</div>

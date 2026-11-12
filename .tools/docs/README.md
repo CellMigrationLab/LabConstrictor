@@ -37,6 +37,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.23: no template placeholder in the installer](migration_0_1_23.md)
 - [Template 0.1.24: download links for "v" tags, installers only for the supported systems, the app's own Jupyter kernel](migration_0_1_24.md)
 - [Template 0.1.25: publish the app's Python code on PyPI at each release (opt-in)](migration_0_1_25.md)
+- [Template 0.1.26: the app's own documentation explains PyPI publishing](migration_0_1_26.md)
 
 ## Notebook authoring tips
 
