@@ -20,6 +20,7 @@ from unittest import mock
 import yaml
 
 from _v0_1_24 import before_0_1_24
+from _v0_1_25 import before_0_1_25
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,11 @@ NOTE = "> No installer is built for"
 
 def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
+
+
+def new(relative: Path) -> str:
+    """The 0.1.24 file: the live file without the later 0.1.25 change (bump_version.py)."""
+    return before_0_1_25(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")
 
 
 def old(relative: Path) -> str:
@@ -89,7 +95,7 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertEqual((MIGRATION.RESOURCE_ROOT / MIGRATION.PLATFORMS_SCRIPT).read_bytes(), PLATFORMS_PATH.read_bytes())
 
     def test_the_live_files_are_the_0_1_23_files_migrated(self) -> None:
-        self.assertEqual(MIGRATION.apply_blocks(old(BUMP), MIGRATION.BUMP_BLOCKS), lf(ROOT / BUMP))
+        self.assertEqual(MIGRATION.apply_blocks(old(BUMP), MIGRATION.BUMP_BLOCKS), new(BUMP))
         self.assertEqual(MIGRATION.apply_blocks(old(LAUNCHER), (MIGRATION.LAUNCHER_BLOCK,)), lf(ROOT / LAUNCHER))
         text, count = MIGRATION.add_tag_lines(old(WORKFLOW))
         self.assertEqual(count, 2)
@@ -324,7 +330,7 @@ class MigrationBehaviourTests(MigrationCase):
         for relative in (BUMP, WORKFLOW, LAUNCHER, MIGRATION.PLATFORMS_SCRIPT):
             with self.subTest(file=str(relative)):
                 self.assertRegex(output, rf"{re.escape(str(relative))}: updated")
-                self.assertEqual(lf(self.repo / relative), lf(ROOT / relative))
+                self.assertEqual(lf(self.repo / relative), new(relative))
         self.assertNotIn("SKIPPED", output)
         before = {p: p.read_bytes() for p in self.repo.rglob("*") if p.is_file()}
         again = self.run_migration()
@@ -339,7 +345,7 @@ class MigrationBehaviourTests(MigrationCase):
             with self.subTest(file=str(relative)):
                 data = (self.repo / relative).read_bytes()
                 self.assertNotIn(b"\n", data.replace(b"\r\n", b""))
-                self.assertEqual(data.decode("utf-8").replace("\r\n", "\n"), lf(ROOT / relative))
+                self.assertEqual(data.decode("utf-8").replace("\r\n", "\n"), new(relative))
 
     def test_a_change_elsewhere_in_bump_version_does_not_stop_the_update(self) -> None:
         """CellPatcher refuses pre-release versions between parse_args() and the X.Y.Z check."""
@@ -349,7 +355,7 @@ class MigrationBehaviourTests(MigrationCase):
         self.assertIn(f"{BUMP}: updated", self.run_migration())
         migrated = lf(path)
         self.assertIn(own, migrated)
-        self.assertEqual(migrated.replace(own, "", 1), lf(ROOT / BUMP))
+        self.assertEqual(migrated.replace(own, "", 1), new(BUMP))
 
     def test_a_customised_download_function_is_skipped_and_left_as_it_is(self) -> None:
         text = old(BUMP).replace("        text = text.replace(previous_version, new_version)\n", "        text = my_replace(text)\n", 1)

@@ -20,7 +20,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Customise the installer images](installer_images.md)
 - [Describe your app for the App Centre](app_manifest.md)
-- [Upload external code (optional)](external_code_upload.md)
+- [Upload external code, and publish it on PyPI (optional)](external_code_upload.md)
 - [Expose tools to Napari and Fiji (experimental)](tools_bridge.md)
 
 ## Keep your app up to date (optional)
@@ -36,6 +36,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.22: TensorFlow apps install on Windows computers with an NVIDIA GPU; the version cell finds the notebook](migration_0_1_22.md)
 - [Template 0.1.23: no template placeholder in the installer](migration_0_1_23.md)
 - [Template 0.1.24: download links for "v" tags, installers only for the supported systems, the app's own Jupyter kernel](migration_0_1_24.md)
+- [Template 0.1.25: publish the app's Python code on PyPI at each release (opt-in)](migration_0_1_25.md)
 
 ## Notebook authoring tips
 

@@ -21,6 +21,9 @@ CONCLUSION_LINE_RE = re.compile(
 )
 PKG_VERSION_RE = re.compile(r'^(\s*SET\s+"PKG_VERSION=)(\d+\.\d+\.\d+)("\s*)$', re.MULTILINE)
 POST_INSTALL = ROOT / "app" / "bash_bat_scripts" / "post_install.bat"
+# version="1.2.3" in setup.py: the version of the app's Python package (src/)
+SETUP = ROOT / "setup.py"
+SETUP_VERSION_RE = re.compile(r"^(?P<head>[ \t]*version\s*=\s*)(?P<quote>[\"'])\d+\.\d+\.\d+(?P=quote)", re.MULTILINE)
 
 # The folder of a release in a download link: /releases/download/<tag>/ (the tag is 1.2.3 or v1.2.3).
 DOWNLOAD_PATH_RE = re.compile(r"/releases/download/v?\d+\.\d+\.\d+/")
@@ -189,6 +192,23 @@ def bump_post_install_bat(new_version: str) -> None:
     POST_INSTALL.write_text(updated, encoding="utf-8")
     print(f"Updated post_install.bat PKG_VERSION to {new_version}")
 
+
+def bump_setup_py(new_version: str) -> None:
+    """The version of the app's Python package in setup.py, when it is written there as X.Y.Z.
+
+    The package in the installer and the one publish_pypi.yml publishes on PyPI then carry the release version. The line
+    endings of the file are kept.
+    """
+    if not SETUP.exists():
+        return
+    with SETUP.open(encoding="utf-8", newline="") as handle:
+        text = handle.read()
+    updated = SETUP_VERSION_RE.sub(lambda m: f"{m.group('head')}{m.group('quote')}{new_version}{m.group('quote')}", text, count=1)
+    if updated != text:
+        with SETUP.open("w", encoding="utf-8", newline="") as handle:
+            handle.write(updated)
+        print(f"Updated setup.py version to {new_version}")
+
 def bump_version_in_download_executable_md(
     new_version: str, tag: str | None = None, not_built: list[tuple[tuple[str, ...], str]] | None = None
 ) -> None:
@@ -265,6 +285,9 @@ def main() -> None:
 
     # Also bump PKG_VERSION in post_install.bat
     bump_post_install_bat(args.new_version)
+
+    # The version of the app's Python package (setup.py), also the version publish_pypi.yml publishes on PyPI
+    bump_setup_py(args.new_version)
 
     # Update download_executable.md: the links point to the release tag, and a system that is not built has no button
     bump_version_in_download_executable_md(args.new_version, args.tag, not_built_systems())
