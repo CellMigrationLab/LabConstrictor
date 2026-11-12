@@ -12,7 +12,7 @@ Open the Actions tab in your repository and check that no workflows are running.
 2. Click on Releases (usually on the right sidebar).
 3. Click `Create a new release` and provide the following information:
    - **Tag**: Click `Create a new tag` and enter a version number, for example, `0.0.1`.
-      > **IMPORTANT**: Make sure that it follows a semantic versioning format (MAJOR.MINOR.PATCH) e.g. `1.0.0`, `1.2.3`, `2.1.0`.
+      > **IMPORTANT**: Make sure that it follows a semantic versioning format (MAJOR.MINOR.PATCH) e.g. `1.0.0`, `1.2.3`, `2.1.0`. A `v` in front (`v1.0.0`) also works: the installers are named with the version without it.
    - **Release title**: Enter a title for your release, such as `Initial release`.
    - **Description** (optional): Enter a description for your release, for example, `This is the initial release of my project.`
 

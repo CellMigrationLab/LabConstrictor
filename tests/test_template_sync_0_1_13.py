@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from _v0_1_24 import before_0_1_24
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = (
@@ -248,7 +250,9 @@ class Migration013Tests(unittest.TestCase):
             self.assertEqual(first, second)
 
     def test_repository_bump_version_matches_migration_resource(self):
-        self.assertEqual(BUMP_VERSION_PATH.read_bytes(), RESOURCE_BUMP_VERSION_PATH.read_bytes())
+        # The resource is frozen: it equals the live file without the 0.1.24 changes (tests/_v0_1_24.py).
+        live = before_0_1_24(".tools/python/bump_version.py", BUMP_VERSION_PATH.read_bytes())
+        self.assertEqual(live, RESOURCE_BUMP_VERSION_PATH.read_bytes())
 
     def test_released_0_1_13_welcome_fixture_has_original_responsive_layout(self):
         fixture = REPO_ROOT / "tests/fixtures/welcome_0_1_13.ipynb"

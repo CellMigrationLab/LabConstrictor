@@ -35,6 +35,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.21: no administrator prompt when uninstalling on Windows](migration_0_1_21.md)
 - [Template 0.1.22: TensorFlow apps install on Windows computers with an NVIDIA GPU; the version cell finds the notebook](migration_0_1_22.md)
 - [Template 0.1.23: no template placeholder in the installer](migration_0_1_23.md)
+- [Template 0.1.24: download links for "v" tags, installers only for the supported systems, the app's own Jupyter kernel](migration_0_1_24.md)
 
 ## Notebook authoring tips
 

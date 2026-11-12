@@ -4,7 +4,7 @@ The resources of the older migrations are frozen: they are what those migrations
 files, and since 0.1.20 those files carry the lock-file lines (post_install.sh / .bat) or are new files (the two workflows). `before_0_1_20`
 gives the bytes of the live file without the 0.1.20 change, so those tests keep checking what they checked; the 0.1.20 changes have their
 own tests (test_template_sync_0_1_20.py). It also takes out the later changes to the files those resources hold: the check_placeholders.py
-lines that 0.1.23 adds to release_constructor.yml (tested in test_template_sync_0_1_23.py).
+lines that 0.1.23 adds to release_constructor.yml (tested in test_template_sync_0_1_23.py), and every change of 0.1.24 (tests/_v0_1_24.py).
 """
 from __future__ import annotations
 
@@ -12,6 +12,8 @@ import importlib.util
 import re
 from pathlib import Path
 from types import ModuleType
+
+from _v0_1_24 import before_0_1_24
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_19_to_v0_1_20.py"
@@ -39,6 +41,7 @@ def before_0_1_20(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) without the change 0.1.20 made to it; any other file is returned as it is."""
     migration = _migration()
     relative = Path(relative)
+    data = before_0_1_24(relative, data)
     if relative in migration.REPLACED_FILES:
         return (migration.PREVIOUS_ROOT / relative).read_bytes()
     if relative == RELEASE_WORKFLOW:
