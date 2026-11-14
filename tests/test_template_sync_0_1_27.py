@@ -58,7 +58,8 @@ class ResourceTests(unittest.TestCase):
                 "distribution": {"installer": True}}
         good = dict(base, host_requirements={"qupath": {"min_version": "0.1.0-alpha.6", "features": ["shapes_owner_v1"]}})
         self.assertEqual(list(Draft202012Validator(schema).iter_errors(good)), [])
-        for bad in ({"notebook": {"min_version": "1"}}, {"fiji": {}}, {"fiji": {"min_version": "latest"}}, {"fiji": {"min_version": "1", "x": 1}}):
+        bads: list[dict[str, dict[str, object]]] = [{"notebook": {"min_version": "1"}}, {"fiji": {}}, {"fiji": {"min_version": "latest"}}, {"fiji": {"min_version": "1", "x": 1}}]
+        for bad in bads:
             with self.subTest(bad):
                 self.assertTrue(list(Draft202012Validator(schema).iter_errors(dict(base, host_requirements=bad))))
 
