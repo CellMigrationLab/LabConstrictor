@@ -1,4 +1,4 @@
-template_version: 0.1.27
+template_version: 0.1.28
 migrations:
   - from: 0.0.0
     to: 0.0.1
@@ -87,3 +87,6 @@ migrations:
   - from: 0.1.26
     to: 0.1.27
     script: migrations/v0_1_26_to_v0_1_27.py
+  - from: 0.1.27
+    to: 0.1.28
+    script: migrations/v0_1_27_to_v0_1_28.py

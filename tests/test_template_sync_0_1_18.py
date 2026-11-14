@@ -17,6 +17,7 @@ from types import ModuleType
 
 from _hosts import strip_hosts
 from _v0_1_20 import before_0_1_20
+from _v0_1_28 import before_0_1_28
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -111,7 +112,7 @@ class TemplateConsistencyTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 self.assertEqual(
                     (migration.RESOURCE_ROOT / relative).read_bytes(),
-                    before_0_1_20(relative, (ROOT / relative).read_bytes()),
+                    before_0_1_20(relative, before_0_1_28(relative, (ROOT / relative).read_bytes())),
                     "the 0.1.18 resources are frozen: a later template change needs its own migration (and tests/_v0_1_20.py-style undo)",
                 )
 
@@ -132,19 +133,19 @@ class TemplateConsistencyTests(unittest.TestCase):
     def test_the_docs_are_linked_and_name_the_pinned_tag(self) -> None:
         self.assertIn("(migration_0_1_18.md)", (ROOT / ".tools/docs/README.md").read_text(encoding="utf-8"))
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_18.md").is_file())
-        bridge = (ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8")
+        bridge = before_0_1_28(".tools/docs/tools_bridge.md", (ROOT / ".tools/docs/tools_bridge.md").read_bytes()).decode("utf-8")
         self.assertIn(f"archive/refs/tags/{NEW_PIN}.zip", bridge)
         self.assertIn(f'LC_TOOLS_PIN="{NEW_PIN}"', bridge)
         self.assertNotIn(OLD_PIN, bridge)
 
     def test_the_template_scripts_pin_the_new_tag_once_per_script(self) -> None:
         for name in SCRIPT_NAMES:
-            text = (ROOT / "app/bash_bat_scripts" / name).read_bytes().decode()
+            text = before_0_1_28("app/bash_bat_scripts/" + name, (ROOT / "app/bash_bat_scripts" / name).read_bytes()).decode()
             with self.subTest(script=name):
                 self.assertEqual(text.count(NEW_PIN), 1)
                 self.assertNotIn(OLD_PIN, text)
                 self.assertNotIn("refs/heads/", text)
-        bat = (ROOT / "app/bash_bat_scripts/post_install.bat").read_bytes().decode()
+        bat = before_0_1_28("app/bash_bat_scripts/post_install.bat", (ROOT / "app/bash_bat_scripts/post_install.bat").read_bytes()).decode()
         self.assertEqual(bat.count("\n"), bat.count("\r\n"), "post_install.bat must stay CRLF")
 
     def test_every_third_party_action_of_the_workflows_is_pinned_by_sha(self) -> None:
@@ -257,7 +258,7 @@ class PinTests(MigrationCase):
         replacements = self.helpers.load_replacements(self.repo)
         replacements.update({"PROJECT_NAME": "NucleiSky", "PYTHON_PROJ_NAME": "nucleisky"})
         sh = self.script("post_install.sh").read_text(encoding="utf-8")
-        live = self.helpers.render_template((ROOT / "app/bash_bat_scripts/post_install.sh").read_text(encoding="utf-8"), replacements, "\n")
+        live = self.helpers.render_template(before_0_1_28("app/bash_bat_scripts/post_install.sh", (ROOT / "app/bash_bat_scripts/post_install.sh").read_bytes()).decode("utf-8"), replacements, "\n")
         self.assertEqual(sh.count(f'LC_TOOLS_PIN="{NEW_PIN}"'), 1)
         self.assertIn(f'LC_TOOLS_PIN="{NEW_PIN}"', live)
 
