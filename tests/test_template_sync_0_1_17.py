@@ -19,6 +19,7 @@ from pathlib import Path
 
 from _hosts import strip_hosts
 from _v0_1_20 import before_0_1_20
+from _v0_1_28 import before_0_1_28
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_16_to_v0_1_17.py"
@@ -117,7 +118,7 @@ class TemplateConsistencyTests(unittest.TestCase):
         migration = load(MIGRATION_PATH, "migration_0_1_17_resources")
         for relative in migration.MANAGED_FILES:
             with self.subTest(file=str(relative)):
-                live = strip_hosts(relative.name, before_0_1_20(relative, (ROOT / relative).read_bytes())).replace(TEMPLATE_PIN.encode(), OLD_PIN.encode())
+                live = strip_hosts(relative.name, before_0_1_20(relative, before_0_1_28(relative, (ROOT / relative).read_bytes()))).replace(TEMPLATE_PIN.encode(), OLD_PIN.encode())
                 self.assertEqual((migration.RESOURCE_ROOT / relative).read_bytes(), live)
 
     def test_the_manifest_lists_the_migration_and_the_new_version(self) -> None:
@@ -140,7 +141,7 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertIn("lazily", bridge, "the advice to import labconstrictor_tools lazily stays")
 
     def test_the_template_scripts_install_tools_once_before_the_import_check(self) -> None:
-        sh = (ROOT / "app/bash_bat_scripts/post_install.sh").read_text(encoding="utf-8")
+        sh = before_0_1_28("app/bash_bat_scripts/post_install.sh", (ROOT / "app/bash_bat_scripts/post_install.sh").read_bytes()).decode("utf-8")
         install = sh.index('-m pip install "${LC_TOOLS_SPEC')
         check = sh.index('-c "import PYTHON_PROJ_NAME;')
         register = sh.index("-m labconstrictor_tools register")
@@ -150,7 +151,7 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertEqual(sh.count("-m pip install \"${LC_TOOLS_SPEC"), 1)
         self.assertEqual(sh.count(TEMPLATE_PIN), 1)
         self.assertNotIn(OLD_PIN, sh)
-        bat = (ROOT / "app/bash_bat_scripts/post_install.bat").read_bytes().decode()
+        bat = before_0_1_28("app/bash_bat_scripts/post_install.bat", (ROOT / "app/bash_bat_scripts/post_install.bat").read_bytes()).decode()
         self.assertEqual(bat.count("\n"), bat.count("\r\n"), "post_install.bat must stay CRLF")
         self.assertEqual(bat.count(TEMPLATE_PIN), 1)
         self.assertNotIn(OLD_PIN, bat)
