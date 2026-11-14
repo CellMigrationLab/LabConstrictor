@@ -38,6 +38,8 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Template 0.1.24: download links for "v" tags, installers only for the supported systems, the app's own Jupyter kernel](migration_0_1_24.md)
 - [Template 0.1.25: publish the app's Python code on PyPI at each release (opt-in)](migration_0_1_25.md)
 - [Template 0.1.26: the app's own documentation explains PyPI publishing](migration_0_1_26.md)
+- [Template 0.1.27: an app can say which plugin version its tools need (host_requirements)](migration_0_1_27.md)
+- [Template 0.1.28: installers use LabConstrictor-Tools v0.3.0-alpha.2, which registers host_requirements](migration_0_1_28.md)
 
 ## Notebook authoring tips
 
