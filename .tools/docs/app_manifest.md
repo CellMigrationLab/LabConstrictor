@@ -1,44 +1,129 @@
-# Describe your app for the App Centre
+# Describe your app: the `labconstrictor-app.yaml` file
 
-The [LabConstrictor App Centre](https://labconstrictor.cellmig.org/apps/) lists apps built with LabConstrictor, with a page for each one. The App Centre reads a small file from **your** repository, `labconstrictor-app.yaml`, so you describe your app once and keep it up to date yourself. Version numbers and download links always come from your latest GitHub release.
+`labconstrictor-app.yaml` is a small text file in the root of your repository. It says what your app is, in your own words. You write it once and keep it up to date yourself.
 
-## How you get the file
+Three things read it:
 
-The [repository initialiser](initialise_repository.md) asks for a one-sentence summary, the kind of app and the software it also works in, and adds the file to the initialisation pull request. Read it in the pull request and edit it if you like. If you skip that section, or your repository was created before it existed, copy the example below to the root of your repository.
+- **The [App Centre](https://cellmigrationlab.github.io/LabConstrictor-Site/apps/)** builds your app's card and page from it.
+- **Your release workflow** reads `platforms` to decide which installers to build.
+- **Your installer** passes `hosts` and `host_requirements` to napari, Fiji and QuPath, so they know whether to list your app.
 
-## What it contains
+Version numbers and download links are not in the file. They always come from your latest GitHub release.
+
+## Step 1: get the file
+
+The [repository initialiser](initialise_repository.md) asks for a one-sentence summary, the kind of app and the software it also works in. It adds the file to the initialisation pull request. Read it there and edit it if you like.
+
+If you skipped that section, or your repository is older than the file, create `labconstrictor-app.yaml` in the root of your repository and paste the minimal example below. The [Submit page](https://cellmigrationlab.github.io/LabConstrictor-Site/submit/) also has a form that writes the file for you and checks it as you type.
+
+## Step 2: start with the minimal file
+
+These five fields are required. This file is complete and valid:
+
+```yaml
+schema: 1
+name: My App
+summary: Counts nuclei in 2D fluorescence images and saves a table.
+kind: analysis
+distribution:
+  installer: true
+```
+
+## Step 3: add what helps people choose your app
+
+A fuller example. Everything after `distribution` is optional.
 
 ```yaml
 # yaml-language-server: $schema=https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json
 schema: 1
 name: My App
-summary: One sentence that says what it does, for the app card.
+summary: Counts nuclei in 2D fluorescence images and saves a table.
 description: |-
   A few paragraphs of plain text.
 
   Separate paragraphs with a blank line.
-kind: analysis            # analysis, segmentation, simulation, game, training or utility
-hosts: [notebook, napari] # where its tools can also run: notebook, napari, fiji, qupath
-status: Available         # optional: Experimental, Available or Deprecated
-inputs:                   # optional short lists (1 to 6 items of 5 to 200 characters each)
-  - TIFF images, one channel per file
+kind: analysis
+hosts: [notebook, napari, qupath]
+host_requirements:
+  napari:
+    min_version: 0.1.0-alpha.5
+    why: Older plugins do not show the outlines
+    required: false
+distribution:
+  installer: true
+  platforms: [windows-x86_64, macos-arm64, linux-x86_64]
+  colab:
+    - label: Notebook
+      url: https://colab.research.google.com/github/you/my-app/blob/main/notebooks/App/App.ipynb
+  pip: my-app
+status: Available
+license: MIT
+authors:
+  - name: Ada Lovelace
+    orcid: 0000-0002-1825-0097
+doi: 10.1371/journal.pbio.3002740
+inputs:
+  - 2D TIFF images, one channel per file
 outputs:
   - Label masks and a CSV table
 limitations:
   - Not tested on 3D data
-distribution:             # at least one way to get the app: installer, colab or pip
-  installer: true         # the installers LabConstrictor builds for each release
-  platforms: [windows-x86_64, macos-arm64, linux-x86_64]  # optional, needs installer: build and offer only these installers
-  colab:
-    - label: Notebook
-      url: https://colab.research.google.com/github/you/my-app/blob/main/notebooks/App/App.ipynb
-  pip: my-app             # the name on PyPI
-icon: app/logo/logo.png   # optional: a square PNG in your repository
+quickstart:
+  - Open the app and run the Welcome notebook.
+categories: [nuclei, counting]
+homepage: https://github.com/you/my-app
+docs_url: https://github.com/you/my-app#readme
+icon: app/logo/logo.png
+screenshots:
+  - path: docs/screenshot.png
+    caption: The result table next to the segmented image
 ```
 
-`platforms` also decides which installers your releases build (template 0.1.24 or later): leave a system out when your app cannot run there, for example `macos-x86_64` (Intel Macs) for an app that needs TensorFlow 2.17 or later. The release then builds no installer for it and the download page has no button for it. Without `platforms`, every installer is built: Windows, Linux, and Macs with Apple silicon or Intel (`windows-x86_64`, `linux-x86_64`, `macos-arm64`, `macos-x86_64`). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
+The first line lets editors with YAML support (for example VS Code) check the file as you type. If your editor cannot load that address, use `https://cellmigrationlab.github.io/LabConstrictor-Site/schema/labconstrictor-app.schema.json` instead. Everything is plain text: no HTML and no Markdown.
 
-The first line makes editors with YAML support (for example VS Code) check the file as you type. `inputs`, `outputs` and `limitations` are short summaries for the app page (a list of one to six sentences, not README copy). More optional fields exist (authors, DOI, license, screenshots, a quick start); the full list is in the [schema](https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json). Everything is plain text: no HTML or Markdown.
+## The fields
+
+| Field | Required | What it does | Example |
+|---|---|---|---|
+| `schema` | Yes | The format version. Always `1`. | `1` |
+| `name` | Yes | The name people know the app by (2 to 60 characters). | `My App` |
+| `summary` | Yes | One sentence for the app card (20 to 200 characters). | `Counts nuclei in 2D images.` |
+| `kind` | Yes | What the app is for. One of `analysis`, `segmentation`, `simulation`, `game`, `training`, `utility`. It drives the filter in the App Centre. | `analysis` |
+| `distribution` | Yes | How people get the app. At least one of `installer`, `colab`, `pip`. See below. | `installer: true` |
+| `hosts` | No | Where the app's tools run: `notebook`, `napari`, `fiji`, `qupath`. See below. | `[notebook, napari]` |
+| `host_requirements` | No | The oldest napari, Fiji or QuPath plugin your tools need. See below. | |
+| `description` | No | A few paragraphs for the app page (up to 2000 characters). | |
+| `status` | No | `Experimental`, `Available` or `Deprecated`. | `Available` |
+| `license` | No | The licence, as an SPDX name. | `MIT` |
+| `authors` | No | A list of people: `name`, and optionally `orcid`. | `- name: Ada Lovelace` |
+| `doi` | No | The DOI of the paper to cite, not of a software archive. The app page shows it as the citation. | `10.1371/journal.pbio.3002740` |
+| `inputs`, `outputs`, `limitations` | No | Short lists for the app page: one to six lines of 5 to 200 characters each. | `- 2D TIFF images` |
+| `quickstart` | No | Up to six short steps for a first run. | `- Open the app.` |
+| `categories` | No | Up to six words a scientist would search for. | `[nuclei, counting]` |
+| `homepage`, `docs_url` | No | Web addresses. They must start with `https://`. | |
+| `icon` | No | A square PNG in your repository. SVG is not accepted. | `app/logo/logo.png` |
+| `screenshots` | No | One to six pictures in your repository (PNG, JPG or GIF), each with a `path` and a `caption`. The caption is also the text for screen readers. | |
+
+The App Centre asks for a few optional fields: `status`, `quickstart`, `screenshots`, a licence, and `inputs` and `outputs` for analysis, segmentation and simulation apps. Without them your app is still listed; its page says "Not stated" or leaves that part out.
+
+### `distribution`: how people get the app
+
+| Key | What it does |
+|---|---|
+| `installer: true` | Your latest GitHub release carries the installers LabConstrictor builds. |
+| `platforms` | The systems you support. Needs `installer: true`. Only these installers are built and offered. |
+| `colab` | A list of Google Colab notebooks, each with a `label` and a `url` on `colab.research.google.com`. Only the notebooks you list are shown. |
+| `pip` | The name of your package on PyPI. |
+
+`platforms` also decides which installers your releases build (template 0.1.24 or later). Leave a system out when your app cannot run there. Without `platforms`, every installer is built: `windows-x86_64`, `linux-x86_64`, `macos-arm64` (Apple silicon) and `macos-x86_64` (Intel Macs). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
+
+### `hosts`: where your tools are offered
+
+This field matters only if your app [exposes tools](tools_bridge.md). napari, Fiji and QuPath list your app only if you name them here. Write the hosts you have tested the app in.
+
+- `hosts: [notebook]` means no plugin lists the app. Its tools still work in the notebook and on the command line.
+- Without a `hosts` line, every plugin lists the app. Say what you mean instead.
+- Names are lower case. The check refuses a misspelt, repeated or capitalised name.
 
 ## Plugin versions your tools need (optional)
 
@@ -68,9 +153,42 @@ The **Check App Centre manifest** workflow runs when you change the file and whe
 - It rejects fields it does not know (this catches typos, so the schema is not loosened); the template keeps its copy of the schema in step with the App Centre, see [Keep your app up to date](keep_app_up_to_date.md).
 - It also checks that the icon and screenshots you name exist in the repository.
 
+## Check it yourself
+
+To get an answer before you push, you have two more ways:
+
+1. **On your computer.** From the root of your repository:
+
+    ```bash
+    pip install pyyaml jsonschema
+    python .tools/python/check_app_manifest.py
+    ```
+
+2. **In your browser.** Paste your values into the form on the [Submit page](https://cellmigrationlab.github.io/LabConstrictor-Site/submit/). It checks them against the same schema.
+
+If your app exposes tools, also run `labconstrictor-tools check --module <your>_lc_tools --app-manifest labconstrictor-app.yaml`. It prints the `hosts` and `host_requirements` it read, which is what the installer will register.
+
+The rules themselves are in the [schema](https://cellmigrationlab.github.io/LabConstrictor-Site/schema/labconstrictor-app.schema.json). Your repository has a copy in `.tools/schema/`, and the check uses that copy.
+
+## Common mistakes
+
+| What the check says, or what you see | Fix |
+|---|---|
+| A field "is not allowed" or is "unexpected" | The name is misspelt, or it is at the wrong level. For example `platforms` belongs under `distribution`. |
+| `summary` is too short or too long | Write one sentence of 20 to 200 characters. |
+| `platforms` without `installer` | Add `installer: true`. `platforms` only applies to installers. |
+| The icon or a screenshot is "not found" | The path starts at the root of your repository, with no leading `/`. The file must be committed. |
+| A Colab link is refused | The address must start with `https://colab.research.google.com/`. |
+| `min_version: 0.2` is refused | YAML reads `0.2` as a number. Put it in quotes: `"0.2"`. |
+| Your app is missing from napari, Fiji or QuPath | The host is not in `hosts`, or the app was installed before you added it. Publish a release and install it again. |
+| The check passes but nothing changes in the App Centre | The App Centre reads the file from your default branch and updates once a day. |
+| Text shows `**stars**` or tags | The fields are plain text. Remove Markdown and HTML. |
+
 ## Get listed
 
-Having the file does not list your app by itself. To list it, [submit your repository](https://labconstrictor.cellmig.org/submit/) to the App Centre.
+Having the file does not list your app by itself. To list it, [submit your repository](https://cellmigrationlab.github.io/LabConstrictor-Site/submit/) to the App Centre. You do this once: later releases appear by themselves.
+
+The technical rules for `hosts` and `host_requirements` are in the [LabConstrictor-Tools manifest reference](https://cellmigrationlab.github.io/LabConstrictor-Tools/MANIFEST/).
 
 ---
 
