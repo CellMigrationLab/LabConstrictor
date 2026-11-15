@@ -47,11 +47,11 @@ If your tools rely on a fix or a feature of the napari, Fiji or QuPath plugin th
 ```yaml
 host_requirements:
   qupath:
-    min_version: 0.1.0-alpha.6                  # a release tag of the plugin, with or without v
+    min_version: 0.1.0-alpha.7                  # a release tag of the plugin, with or without v
     features: [shapes_owner_v1]                 # optional: a host feature id
     why: Replace keeps your own annotations     # optional: one line shown to the person
   fiji:
-    min_version: 0.1.0-alpha.6
+    min_version: 0.1.0-alpha.7
 ```
 
 - Name only `napari`, `fiji` or `qupath`: the notebook ships with your app and needs no plugin.

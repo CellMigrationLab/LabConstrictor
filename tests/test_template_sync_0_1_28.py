@@ -44,7 +44,7 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.28", text)
+        self.assertRegex(text, r"template_version: 0\.1\.(2[8-9]|[3-9][0-9])\b")  # the current version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_27_to_v0_1_28.py", text)
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_28.md").is_file())
 

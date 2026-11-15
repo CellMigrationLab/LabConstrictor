@@ -21,7 +21,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Customise the installer images](installer_images.md)
 - [Describe your app for the App Centre](app_manifest.md)
 - [Upload external code, and publish it on PyPI (optional)](external_code_upload.md)
-- [Expose tools to Napari and Fiji (experimental)](tools_bridge.md)
+- [Expose tools to Napari, Fiji and QuPath (experimental)](tools_bridge.md)
 
 ## Keep your app up to date (optional)
 

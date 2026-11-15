@@ -14,6 +14,8 @@ from io import StringIO
 from pathlib import Path
 from types import ModuleType
 
+from _v0_1_29 import before_0_1_29
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_26_to_v0_1_27.py"
@@ -38,16 +40,21 @@ def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
 
 
+def live_page() -> str:
+    """The template's page as 0.1.27 left it (the 0.1.29 corrections undone)."""
+    return before_0_1_29(PAGE, (ROOT / PAGE).read_bytes()).decode("utf-8").replace("\r\n", "\n")
+
+
 def page_before() -> str:
-    """The template's page of 0.1.26: the live page without the new section."""
-    live = lf(ROOT / PAGE)
+    """The template's page of 0.1.26: the 0.1.27 page without the new section."""
+    live = live_page()
     return live.replace(SECTION_TEXT + "\n", "", 1)
 
 
 class ResourceTests(unittest.TestCase):
     def test_the_resources_are_the_template_files(self) -> None:
         self.assertEqual((MIGRATION.RESOURCE_ROOT / SCHEMA).read_bytes(), (ROOT / SCHEMA).read_bytes())
-        self.assertIn(SECTION_TEXT, lf(ROOT / PAGE))
+        self.assertIn(SECTION_TEXT, live_page())
         self.assertNotIn("PROJECT_NAME", SECTION_TEXT)
 
     def test_the_schema_accepts_and_checks_host_requirements(self) -> None:
@@ -86,7 +93,7 @@ class MigrationTests(MigrationCase):
         (self.repo / PAGE).write_text(page_before(), encoding="utf-8")
         log = self.run_migration()
         self.assertEqual((self.repo / SCHEMA).read_bytes(), (ROOT / SCHEMA).read_bytes())
-        self.assertEqual(lf(self.repo / PAGE), lf(ROOT / PAGE))
+        self.assertEqual(lf(self.repo / PAGE), live_page())
         self.assertIn("2 file(s) changed", log)
         self.assertIn("no repository changes were required", self.run_migration())
 
