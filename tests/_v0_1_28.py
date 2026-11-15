@@ -8,13 +8,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from _v0_1_29 import before_0_1_29
+
 PIN_0_1_18 = "v0.3.0-alpha.1"  # the pin 0.1.18 introduced
 PIN_0_1_28 = "v0.3.0-alpha.2"
 PINNED_FILES = (Path("app/bash_bat_scripts/post_install.sh"), Path("app/bash_bat_scripts/post_install.bat"), Path(".tools/docs/tools_bridge.md"))
 
 
 def before_0_1_28(relative: Path | str, data: bytes) -> bytes:
-    """`data` (a live template file at `relative`) with the 0.1.28 pin moved back; any other file is returned as it is."""
+    """`data` (a live template file at `relative`) with the 0.1.29 corrections undone and the 0.1.28 pin moved back."""
+    data = before_0_1_29(relative, data)
     if Path(relative) not in PINNED_FILES:
         return data
     return data.replace(PIN_0_1_28.encode(), PIN_0_1_18.encode())

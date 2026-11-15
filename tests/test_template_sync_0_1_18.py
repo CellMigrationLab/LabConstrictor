@@ -131,7 +131,8 @@ class TemplateConsistencyTests(unittest.TestCase):
             self.assertTrue((ROOT / ".template_sync" / entry["script"]).is_file(), entry["script"])
 
     def test_the_docs_are_linked_and_name_the_pinned_tag(self) -> None:
-        self.assertIn("(migration_0_1_18.md)", (ROOT / ".tools/docs/README.md").read_text(encoding="utf-8"))
+        # the design note is linked from its migration (DOCS_URL); since 0.1.29 the docs README no longer lists design notes
+        self.assertIn(".tools/docs/migration_0_1_18.md", (ROOT / ".template_sync/migrations/v0_1_17_to_v0_1_18.py").read_text(encoding="utf-8"))
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_18.md").is_file())
         bridge = before_0_1_28(".tools/docs/tools_bridge.md", (ROOT / ".tools/docs/tools_bridge.md").read_bytes()).decode("utf-8")
         self.assertIn(f"archive/refs/tags/{NEW_PIN}.zip", bridge)

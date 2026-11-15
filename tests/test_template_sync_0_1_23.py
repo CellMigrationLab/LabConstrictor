@@ -62,7 +62,8 @@ class TemplateConsistencyTests(unittest.TestCase):
             self.assertEqual(chain[-1]["to"], "0.1.23", start)
 
     def test_the_design_note_is_linked(self) -> None:
-        self.assertIn("(migration_0_1_23.md)", live(".tools/docs/README.md"))
+        # the design note is linked from its migration (DOCS_URL); since 0.1.29 the docs README no longer lists design notes
+        self.assertIn(".tools/docs/migration_0_1_23.md", (ROOT / ".template_sync/migrations/v0_1_22_to_v0_1_23.py").read_text(encoding="utf-8"))
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_23.md").is_file())
 
     def test_the_resource_is_the_live_check_script(self) -> None:
