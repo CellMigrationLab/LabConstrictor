@@ -1,69 +1,58 @@
 # LabConstrictor
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20758747.svg)](https://doi.org/10.5281/zenodo.20758747)
+
 ![LabConstrictor Comic](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/comic.png)
 
-**LabConstrictor** turns your Jupyter notebooks into **installable desktop applications**. This lets users launch your work right away, without needing to use Python, pip, or any terminal commands.
+**LabConstrictor turns your Jupyter notebooks into desktop apps that anyone can install.** Your users download an installer, double-click, and work. They need no Python, no pip and no terminal.
 
-This GitHub template handles everything for you. It packages your notebooks, builds installers for different platforms, and provides a simple, user-friendly **Welcome dashboard**. Your users can open your app with a double-click, while you keep a versioned, reproducible workflow.
+This repository is a GitHub template. You bring the notebooks; it builds the installers for Windows, macOS and Linux, and gives the app a Welcome page that lists your notebooks.
 
-## 🎯 Who is this for?
+**Website, guides and ready-made apps: <https://cellmigrationlab.github.io/LabConstrictor-Site/>**
 
-LabConstrictor is ideal for:
-- Researchers sharing reproducible analysis pipelines or lab tools.
-- Developers shipping interactive notebooks to non-technical users.
-- Educators running workshops where setup time must be near zero.
+## Who is it for?
 
+- **Researchers** who want colleagues to run an analysis without setting up Python.
+- **Developers** who ship interactive notebooks to people who do not code.
+- **Teachers** who want a workshop to start with a double-click.
 
-## ✨ LabConstrictor's Features 
+Looking for an app to use, not to build? Go to the [App Centre](https://cellmigrationlab.github.io/LabConstrictor-Site/apps/).
 
-* **Easy Configuration**: Includes a web form to easily configure repo settings, manage dependencies, and brand your application without manual editing.
-* **Cross-Platform**: Automatically builds `.exe` (Windows), `.pkg` (macOS), and `.sh` (Linux) installers.
-* **Auto-Hide Code**: Code cells can be hidden, allowing users to see a clean, "app-like" interface, but still being able to reveal code if needed.
-* **Dependency Guardrails**: automatic workflows merge and validate requirements, catching conflicts *before* you release.
-* **TLS-Resilient Launching**: verified certificate fallback keeps packaged JupyterLab apps usable on systems with malformed certificate-store entries.
-* **Version Control**: Helper cells track versions and alert users when an update is available.
+## What your users get
 
-## 📸 The User Experience
+![An installed LabConstrictor app: installer, Welcome notebook and a notebook with hidden code](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Summary.gif)
 
-![LabConstrictor Summary GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Summary.gif)
+- An installer for their system: `.exe` (Windows), `.pkg` (macOS) or `.sh` (Linux).
+- A Welcome notebook that opens in the browser and lists the app's notebooks.
+- Notebooks with the code hidden, so they look like an app. The code can be shown again.
+- A notice when a newer version of the app is available.
 
-## 🚀 Before Getting Started
+## Quick start
 
-Please read the [Before Getting Started Guide](.tools/docs/before_getting_started.md) to familiarise yourself with the LabConstrictor workflow and requirements.
+You need a GitHub account and the notebooks you want to share. Read [Before getting started](.tools/docs/before_getting_started.md) first, then:
 
-## ⚡ Quick Start
+1. [Create a new repository from this template](.tools/docs/create_repository.md)
+2. [Enable automatic template updates](.tools/docs/template_synchronization.md)
+3. [Initialise your repository](.tools/docs/initialise_repository.md) with the web form
+4. [Upload external code](.tools/docs/external_code_upload.md) (optional)
+5. [Upload your notebooks](.tools/docs/notebook_upload.md)
+6. [Create the installers](.tools/docs/executable_creation.md)
 
-Go from notebook to installer in minutes.
+The same guides, with pictures and a search box, are on the [website](https://cellmigrationlab.github.io/LabConstrictor-Site/build/).
 
-#### 1. [**Create a New Repository from this Template**](.tools/docs/create_repository.md)
-#### 2. [**Enable automatic template updates**](.tools/docs/template_synchronization.md)
-#### 3. [**Initialise your repository**](.tools/docs/initialise_repository.md)
-#### 4. [*(Optional)* **Upload external code**](.tools/docs/external_code_upload.md)
-#### 5. [**Upload Your Notebooks**](.tools/docs/notebook_upload.md) 
-#### 6. [**Create Executable Installers**](.tools/docs/executable_creation.md)
-> **Requirements:** You only need a GitHub account and the Jupyter notebooks you want to distribute.
+## Go further
 
-Need help writing notebooks that run well in both Colab and JupyterLab? See the [notebook portability guide](.tools/docs/notebook_portability.md).
+- [List your app in the App Centre](.tools/docs/app_manifest.md)
+- [Offer your app's functions in napari, Fiji and QuPath](.tools/docs/tools_bridge.md) (experimental)
+- [Write notebooks that run in both Colab and JupyterLab](.tools/docs/notebook_portability.md)
+- [See what others have built](.tools/docs/use_cases.md)
+- [All guides](.tools/docs/README.md)
 
-## 🔄 Automatic Template Updates
+## Contributing and questions
 
-LabConstrictor can prepare pull requests that keep generated repositories aligned with improvements in this template, including updates to GitHub Actions workflows. Complete the one-time [automatic synchronization setup](.tools/docs/template_synchronization.md) after creating your repository.
+Bug fixes and improvements are welcome: read the [contributing guidelines](.github/CONTRIBUTING.md). Using LabConstrictor, or stuck? [Open an issue](https://github.com/CellMigrationLab/LabConstrictor/issues).
 
-## 🤝 Contributing
+## Citation
 
-We welcome contributions, including bug fixes, UX improvements, or new packaging strategies.
-Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submitting PRs.
-
-## 📢 Community
-
-**Using LabConstrictor?**
-We’d love to feature your project! [Open an issue](https://github.com/CellMigrationLab/LabConstrictor/issues) to let us know about your use case.
-
-## 📚 Use Cases
-
-People have already used LabConstrictor to package their tools in apps. Check out the [Use Cases](.tools/docs/use_cases.md) to see examples of what’s possible.
-
-## ✍️ Citation
 If you use LabConstrictor in your research, please cite the project to support its development:
 
 Iván Hidalgo-Cenalmor, Marcela Xiomara Rivera Pineda, Bruno M. Saraiva, Ricardo Henriques, and Guillaume Jacquemet. **Packaging Jupyter notebooks as installable desktop apps using LabConstrictor. arXiv preprint 2026** DOI: https://doi.org/10.48550/arXiv.2603.10704
