@@ -135,7 +135,8 @@ class TemplateConsistencyTests(unittest.TestCase):
             self.assertTrue((ROOT / ".template_sync" / entry["script"]).is_file(), entry["script"])
 
     def test_the_docs_are_linked_and_describe_the_new_order(self) -> None:
-        self.assertIn("(migration_0_1_17.md)", (ROOT / ".tools/docs/README.md").read_text(encoding="utf-8"))
+        # the design note is linked from its migration (DOCS_URL); since 0.1.29 the docs README no longer lists design notes
+        self.assertIn(".tools/docs/migration_0_1_17.md", (ROOT / ".template_sync/migrations/v0_1_16_to_v0_1_17.py").read_text(encoding="utf-8"))
         bridge = (ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8")
         self.assertIn("before* it checks that", bridge)
         self.assertIn("lazily", bridge, "the advice to import labconstrictor_tools lazily stays")

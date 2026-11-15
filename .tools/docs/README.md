@@ -27,17 +27,6 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 - [Keep your app up to date](keep_app_up_to_date.md)
 - [Enable automatic template updates](template_synchronization.md)
-- [Template 0.1.16: how the Tools bridge hooks reach an existing app](migration_0_1_16.md)
-- [Template 0.1.17: install Tools before the package import check](migration_0_1_17.md)
-- [Template 0.1.18: new Tools pin, pinned GitHub Actions, install rules](migration_0_1_18.md)
-- [Template 0.1.19: src_change.yaml in every installer, Python series in setup.py](migration_0_1_19.md)
-- [Template 0.1.20: lock files, no lost workflow pushes, a launcher that starts fresh](migration_0_1_20.md)
-- [Template 0.1.21: no administrator prompt when uninstalling on Windows](migration_0_1_21.md)
-- [Template 0.1.22: TensorFlow apps install on Windows computers with an NVIDIA GPU; the version cell finds the notebook](migration_0_1_22.md)
-- [Template 0.1.23: no template placeholder in the installer](migration_0_1_23.md)
-- [Template 0.1.24: download links for "v" tags, installers only for the supported systems, the app's own Jupyter kernel](migration_0_1_24.md)
-- [Template 0.1.25: publish the app's Python code on PyPI at each release (opt-in)](migration_0_1_25.md)
-- [Template 0.1.26: the app's own documentation explains PyPI publishing](migration_0_1_26.md)
 
 ## Notebook authoring tips
 
