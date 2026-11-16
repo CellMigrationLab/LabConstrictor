@@ -35,7 +35,7 @@ Install a release made with template 0.1.24 or later: its launcher always uses t
 
 ## My changes to a notebook are gone after an update
 
-Since template 0.1.30, the **Update** button of the Welcome notebook keeps your copy before it replaces a notebook: look for `<notebook>.backup-<date>.ipynb` in the same folder, and open it in JupyterLab. Apps made with template 0.1.29 or earlier replace the notebook without a copy.
+Since template 0.1.31, the **Update** button of the Welcome notebook keeps your copy before it replaces a notebook: look for `<notebook>.backup-<date>.ipynb` in the same folder, and open it in JupyterLab. Apps made with template 0.1.30 or earlier replace the notebook without a copy.
 
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 

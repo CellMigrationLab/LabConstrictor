@@ -6,7 +6,7 @@ Here are some tools that have already been created using LabConstrictor:
 ## VLab4Mic
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor-VLab4Mic/main/src/logo/logo.png" alt="VLab4Mic Logo" width="80%">
+  <img src="https://raw.githubusercontent.com/CellMigrationLab/LabConstrictor-VLab4Mic/main/app/logo/logo.png" alt="VLab4Mic Logo" width="80%">
 </p>
 
 [![Original GitHub Repo](https://img.shields.io/badge/GitHub-VLab4Mic-181717?logo=github)](https://github.com/HenriquesLab/VLab4Mic)

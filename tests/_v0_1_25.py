@@ -28,7 +28,7 @@ def _migration() -> ModuleType:
 
 def before_0_1_25(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) without the change 0.1.25 made to it; any other file is returned as it is."""
-    data = before_0_1_30(relative, data)  # the later change of 0.1.30 first (tests/_v0_1_30.py)
+    data = before_0_1_30(relative, data)  # the later changes of 0.1.30 and 0.1.31 first (tests/_v0_1_30.py)
     migration = _migration()
     if Path(relative) != migration.BUMP_VERSION:
         return data

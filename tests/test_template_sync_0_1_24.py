@@ -58,7 +58,7 @@ def new(relative: Path) -> str:
 
 
 def live(relative: Path) -> str:
-    """The live file without the changes of later templates (0.1.30 added the requirements check to the release workflow)."""
+    """The live file without the changes of later templates (0.1.31 added the requirements check to the release workflow)."""
     return before_0_1_30(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")
 
 

@@ -17,7 +17,7 @@ GPU file rewrites `tensorflow` to `tensorflow[and-cuda]` on Linux only (TensorFl
 wheels exist only for Linux; other systems keep plain `tensorflow`) and adds the
 PyTorch CUDA wheel index when `torch`, `torchvision`, or `torchaudio` are present.
 
-Version requirements are never changed silently (template 0.1.30, CellMigrationLab/LabConstrictor#48):
+Version requirements are never changed silently (template 0.1.31, CellMigrationLab/LabConstrictor#48):
   * the requirements of a package are kept as written: `numpy>=1.24` stays `numpy>=1.24`, and the
     requirements of several notebooks are combined (`numpy<2,>=1.24`); the lock step then finds the versions;
   * when notebooks pin a package to different versions (`numpy==1.26.4` and `numpy==2.0.0`), or a pin does not
@@ -47,7 +47,7 @@ from packaging.specifiers import InvalidSpecifier, SpecifierSet
 from packaging.utils import canonicalize_name
 from packaging.version import InvalidVersion, Version
 
-DOCS_URL = "https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_30.md"
+DOCS_URL = "https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_31.md"
 OVERRIDES_FILE = "requirements_overrides.yaml"
 
 # Regex to capture name, optional extras, operator and version, and optional markers (used for the GPU rewrite of final lines)

@@ -1,12 +1,12 @@
-# Template 0.1.30: no silent change of a notebook's package versions, no lost work when a notebook is updated
+# Template 0.1.31: no silent change of a notebook's package versions, no lost work when a notebook is updated
 
-Design note for the 0.1.30 migration (`.template_sync/migrations/v0_1_29_to_v0_1_30.py`), issues [#48](https://github.com/CellMigrationLab/LabConstrictor/issues/48) and [#49](https://github.com/CellMigrationLab/LabConstrictor/issues/49). How a change reaches an installed copy is described in [migration_0_1_16.md](migration_0_1_16.md): a new installer is needed, nothing edits an existing install.
+Design note for the 0.1.31 migration (`.template_sync/migrations/v0_1_30_to_v0_1_31.py`), issues [#48](https://github.com/CellMigrationLab/LabConstrictor/issues/48) and [#49](https://github.com/CellMigrationLab/LabConstrictor/issues/49). How a change reaches an installed copy is described in [migration_0_1_16.md](migration_0_1_16.md): a new installer is needed, nothing edits an existing install.
 
 ## 1. The problems
 
 **#48, the requirements merge changed versions without a word.** `merge_requirements.py` (run by **Updates on notebook change**) merged the `requirements.yaml` of every notebook and, for a package required by several notebooks, kept the highest version: the policy of issue #4 ("if two versions are in conflict in principle take the newest one"). For scientific workflows a successful install does not mean the same results, so a notebook validated with `numpy==1.26.4` silently ran with `numpy==2.0.0`. Running it showed more than the code review that found it (all exited with 0):
 
-| Notebook A | Notebook B | Merged until 0.1.29 |
+| Notebook A | Notebook B | Merged until 0.1.30 |
 |---|---|---|
 | `numpy==1.26.4` | `numpy==2.0.0` | `numpy==2.0.0`, in either file order |
 | `numpy<2.0` | | `numpy==2.0`: every requirement was written as `==`, here the one excluded version |
@@ -36,7 +36,7 @@ Why a range check of our own: a lock failure is only a warning (the installer th
 
 Every step is independent, idempotent, never deletes, never raises for a customised file (the sync pull request is still created) and keeps the line endings of each file.
 
-* **`merge_requirements.py`** is replaced by the 0.1.30 file when it is still the 0.1.29 template file; a customised one is left as it is (`SKIPPED`).
+* **`merge_requirements.py`** is replaced by the 0.1.31 file when it is still the 0.1.30 template file; a customised one is left as it is (`SKIPPED`).
 * **`.tools/requirements.txt`** gets `packaging==25.0` unless it installs packaging already.
 * **`requirements_overrides.yaml`** is created only when the notebooks' `dependencies` already pin a package to different versions. Each entry keeps the version the merge chose until now (the newest pin), so the app installs what it installed before, and its reason says so and lists the pins: check each one and replace the reason with yours. An existing file is left as it is.
 * **`update_on_notebook_change.yml`:** three known lines (push paths, changed files, the merge condition); a customised workflow is `SKIPPED` (run the workflow by hand after changing the overrides).
@@ -49,6 +49,6 @@ Take this template version (the synchronization pull request). If it created `re
 
 ## 5. What is checked here, and what is not
 
-* Tests (`tests/test_template_sync_0_1_30.py`): the merge on the cases of #48 (both file orders, ranges, markers, names, OS-specific lists, overrides with and without a reason, `--check` writes nothing); the backup function (first install, backup, two updates in the same second, a download that is not a notebook); the migration on 0.1.29 files and on customised ones, the seeded overrides of a NucleiSky-like app and the merge accepting them, CRLF, a second run; the sync chain from 0.1.29.
+* Tests (`tests/test_template_sync_0_1_31.py`): the merge on the cases of #48 (both file orders, ranges, markers, names, OS-specific lists, overrides with and without a reason, `--check` writes nothing); the backup function (first install, backup, two updates in the same second, a download that is not a notebook); the migration on 0.1.30 files and on customised ones, the seeded overrides of a NucleiSky-like app and the merge accepting them, CRLF, a second run; the sync chain from 0.1.30.
 * The migration and the merge were run on copies of the real apps.
 * The confirmation dialog and the buttons of the Welcome notebook are not run by these tests: they need a person in an installed app.

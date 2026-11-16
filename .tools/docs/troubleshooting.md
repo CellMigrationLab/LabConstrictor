@@ -40,9 +40,9 @@ The `platforms` job of the release workflow reads `distribution.platforms` in `l
 
 ## "The notebooks ask for incompatible package versions"
 
-The **Run merge script** step of **Updates on notebook change**, or the `merge_requirements.py --check` command of a release, stops when notebooks pin a package to different versions, or ask for versions that no single version meets. Its log lists the package, each notebook and its requirement. Make the notebooks agree, or decide in `requirements_overrides.yaml` which requirement every notebook gets and why, then push it: the workflow runs again. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package) and [migration_0_1_30.md](migration_0_1_30.md).
+The **Run merge script** step of **Updates on notebook change**, or the `merge_requirements.py --check` command of a release, stops when notebooks pin a package to different versions, or ask for versions that no single version meets. Its log lists the package, each notebook and its requirement. Make the notebooks agree, or decide in `requirements_overrides.yaml` which requirement every notebook gets and why, then push it: the workflow runs again. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package) and [migration_0_1_31.md](migration_0_1_31.md).
 
-If the template synchronization to 0.1.30 created `requirements_overrides.yaml`, its entries keep the versions your app installed until now (the newest of the pins). Check each one with every notebook that uses the package, and replace its reason with yours.
+If the template synchronization to 0.1.31 created `requirements_overrides.yaml`, its entries keep the versions your app installed until now (the newest of the pins). Check each one with every notebook that uses the package, and replace its reason with yours.
 
 ## Publishing to PyPI fails
 

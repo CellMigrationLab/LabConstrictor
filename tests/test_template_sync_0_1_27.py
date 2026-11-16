@@ -15,6 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_29 import before_0_1_29
+from _v0_1_30 import live_0_1_29
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,7 +54,7 @@ def page_before() -> str:
 
 class ResourceTests(unittest.TestCase):
     def test_the_resources_are_the_template_files(self) -> None:
-        self.assertEqual((MIGRATION.RESOURCE_ROOT / SCHEMA).read_bytes(), (ROOT / SCHEMA).read_bytes())
+        self.assertEqual((MIGRATION.RESOURCE_ROOT / SCHEMA).read_bytes(), live_0_1_29(SCHEMA))
         self.assertIn(SECTION_TEXT, live_page())
         self.assertNotIn("PROJECT_NAME", SECTION_TEXT)
 
@@ -92,7 +93,7 @@ class MigrationTests(MigrationCase):
         (self.repo / SCHEMA).write_text('{"old": true}\n', encoding="utf-8")
         (self.repo / PAGE).write_text(page_before(), encoding="utf-8")
         log = self.run_migration()
-        self.assertEqual((self.repo / SCHEMA).read_bytes(), (ROOT / SCHEMA).read_bytes())
+        self.assertEqual((self.repo / SCHEMA).read_bytes(), live_0_1_29(SCHEMA))
         self.assertEqual(lf(self.repo / PAGE), live_page())
         self.assertIn("2 file(s) changed", log)
         self.assertIn("no repository changes were required", self.run_migration())
@@ -133,7 +134,7 @@ class ChainTests(MigrationCase):
         result = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.27]", result.stdout)
-        self.assertEqual((self.repo / SCHEMA).read_bytes(), (ROOT / SCHEMA).read_bytes())
+        self.assertEqual((self.repo / SCHEMA).read_bytes(), live_0_1_29(SCHEMA))
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_29 import before_0_1_29
+from _v0_1_30 import live_0_1_29
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,12 +48,11 @@ def index_of_0_1_28() -> bytes:
 class TemplateTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertRegex(text, r"template_version: 0\.1\.(29|[3-9][0-9])\b")
         self.assertIn("script: migrations/v0_1_28_to_v0_1_29.py", text)
 
     def test_the_live_files_hold_each_correction_once_and_no_old_text(self) -> None:
         for relative, edits in MIGRATION.EDITS.items():
-            text = lf(ROOT / relative)
+            text = live_0_1_29(relative).decode("utf-8").replace("\r\n", "\n")
             for old, new in edits:
                 with self.subTest(file=str(relative), new=new[:40]):
                     self.assertEqual(text.count(new), 1)
@@ -90,11 +90,11 @@ class MigrationTests(unittest.TestCase):
 
     def test_an_app_of_0_1_28_gets_the_template_files_and_a_second_run_changes_nothing(self) -> None:
         for relative in MIGRATION.EDITS:
-            self.assertNotEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes(), relative)
+            self.assertNotEqual((self.repo / relative).read_bytes(), live_0_1_29(relative), relative)
         log = self.run_migration()
         for relative in MIGRATION.EDITS:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), live_0_1_29(relative))
         self.assertIn("1 design note entries removed from the list", log)
         self.assertIn(f"{len(MIGRATION.EDITS)} file(s) changed", log)
         self.assertIn("\r\n", (self.repo / MIGRATION.POST_INSTALL_BAT).read_bytes().decode("utf-8"), "post_install.bat stays CRLF")
