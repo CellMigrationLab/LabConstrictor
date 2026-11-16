@@ -38,7 +38,9 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 
 ## Where the app is listed
 
-If the app ships tools for Napari, Fiji or QuPath, the installer registers them with LabConstrictor Tools and passes the `hosts:` line of the app's `labconstrictor-app.yaml` (the installer bundles that file). A host lists the app only if the line names it: with `hosts: [notebook, napari]` the app is listed in Napari, and not in Fiji or QuPath. Without the file, or without a `hosts:` line, the app is registered without hosts, every host lists it, and `menuinst_debug.log` in the install folder says so (`'<app>' declares no hosts, so it is listed in every host; ...`).
+If the app ships tools for napari, Fiji or QuPath, the installer registers them with LabConstrictor Tools and passes the `hosts:` line of the app's `labconstrictor-app.yaml` (the installer bundles that file). A host lists the app only if the line names it: with `hosts: [notebook, napari]` the app is listed in napari, and not in Fiji or QuPath. Without the file, or without a `hosts:` line, the app is registered without hosts, every host lists it, and `menuinst_debug.log` in the install folder says so (`'<app>' declares no hosts, so it is listed in every host; ...`).
+
+To run the tools, install the plugin for your image software once: see [Use apps inside napari, Fiji and QuPath](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/image-software/).
 
 ## Next
 

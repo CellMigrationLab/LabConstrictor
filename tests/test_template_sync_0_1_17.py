@@ -20,6 +20,7 @@ from pathlib import Path
 from _hosts import strip_hosts
 from _v0_1_20 import before_0_1_20
 from _v0_1_28 import before_0_1_28
+from _v0_1_32 import before_0_1_32
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_16_to_v0_1_17.py"
@@ -137,7 +138,8 @@ class TemplateConsistencyTests(unittest.TestCase):
     def test_the_docs_are_linked_and_describe_the_new_order(self) -> None:
         # the design note is linked from its migration (DOCS_URL); since 0.1.29 the docs README no longer lists design notes
         self.assertIn(".tools/docs/migration_0_1_17.md", (ROOT / ".template_sync/migrations/v0_1_16_to_v0_1_17.py").read_text(encoding="utf-8"))
-        bridge = (ROOT / ".tools/docs/tools_bridge.md").read_text(encoding="utf-8")
+        # the guide as 0.1.31 had it: 0.1.32 rewrote it around the owner guides (tests/_v0_1_32.py)
+        bridge = before_0_1_32(".tools/docs/tools_bridge.md", (ROOT / ".tools/docs/tools_bridge.md").read_bytes()).decode("utf-8")
         self.assertIn("before* it checks that", bridge)
         self.assertIn("lazily", bridge, "the advice to import labconstrictor_tools lazily stays")
 

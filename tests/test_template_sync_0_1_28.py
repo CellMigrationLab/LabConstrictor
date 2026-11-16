@@ -13,6 +13,8 @@ from io import StringIO
 from pathlib import Path
 from types import ModuleType
 
+from _v0_1_32 import before_0_1_32
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_27_to_v0_1_28.py"
@@ -31,6 +33,11 @@ SH, BAT, DOC = MIGRATION.POST_INSTALL_SH, MIGRATION.POST_INSTALL_BAT, MIGRATION.
 OLD, NEW = MIGRATION.OLD_PIN, MIGRATION.NEW_PIN
 
 
+def live(relative: Path) -> bytes:
+    """The live template file without the later change of 0.1.32 (the guide no longer names the pin: tests/_v0_1_32.py)."""
+    return before_0_1_32(relative, (ROOT / relative).read_bytes())
+
+
 class TemplateTests(unittest.TestCase):
     def test_the_template_pins_the_new_tag_once_per_script_and_names_it_in_the_guide(self) -> None:
         for relative in (SH, BAT):
@@ -38,8 +45,8 @@ class TemplateTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 self.assertEqual(text.count(NEW), 1)
                 self.assertNotIn(OLD, text)
-        self.assertIn(f"archive/refs/tags/{NEW}.zip", (ROOT / DOC).read_text(encoding="utf-8"))
-        self.assertNotIn(OLD, (ROOT / DOC).read_text(encoding="utf-8"))
+        self.assertIn(f"archive/refs/tags/{NEW}.zip", live(DOC).decode("utf-8"))
+        self.assertNotIn(OLD, live(DOC).decode("utf-8"))
         self.assertIn("\r\n", (ROOT / BAT).read_bytes().decode("utf-8"), "post_install.bat stays CRLF")
 
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
@@ -55,7 +62,7 @@ class MigrationTests(unittest.TestCase):
         for relative in (SH, BAT, DOC):
             target = self.repo / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes((ROOT / relative).read_bytes().replace(NEW.encode(), OLD.encode()))
+            target.write_bytes(live(relative).replace(NEW.encode(), OLD.encode()))
 
     def tearDown(self) -> None:
         shutil.rmtree(self.repo, ignore_errors=True)
@@ -70,7 +77,7 @@ class MigrationTests(unittest.TestCase):
         log = self.run_migration()
         for relative in (SH, BAT, DOC):
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), live(relative))
         self.assertEqual(log.count(f"updated: Tools pin {OLD} -> {NEW}"), 2, log)
         self.assertIn("3 file(s) changed", log)
         self.assertIn("no repository changes were required", self.run_migration())

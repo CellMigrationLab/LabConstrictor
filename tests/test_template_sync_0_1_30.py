@@ -15,6 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_30 import before_0_1_30
+from _v0_1_32 import before_0_1_32
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +44,11 @@ def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
 
 
+def at_0_1_31(relative: Path) -> bytes:
+    """The live template file without the later changes of 0.1.32 (tools_bridge.md and install.md: tests/_v0_1_32.py)."""
+    return before_0_1_32(relative, (ROOT / relative).read_bytes())
+
+
 class TemplateTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
@@ -61,7 +67,7 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_live_files_hold_each_correction_once_and_no_old_text(self) -> None:
         for relative, edits in MIGRATION.EDITS.items():
-            text = lf(ROOT / relative)
+            text = at_0_1_31(relative).decode("utf-8").replace("\r\n", "\n")
             for old, new in edits:
                 with self.subTest(file=str(relative), new=new[:40]):
                     self.assertEqual(text.count(new), 1)
@@ -96,11 +102,11 @@ class MigrationTests(unittest.TestCase):
 
     def test_an_app_of_0_1_29_gets_the_template_files_and_a_second_run_changes_nothing(self) -> None:
         for relative in TEMPLATE_FILES:
-            self.assertNotEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes(), relative)
+            self.assertNotEqual((self.repo / relative).read_bytes(), at_0_1_31(relative), relative)
         log = self.run_migration()
         for relative in TEMPLATE_FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), at_0_1_31(relative))
         self.assertIn(f"{len(MIGRATION.FILES)} file(s) changed", log)
         self.assertIn("no repository changes were required", self.run_migration())
 
