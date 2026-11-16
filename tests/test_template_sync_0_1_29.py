@@ -47,7 +47,7 @@ def index_of_0_1_28() -> bytes:
 class TemplateTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.29", text)
+        self.assertRegex(text, r"template_version: 0\.1\.(29|[3-9][0-9])\b")
         self.assertIn("script: migrations/v0_1_28_to_v0_1_29.py", text)
 
     def test_the_live_files_hold_each_correction_once_and_no_old_text(self) -> None:

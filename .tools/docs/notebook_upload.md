@@ -152,7 +152,8 @@ Follow the steps in the [Obtain requirements of the notebook](notebook_requireme
 
 If you need help merging the pull request, see the [Accept a Pull Request](accept_pull_request.md) guide for instructions. An automatic workflow will check your notebook and its dependencies.
 * **Check Status:** See [How to check workflow status](workflow_status.md).
-* Failure Protocol: If the workflow fails, for example, because of dependency conflicts, the system will automatically undo the merge. Check the logs, fix the problem in your local notebook or requirements, and upload again.
+* Failure Protocol: If the merged requirements cannot be installed, the system automatically undoes the merge. Check the logs, fix the problem in your local notebook or requirements, and upload again.
+* If notebooks ask for different versions of the same package, the workflow stops before anything is installed and the requirements files are not changed. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package).
 
 ---
 

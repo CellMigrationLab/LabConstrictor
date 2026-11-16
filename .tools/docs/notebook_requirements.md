@@ -72,6 +72,28 @@ When you push a notebook with its `requirements.yaml`, the workflow **Updates on
 
 The installer uses `requirements_gpu.txt` when it finds an NVIDIA GPU on Windows or Linux. In that file `tensorflow` becomes `tensorflow[and-cuda]` on Linux only: TensorFlow has had no Windows GPU build since version 2.10, and its CUDA packages exist only for Linux, so Windows keeps plain `tensorflow` (CPU).
 
+### When notebooks ask for different versions of a package
+
+The merge never changes a notebook's requirement silently. Requirements are kept as written (`numpy>=1.24` stays `numpy>=1.24`), and the requirements of several notebooks are combined (`numpy>=1.24,<2`). The workflow stops, and no requirements file is written, when:
+
+* two notebooks pin a package to different versions (`numpy==1.26.4` and `numpy==2.0.0`);
+* a pin does not meet another notebook's requirement (`numpy==2.0.0` and `numpy<2`);
+* no version meets all the requirements (`numpy<2` and `numpy>=2.1`).
+
+The log of the **Run merge script** step names the package, every notebook and its requirement. Then either:
+
+* **make the notebooks agree:** change their `requirements.yaml` to a version that works for every notebook; or
+* **decide explicitly** in `requirements_overrides.yaml`, at the top of the repository, which requirement every notebook gets, and why:
+
+```yaml
+overrides:
+  numpy:
+    use: "==2.0.0"
+    reason: "Notebook A was re-run with numpy 2.0.0 and gives the same results; notebook B needs 2.0."
+```
+
+The decision and its reason are written at the top of the generated requirements files. Pushing `requirements_overrides.yaml` runs the workflow again. A release also stops while a conflict is not resolved. Requirements with different platform markers (`; sys_platform == "win32"`) are kept as separate lines, and `NumPy`, `numpy` and `num_py` count as the same package, as for pip.
+
 It then writes a **lock file** next to each of them (`requirements.lock.txt`, ...). A lock file lists every package the installer installs, including the packages your packages depend on, each with its exact version, for Windows, macOS and Linux. The installer installs the lock file, so every installation of a release gets the same versions.
 
 * A lock file changes only when its requirements file, the Python version or the JupyterLab version changes. Pushing a notebook without new requirements does not move any version.

@@ -38,6 +38,12 @@ The log of the failed step lists each file and line. Replace the placeholder the
 
 The `platforms` job of the release workflow reads `distribution.platforms` in `labconstrictor-app.yaml` to decide which installers to build. It stops when the file is not valid YAML, when `platforms` is not a list, or when it lists none of the systems the release builds installers for: `windows-x86_64`, `linux-x86_64`, `macos-arm64` and `macos-x86_64`. The log of the step says which. Fix `labconstrictor-app.yaml` (see [App Centre manifest](app_manifest.md)), commit, then publish the release again. See [migration_0_1_24.md](migration_0_1_24.md).
 
+## "The notebooks ask for incompatible package versions"
+
+The **Run merge script** step of **Updates on notebook change**, or the `merge_requirements.py --check` command of a release, stops when notebooks pin a package to different versions, or ask for versions that no single version meets. Its log lists the package, each notebook and its requirement. Make the notebooks agree, or decide in `requirements_overrides.yaml` which requirement every notebook gets and why, then push it: the workflow runs again. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package) and [migration_0_1_30.md](migration_0_1_30.md).
+
+If the template synchronization to 0.1.30 created `requirements_overrides.yaml`, its entries keep the versions your app installed until now (the newest of the pins). Check each one with every notebook that uses the package, and replace its reason with yours.
+
 ## Publishing to PyPI fails
 
 The workflow **Publish the Python package to PyPI** (`publish_pypi.yml`) runs at a release only when the repository variable `PYPI_PUBLISH` is `true` or `testpypi` (see [Upload external code](external_code_upload.md#4-publish-the-code-on-pypi-optional)). Its first job checks and builds the package; its second job uploads it. The installers do not depend on it: a failure here leaves the release and its installers as they are.

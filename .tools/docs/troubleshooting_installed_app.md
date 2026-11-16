@@ -33,6 +33,10 @@ If someone once ran `python -m ipykernel install --user` on the computer (common
 
 Install a release made with template 0.1.24 or later: its launcher always uses the app's own kernel. Until then, removing that personal kernel folder also works, but it affects the other Jupyter installations that use it. See [migration_0_1_24.md](migration_0_1_24.md).
 
+## My changes to a notebook are gone after an update
+
+Since template 0.1.30, the **Update** button of the Welcome notebook keeps your copy before it replaces a notebook: look for `<notebook>.backup-<date>.ipynb` in the same folder, and open it in JupyterLab. Apps made with template 0.1.29 or earlier replace the notebook without a copy.
+
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 
 LabConstrictor-based installers include a TLS-resilient launcher. It attempts

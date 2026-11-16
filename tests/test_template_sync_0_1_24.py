@@ -21,6 +21,7 @@ import yaml
 
 from _v0_1_24 import before_0_1_24
 from _v0_1_25 import before_0_1_25
+from _v0_1_30 import before_0_1_30
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,6 +55,11 @@ def lf(path: Path) -> str:
 def new(relative: Path) -> str:
     """The 0.1.24 file: the live file without the later 0.1.25 change (bump_version.py)."""
     return before_0_1_25(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")
+
+
+def live(relative: Path) -> str:
+    """The live file without the changes of later templates (0.1.30 added the requirements check to the release workflow)."""
+    return before_0_1_30(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")
 
 
 def old(relative: Path) -> str:
@@ -100,7 +106,7 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertEqual(MIGRATION.apply_blocks(old(LAUNCHER), (MIGRATION.LAUNCHER_BLOCK,)), lf(ROOT / LAUNCHER))
         text, count = MIGRATION.add_tag_lines(old(WORKFLOW))
         self.assertEqual(count, 2)
-        self.assertEqual(MIGRATION.build_from_platforms(text), lf(ROOT / WORKFLOW))
+        self.assertEqual(MIGRATION.build_from_platforms(text), live(WORKFLOW))
 
     def test_without_platforms_the_matrix_is_the_old_four_builds_in_the_same_order(self) -> None:
         old_matrix = yaml.safe_load(textwrap.dedent(MIGRATION.MATRIX_OLD.split("strategy:\n", 1)[1]))["matrix"]
@@ -119,7 +125,7 @@ class TemplateConsistencyTests(unittest.TestCase):
             self.assertTrue(link.endswith(endings), link)
 
     def test_the_workflow_builds_from_the_platforms_job(self) -> None:
-        jobs = yaml.safe_load(lf(ROOT / WORKFLOW))["jobs"]
+        jobs = yaml.safe_load(live(WORKFLOW))["jobs"]
         self.assertEqual(jobs["build-installers"]["needs"], ["bump-version", "platforms"])
         self.assertEqual(jobs["build-installers"]["strategy"]["matrix"], "${{ fromJSON(needs.platforms.outputs.matrix) }}")
         self.assertEqual(jobs["platforms"]["outputs"]["matrix"], "${{ steps.matrix.outputs.matrix }}")
@@ -413,7 +419,7 @@ class ChainTests(MigrationCase):
         result = subprocess.run(command, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.24]", result.stdout)
-        self.assertEqual(lf(self.repo / WORKFLOW), lf(ROOT / WORKFLOW))
+        self.assertEqual(lf(self.repo / WORKFLOW), live(WORKFLOW))
         again = subprocess.run(command, capture_output=True, text=True)
         self.assertIn("no repository changes were required", again.stdout)
 
