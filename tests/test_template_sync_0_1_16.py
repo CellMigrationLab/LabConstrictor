@@ -15,6 +15,8 @@ from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
 
+from _v0_1_30 import live_0_1_29
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_15_to_v0_1_16.py"
@@ -265,7 +267,7 @@ class MigrationBehaviourTests(MigrationCase):
         manifest = self.repo / "labconstrictor-app.yaml"
         before = manifest.read_bytes()
         self.run_migration()
-        self.assertEqual(schema.read_bytes(), (ROOT / ".tools/schema/labconstrictor-app.schema.json").read_bytes())
+        self.assertEqual(schema.read_bytes(), live_0_1_29(".tools/schema/labconstrictor-app.schema.json"))
         self.assertEqual(manifest.read_bytes(), before)
 
     def test_the_sync_entry_point_runs_the_chain_step(self) -> None:
