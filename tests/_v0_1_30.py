@@ -3,13 +3,15 @@
 Template 0.1.30 changes the website's address in app_manifest.md, install.md, the schema copy and its README, the VLab4Mic logo address
 in use_cases.md and one sentence of tools_bridge.md. The resources of the older migrations are frozen; `before_0_1_30` gives the bytes of
 a live file with those changes undone, so their tests keep checking what they checked. The changes themselves are tested in
-test_template_sync_0_1_30.py.
+test_template_sync_0_1_30.py. The later changes of 0.1.31 are taken out first (tests/_v0_1_31.py).
 """
 from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
 from types import ModuleType
+
+from _v0_1_31 import before_0_1_31
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_29_to_v0_1_30.py"
@@ -26,6 +28,7 @@ def _migration() -> ModuleType:
 
 def before_0_1_30(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) without the changes 0.1.30 made to it; any other file is returned as it is."""
+    data = before_0_1_31(relative, data)
     migration = _migration()
     relative = Path(relative)
     if relative in migration.ADDRESS_FILES:

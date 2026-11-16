@@ -16,6 +16,10 @@ After some seconds, Jupyter Lab will open in your default web browser. The welco
 
 ![Welcome Notebook](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Welcome_Notebook.png)
 
+### Updating a notebook
+
+When a newer version of a notebook is published, the Welcome notebook shows **Update** next to it. Updating replaces your copy of the notebook, so before anything changes it asks you to confirm, and it keeps your current copy, with your changes and outputs, as `<notebook>.backup-<date>.ipynb` in the same folder. Close the notebook's tab before updating: otherwise JupyterLab can save the old copy over the new one. If the download fails, your notebook is not changed.
+
 ## 3. How to Run Notebooks?
 
 You might be used to work with notebooks on JupyterLab (in case you need some guidance on JupyterLab check [this guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md)). Still, LabConstrictor uses some features that can slightly change how you interact with notebooks. Please check [this guide](code_hiding.md) to understand how to run notebooks packaged with LabConstrictor.

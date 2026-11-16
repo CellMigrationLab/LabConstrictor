@@ -46,7 +46,7 @@ def lf(path: Path) -> str:
 class TemplateTests(unittest.TestCase):
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.30", text)
+        self.assertRegex(text, r"template_version: 0\.1\.(30|3[1-9]|[4-9][0-9])\b")
         self.assertIn("script: migrations/v0_1_29_to_v0_1_30.py", text)
 
     def test_no_live_template_file_names_the_old_address(self) -> None:

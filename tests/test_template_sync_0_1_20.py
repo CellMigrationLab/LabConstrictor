@@ -535,7 +535,7 @@ class MigrationCase(unittest.TestCase):
         """The 0.1.19 file of an app (rendered with the app name)."""
         if relative in MIGRATION.REPLACED_FILES:
             return self.rendered(lf(MIGRATION.PREVIOUS_ROOT / relative))
-        text = lf(ROOT / relative)
+        text = before_0_1_24(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")  # without later changes
         if relative == MIGRATION.POST_INSTALL_SH:
             for old, new in MIGRATION.SH_BLOCKS:
                 text = text.replace(new, old)
