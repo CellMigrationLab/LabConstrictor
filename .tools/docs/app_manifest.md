@@ -34,7 +34,7 @@ distribution:
 A fuller example. Everything after `distribution` is optional.
 
 ```yaml
-# yaml-language-server: $schema=https://labconstrictor.cellmig.org/schema/labconstrictor-app.schema.json
+# yaml-language-server: $schema=https://cellmigrationlab.github.io/LabConstrictor-Site/schema/labconstrictor-app.schema.json
 schema: 1
 name: My App
 summary: Counts nuclei in 2D fluorescence images and saves a table.
@@ -79,7 +79,7 @@ screenshots:
     caption: The result table next to the segmented image
 ```
 
-The first line lets editors with YAML support (for example VS Code) check the file as you type. If your editor cannot load that address, use `https://cellmigrationlab.github.io/LabConstrictor-Site/schema/labconstrictor-app.schema.json` instead. Everything is plain text: no HTML and no Markdown.
+The first line lets editors with YAML support (for example VS Code) check the file as you type. Everything is plain text: no HTML and no Markdown.
 
 ## The fields
 

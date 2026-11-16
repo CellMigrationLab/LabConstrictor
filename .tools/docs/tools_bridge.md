@@ -55,5 +55,5 @@ command line, with forms generated automatically from the function signatures. N
    Napari, Fiji and QuPath do not support every feature in the same way: the table "What each host does with each feature" in `docs/HOST_FEATURES.md` of the Tools repository is the reference.
 Documentation and source: https://github.com/CellMigrationLab/LabConstrictor-Tools.
 The registered version is read from the `version:` line of `construct.yaml`. The Windows hook (`post_install.bat`) runs in the template's automated tests on a Windows
-machine, but it has not yet been tested by a person on Windows.
+machine, and people have installed apps on Windows and macOS from a clean system.
 Troubleshooting: `labconstrictor-tools doctor`, `labconstrictor-tools logs`, and `~/.labconstrictor/logs/labconstrictor.log`.
