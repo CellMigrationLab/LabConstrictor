@@ -9,6 +9,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+from _v0_1_34 import before_0_1_34
+
 PIN_0_1_28 = "v0.3.0-alpha.2"
 PIN_0_1_33 = "v0.3.0-alpha.3"
 PINNED_FILES = (Path("app/bash_bat_scripts/post_install.sh"), Path("app/bash_bat_scripts/post_install.bat"))
@@ -31,6 +33,7 @@ def _apps_list_blocks() -> tuple[str, str, str, str]:
 
 def before_0_1_33(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) with the 0.1.33 pin moved back and the old Apps-list block; any other file as it is."""
+    data = before_0_1_34(relative, data)
     if Path(relative) not in PINNED_FILES:
         return data
     data = data.replace(PIN_0_1_33.encode(), PIN_0_1_28.encode())
