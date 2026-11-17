@@ -15,6 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_32 import before_0_1_32
+from _v0_1_33 import before_0_1_33
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +39,11 @@ MIGRATION = load(MIGRATION_PATH, "migration_0_1_32")
 
 def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
+
+
+def live(relative: Path) -> bytes:
+    """The live template file as 0.1.32 left it (the later changes undone, tests/_v0_1_33.py and newer)."""
+    return before_0_1_33(relative, (ROOT / relative).read_bytes())
 
 
 def old(relative: Path) -> bytes:
@@ -70,18 +76,18 @@ class TemplateTests(unittest.TestCase):
     def test_the_resources_are_the_live_guide_and_the_0_1_31_one(self) -> None:
         for relative in MIGRATION.WHOLE_FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((MIGRATION.RESOURCE_ROOT / relative).read_bytes(), (ROOT / relative).read_bytes())
-                self.assertNotEqual(lf(MIGRATION.PREVIOUS_ROOT / relative), lf(ROOT / relative))
+                self.assertEqual((MIGRATION.RESOURCE_ROOT / relative).read_bytes(), live(relative))
+                self.assertNotEqual(lf(MIGRATION.PREVIOUS_ROOT / relative), live(relative).decode("utf-8"))
 
     def test_the_live_files_are_the_0_1_31_files_migrated(self) -> None:
         for relative in MIGRATION.EDITS:
             with self.subTest(file=str(relative)):
                 text, applied, missing = MIGRATION.apply_edits(old(relative).decode("utf-8"), MIGRATION.EDITS[relative])
                 self.assertEqual((applied, missing), (len(MIGRATION.EDITS[relative]), 0))
-                self.assertEqual(text, lf(ROOT / relative))
+                self.assertEqual(text, live(relative).decode("utf-8"))
 
     def test_the_tools_guide_links_the_owner_guides(self) -> None:
-        text = lf(ROOT / MIGRATION.TOOLS_DOC)
+        text = live(MIGRATION.TOOLS_DOC).decode("utf-8")
         for address in (f"{SITE}guides/image-software/", f"{SITE}guides/napari/", f"{SITE}guides/fiji/", f"{SITE}guides/qupath/", AUTHORING):
             with self.subTest(address=address):
                 self.assertIn(f"]({address})", text)
@@ -141,11 +147,11 @@ class MigrationTests(unittest.TestCase):
 
     def test_an_app_of_0_1_31_gets_the_template_files_and_a_second_run_changes_nothing(self) -> None:
         for relative in MIGRATION.FILES:
-            self.assertNotEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes(), relative)
+            self.assertNotEqual((self.repo / relative).read_bytes(), live(relative), relative)
         log = self.run_migration()
         for relative in MIGRATION.FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), live(relative))
         self.assertIn(f"done: {len(MIGRATION.FILES)} file(s) changed", log)
         self.assertNotIn("SKIPPED", log)
         again = self.run_migration()
@@ -160,7 +166,7 @@ class MigrationTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 raw = (self.repo / relative).read_bytes()
                 self.assertNotIn(b"\n", raw.replace(b"\r\n", b""))
-                self.assertEqual(raw.replace(b"\r\n", b"\n"), (ROOT / relative).read_bytes())
+                self.assertEqual(raw.replace(b"\r\n", b"\n"), live(relative))
 
     def test_a_customised_guide_is_skipped(self) -> None:
         guide = self.put(MIGRATION.TOOLS_DOC, old(MIGRATION.TOOLS_DOC) + b"\nOur own note.\n")
@@ -207,7 +213,7 @@ class MigrationTests(unittest.TestCase):
         result = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.32]", result.stdout)
-        self.assertEqual((self.repo / MIGRATION.TOOLS_DOC).read_bytes(), (ROOT / MIGRATION.TOOLS_DOC).read_bytes())
+        self.assertEqual((self.repo / MIGRATION.TOOLS_DOC).read_bytes(), live(MIGRATION.TOOLS_DOC))
         again = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
         self.assertIn("no repository changes were required", again.stdout)
 

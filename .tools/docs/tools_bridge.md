@@ -6,7 +6,7 @@ function signatures. Nothing changes for apps that do not declare tools.
 
 This page covers what the template does: where you declare the tools and what the installer does with them. Two other guides cover the rest:
 
-- [Writing tools](https://github.com/CellMigrationLab/LabConstrictor-Tools/blob/main/docs/AUTHORING.md), in LabConstrictor-Tools: the inputs
+- [Writing tools](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/writing-tools/): the inputs
   and outputs a tool can have, how to lay out its form, what each program supports, and how to test a tool.
 - [Use apps inside napari, Fiji and QuPath](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/image-software/): what the people
   who install your app do to run its tools, with the install steps of the
@@ -36,7 +36,7 @@ This page covers what the template does: where you declare the tools and what th
    Tools failed to install. An import at the top of your package does not stop the installation, because the installer installs Tools before
    it checks that your package can be imported.
 3. Name the programs your tools work in under `hosts:` in `labconstrictor-app.yaml`: see [Describe your app for the App Centre](app_manifest.md).
-4. Test your tools before you publish a release, as [Writing tools](https://github.com/CellMigrationLab/LabConstrictor-Tools/blob/main/docs/AUTHORING.md)
+4. Test your tools before you publish a release, as [Writing tools](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/writing-tools/)
    shows (`labconstrictor-tools check` and `labconstrictor-tools test`).
 
 ## What the installer does

@@ -18,6 +18,7 @@ from types import ModuleType
 from _hosts import strip_hosts
 from _v0_1_20 import before_0_1_20
 from _v0_1_28 import before_0_1_28
+from _v0_1_35 import before_0_1_35
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -175,7 +176,8 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertNotIn("LC_TOOLS_SPEC", text, "the smoke job installs the tag pinned by post_install: no Tools source override in CI")
 
     def test_the_install_rules_are_in_the_install_guide_with_one_wording(self) -> None:
-        guide = (ROOT / ".tools/docs/install.md").read_text(encoding="utf-8")
+        # 0.1.35 links "uninstalling the old version" to the uninstall section; the sentence is checked without that link.
+        guide = before_0_1_35(".tools/docs/install.md", (ROOT / ".tools/docs/install.md").read_bytes()).decode("utf-8")
         for rule in (RULE_PATH, RULE_UPDATE, RULE_LINUX):
             self.assertIn(rule, guide)
         markers = (("must contain no space", RULE_PATH), ("uninstalling the old version first", RULE_UPDATE), ("-u` updates in place", RULE_LINUX))
