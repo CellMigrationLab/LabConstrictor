@@ -14,6 +14,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_33 import before_0_1_33
+from _v0_1_34 import before_0_1_34
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,14 +35,14 @@ OLD, NEW = MIGRATION.OLD_PIN, MIGRATION.NEW_PIN
 
 
 def live(relative: Path) -> bytes:
-    """The live template file (0.1.33 is the newest migration)."""
-    return (ROOT / relative).read_bytes()
+    """The live template file without the later pin move of 0.1.34 (tests/_v0_1_34.py)."""
+    return before_0_1_34(relative, (ROOT / relative).read_bytes())
 
 
 class TemplateTests(unittest.TestCase):
     def test_the_template_pins_the_new_tag_once_per_script(self) -> None:
         for relative in (SH, BAT):
-            text = (ROOT / relative).read_bytes().decode("utf-8")
+            text = live(relative).decode("utf-8")
             with self.subTest(file=str(relative)):
                 self.assertEqual(text.count(NEW), 1)
                 self.assertNotIn(OLD, text)
@@ -49,14 +50,14 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_manifest_lists_the_migration_and_the_version(self) -> None:
         text = (ROOT / ".template_sync/manifest.yaml").read_text(encoding="utf-8")
-        self.assertIn("template_version: 0.1.33", text)  # the newest migration: update when a later one is added
+        self.assertRegex(text, r"template_version: 0\.1\.(3[3-9]|[4-9][0-9])\b")  # the current version is checked by the test of the newest migration
         self.assertIn("script: migrations/v0_1_32_to_v0_1_33.py", text)
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_33.md").is_file())
 
 
 class AppsListTemplateTests(unittest.TestCase):
     def test_the_bat_reads_the_version_and_icon_at_install_time(self) -> None:
-        text = (ROOT / BAT).read_bytes().decode("utf-8")
+        text = live(BAT).decode("utf-8")
         self.assertNotIn("logo.ico", text)
         self.assertEqual(text.count(MIGRATION.NEW_ICON_REG), 1)
         self.assertIn('findstr /B /C:"version:" "%PROJECT_ROOT%\\construct.yaml"`) DO SET "DISPLAY_VERSION=%%~B"', text)
@@ -125,8 +126,8 @@ class MigrationTests(unittest.TestCase):
         result = subprocess.run(command, capture_output=True, text=True, check=False)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.33]", result.stdout)
-        self.assertEqual((self.repo / SH).read_bytes(), (ROOT / SH).read_bytes())
-        self.assertEqual((self.repo / BAT).read_bytes(), (ROOT / BAT).read_bytes().replace(b"VERSION_NUMBER", b"0.1.3"))
+        self.assertEqual((self.repo / SH).read_bytes(), live(SH))
+        self.assertEqual((self.repo / BAT).read_bytes(), live(BAT).replace(b"VERSION_NUMBER", b"0.1.3"))
 
 
 if __name__ == "__main__":
