@@ -34,14 +34,14 @@ OLD, NEW = MIGRATION.OLD_PIN, MIGRATION.NEW_PIN
 
 
 def live(relative: Path) -> bytes:
-    """The live template file without the later change of 0.1.32 (the guide no longer names the pin: tests/_v0_1_32.py)."""
+    """The live template file without the later changes of 0.1.32 (the guide no longer names the pin) and 0.1.33 (the next pin): tests/_v0_1_32.py."""
     return before_0_1_32(relative, (ROOT / relative).read_bytes())
 
 
 class TemplateTests(unittest.TestCase):
     def test_the_template_pins_the_new_tag_once_per_script_and_names_it_in_the_guide(self) -> None:
         for relative in (SH, BAT):
-            text = (ROOT / relative).read_bytes().decode("utf-8")
+            text = live(relative).decode("utf-8")
             with self.subTest(file=str(relative)):
                 self.assertEqual(text.count(NEW), 1)
                 self.assertNotIn(OLD, text)
@@ -107,7 +107,7 @@ class MigrationTests(unittest.TestCase):
         result = subprocess.run(command, capture_output=True, text=True, check=False)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.28]", result.stdout)
-        self.assertEqual((self.repo / SH).read_bytes(), (ROOT / SH).read_bytes())
+        self.assertEqual((self.repo / SH).read_bytes(), live(SH))
 
 
 if __name__ == "__main__":
