@@ -33,8 +33,15 @@ Installing takes about 6-8 minutes and you only do it once. You need an internet
 
 ## Update an installed app
 
-- **macOS and Windows.** On macOS and Windows, update an app by uninstalling the old version first and then installing the new one: the installer does not install over an existing install. On macOS, if you already ran the new installer over the old version and it stopped or reported a failure at the end, move only the old app shortcut (for example `~/Applications/MyApp.app`) to the Bin, keep the app's folder in your home folder, and run the installer again ([known issue](https://github.com/CellMigrationLab/LabConstrictor/issues/34)).
+- **macOS and Windows.** On macOS and Windows, update an app by [uninstalling the old version](#uninstall-an-app) first and then installing the new one: the installer does not install over an existing install. On macOS, if you already ran the new installer over the old version and it stopped or reported a failure at the end, move only the old app shortcut (for example `~/Applications/MyApp.app`) to the Bin, keep the app's folder in your home folder, and run the installer again ([known issue](https://github.com/CellMigrationLab/LabConstrictor/issues/34)).
 - **Linux.** On Linux, running the installer with `-u` updates in place only if the previous install finished; otherwise delete `<prefix>/pkgs` or uninstall the app and install it again.
+
+## Uninstall an app
+
+Uninstalling deletes the app's install folder and everything in it: move anything you saved there to another folder first.
+
+- **Windows.** Open Settings > Apps > Installed apps, find the app, click the three dots next to it and choose Uninstall. You can also double-click `Uninstall-<AppName>.exe` in the app's install folder. If the app is still listed afterwards, see [Troubleshooting an installed app](troubleshooting_installed_app.md).
+- **macOS and Linux.** Open a terminal and run the `uninstall.sh` script of the app's install folder (the folder you chose when you installed it), for example `bash ~/labconstrictor/MyApp/uninstall.sh`. It removes the app's shortcut (from the Applications folder of your home folder on macOS, from your applications menu on Linux), takes the app out of the tools list of napari, Fiji and QuPath, and deletes the install folder.
 
 ## Where the app is listed
 

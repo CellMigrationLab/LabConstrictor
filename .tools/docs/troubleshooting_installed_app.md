@@ -4,7 +4,7 @@ Problems with an app on your computer, after you installed it. For problems with
 
 ## App still appears in the Windows Installed apps list after uninstalling
 
-On Windows, it may happen that, after uninstalling the app from `Settings > Apps > Installed apps` as explained in the [uninstalling guide](./download_executable.md), the app still appears in the list and does not allow you to uninstall it again, showing a message like:
+On Windows, it may happen that, after uninstalling the app from `Settings > Apps > Installed apps` as explained in [Uninstall an app](install.md#uninstall-an-app), the app still appears in the list and does not allow you to uninstall it again, showing a message like:
 
 ![Uninstall error message](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/troubleshooting/Not_Uninstall.png)
 

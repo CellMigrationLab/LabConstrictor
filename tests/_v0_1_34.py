@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from _v0_1_35 import before_0_1_35
+
 PIN_0_1_33 = "v0.3.0-alpha.3"
 PIN_0_1_34 = "v0.3.0-alpha.4"
 PINNED_FILES = (Path("app/bash_bat_scripts/post_install.sh"), Path("app/bash_bat_scripts/post_install.bat"))
@@ -15,6 +17,7 @@ PINNED_FILES = (Path("app/bash_bat_scripts/post_install.sh"), Path("app/bash_bat
 
 def before_0_1_34(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) with the 0.1.34 pin moved back; any other file is returned as it is."""
+    data = before_0_1_35(relative, data)
     if Path(relative) not in PINNED_FILES:
         return data
     return data.replace(PIN_0_1_34.encode(), PIN_0_1_33.encode())
