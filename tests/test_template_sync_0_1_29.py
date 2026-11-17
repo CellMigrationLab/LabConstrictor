@@ -15,6 +15,7 @@ from types import ModuleType
 
 from _v0_1_29 import before_0_1_29
 from _v0_1_30 import live_0_1_29
+from _v0_1_36 import template_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,7 +77,7 @@ class MigrationTests(unittest.TestCase):
         for relative in MIGRATION.EDITS:
             target = self.repo / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            data = index_of_0_1_28() if relative == INDEX else before_0_1_29(relative, (ROOT / relative).read_bytes())
+            data = index_of_0_1_28() if relative == INDEX else before_0_1_29(relative, template_bytes(relative))
             target.write_bytes(data)
 
     def tearDown(self) -> None:

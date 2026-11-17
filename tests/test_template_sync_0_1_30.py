@@ -16,6 +16,7 @@ from types import ModuleType
 
 from _v0_1_30 import before_0_1_30
 from _v0_1_32 import before_0_1_32
+from _v0_1_36 import template_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,7 +47,7 @@ def lf(path: Path) -> str:
 
 def at_0_1_31(relative: Path) -> bytes:
     """The live template file without the later changes of 0.1.32 (tools_bridge.md and install.md: tests/_v0_1_32.py)."""
-    return before_0_1_32(relative, (ROOT / relative).read_bytes())
+    return before_0_1_32(relative, template_bytes(relative))
 
 
 class TemplateTests(unittest.TestCase):
@@ -82,7 +83,7 @@ class MigrationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.repo = Path(tempfile.mkdtemp(prefix="lc_0_1_30_"))
         for relative in TEMPLATE_FILES:
-            self.put(relative, before_0_1_30(relative, (ROOT / relative).read_bytes()))
+            self.put(relative, before_0_1_30(relative, template_bytes(relative)))
         self.put(MIGRATION.APP_MANIFEST, APP_MANIFEST_BEFORE.encode("utf-8"))
         self.put(MIGRATION.PROJECT_FILE, PROJECT_FILE_BEFORE.encode("utf-8"))
 

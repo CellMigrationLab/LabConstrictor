@@ -1,4 +1,4 @@
-# Expose your app's tools to napari, Fiji and QuPath (optional, experimental)
+# Expose your app's tools to napari, Fiji and QuPath (optional)
 
 If your repository ships Python code (see [Upload external code](external_code_upload.md)), you can declare some of its functions
 as **tools**. After installation, people can run them in napari, Fiji and QuPath and from the command line, with forms made from the
