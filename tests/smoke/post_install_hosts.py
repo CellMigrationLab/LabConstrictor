@@ -34,7 +34,7 @@ TOKENS = (
     ("UNDERSCORED_PROJECT_NAME", "Demo_App"),
     ("PYTHON_PROJ_NAME", "demoapp"),
     ("PROJECT_NAME", APP),
-    ("VERSION_NUMBER", "1.2.3"),
+    ("VERSION_NUMBER", "0.0.1"),  # the initialisation value; construct.yaml says 1.2.3 (the Apps list must show 1.2.3)
     ("GITHUB_OWNER", "CellMigrationLab"),
 )
 SETUP_PY = 'from setuptools import find_packages, setup\nsetup(name="demoapp", version="1.2.3", package_dir={"": "src"}, packages=find_packages("src"))\n'
@@ -100,6 +100,7 @@ def write_project(root: Path) -> None:
     (root / "requirements.txt").write_text("setuptools\n", encoding="utf-8")
     (root / "construct.yaml").write_text("name: Demo_App\nversion: 1.2.3\n", encoding="utf-8")
     (root / "notebook_launcher.json").write_text("{}", encoding="utf-8")
+    (root / "demo_app.ico").write_bytes(b"")  # the icon the installer copies: the Windows Apps list points at it
 
 
 def render_script(base: Path) -> Path:
@@ -155,6 +156,22 @@ def check_undeclared(name: str, entry: dict[str, object], log: str) -> None:
     print(f"OK {name}: no hosts, and the log says so", flush=True)
 
 
+def check_apps_list(prefix: Path) -> None:
+    """Windows: the Apps-list entry has the version of construct.yaml (1.2.3, not the initialisation value) and the copied .ico."""
+    key = r"HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\Demo_App"
+    found: dict[str, str] = {}
+    for value in ("DisplayVersion", "DisplayIcon"):
+        out = subprocess.run(["reg", "query", key, "/v", value], capture_output=True, text=True, check=False).stdout
+        line = next((row for row in out.splitlines() if row.strip().startswith(value)), "")
+        found[value] = line.split("REG_SZ", 1)[1].strip() if "REG_SZ" in line else ""
+    subprocess.run(["reg", "delete", key, "/f"], capture_output=True, check=False)
+    if found["DisplayVersion"] != "1.2.3":
+        raise AssertionError(f"Apps list: DisplayVersion {found['DisplayVersion']!r}, expected the construct.yaml version 1.2.3")
+    if Path(found["DisplayIcon"]) != prefix / APP / "demo_app.ico":
+        raise AssertionError(f"Apps list: DisplayIcon {found['DisplayIcon']!r}, expected {prefix / APP / 'demo_app.ico'}")
+    print(f"OK Windows Apps list: version 1.2.3, icon {found['DisplayIcon']}", flush=True)
+
+
 def install_case(script: Path, prefix: Path, lc_home: Path) -> tuple[dict[str, object], str]:
     """Install once into a fresh registry home: (the registry entry of the app, the installer log)."""
     log = install(script, prefix, lc_home)
@@ -174,6 +191,8 @@ def main() -> int:
             target.write_bytes(manifest.read_bytes())
             entry, log = install_case(script, prefix, base / f"home_{manifest.stem}")
             check_declared(manifest.name, manifest, entry, log)
+            if WINDOWS and manifest == manifests[0]:
+                check_apps_list(prefix)
         target.write_bytes(b"\xef\xbb\xbfschema: 1\nname: Demo\n\"hosts\": [notebook, napari]\n")
         entry, log = install_case(script, prefix, base / "home_bom_quoted_key")
         if entry.get("hosts") != ["notebook", "napari"]:

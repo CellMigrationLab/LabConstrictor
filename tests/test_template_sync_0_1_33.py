@@ -1,4 +1,4 @@
-"""Tests of the 0.1.33 migration: the Tools pin moves from v0.3.0-alpha.2 to v0.3.0-alpha.3 (Fiji opens 3- and 4-plane results, Tools #163)."""
+"""Tests of the 0.1.33 migration: the Tools pin moves to v0.3.0-alpha.3 (Tools #163), and the Windows Apps list gets the right version and icon."""
 from __future__ import annotations
 
 import importlib.util
@@ -12,6 +12,8 @@ from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
 from types import ModuleType
+
+from _v0_1_33 import before_0_1_33
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,13 +54,23 @@ class TemplateTests(unittest.TestCase):
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_33.md").is_file())
 
 
+class AppsListTemplateTests(unittest.TestCase):
+    def test_the_bat_reads_the_version_and_icon_at_install_time(self) -> None:
+        text = (ROOT / BAT).read_bytes().decode("utf-8")
+        self.assertNotIn("logo.ico", text)
+        self.assertEqual(text.count(MIGRATION.NEW_ICON_REG), 1)
+        self.assertIn('findstr /B /C:"version:" "%PROJECT_ROOT%\\construct.yaml"`) DO SET "DISPLAY_VERSION=%%~B"', text)
+        self.assertIn('FOR %%I IN ("%PROJECT_ROOT%\\*.ico") DO IF NOT DEFINED DISPLAY_ICON SET "DISPLAY_ICON=%%~fI"', text)
+        self.assertNotIn("\n", text.replace("\r\n", ""), "post_install.bat stays CRLF on every line")
+
+
 class MigrationTests(unittest.TestCase):
     def setUp(self) -> None:
         self.repo = Path(tempfile.mkdtemp(prefix="lc_0_1_33_"))
         for relative in (SH, BAT):
             target = self.repo / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(live(relative).replace(NEW.encode(), OLD.encode()))
+            target.write_bytes(before_0_1_33(relative, live(relative)).replace(b"VERSION_NUMBER", b"0.1.3"))
 
     def tearDown(self) -> None:
         shutil.rmtree(self.repo, ignore_errors=True)
@@ -73,9 +85,9 @@ class MigrationTests(unittest.TestCase):
         log = self.run_migration()
         for relative in (SH, BAT):
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), live(relative))
+                self.assertEqual((self.repo / relative).read_bytes(), live(relative).replace(b"VERSION_NUMBER", b"0.1.3"))
         self.assertEqual(log.count(f"updated: Tools pin {OLD} -> {NEW}"), 2, log)
-        self.assertIn("2 file(s) changed", log)
+        self.assertIn("3 change(s)", log)
         self.assertIn("no repository changes were required", self.run_migration())
 
     def test_an_own_pin_is_left_alone(self) -> None:
@@ -85,6 +97,17 @@ class MigrationTests(unittest.TestCase):
         log = self.run_migration()
         self.assertEqual(sh.read_bytes(), before)
         self.assertIn("has its own pin v0.2.0-rc.2: left as it is", log)
+
+    def test_the_app_keeps_its_own_setup_time_version_as_the_fallback(self) -> None:
+        self.run_migration()
+        self.assertIn(b'SET "DISPLAY_VERSION=0.1.3"\r\nIF EXIST', (self.repo / BAT).read_bytes())
+
+    def test_an_apps_list_block_changed_by_hand_is_left_alone(self) -> None:
+        bat = self.repo / BAT
+        bat.write_bytes(bat.read_bytes().replace(b"logo.ico", b"my_icon.ico"))
+        log = self.run_migration()
+        self.assertIn(b"my_icon.ico", bat.read_bytes())
+        self.assertIn("has no template Apps-list block (changed by hand): left as it is", log)
 
     def test_a_script_without_the_hook_or_files_missing_are_left_alone(self) -> None:
         (self.repo / SH).write_text("#!/bin/bash\necho hi\n", encoding="utf-8")
@@ -103,6 +126,7 @@ class MigrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("[migration 0.1.33]", result.stdout)
         self.assertEqual((self.repo / SH).read_bytes(), (ROOT / SH).read_bytes())
+        self.assertEqual((self.repo / BAT).read_bytes(), (ROOT / BAT).read_bytes().replace(b"VERSION_NUMBER", b"0.1.3"))
 
 
 if __name__ == "__main__":

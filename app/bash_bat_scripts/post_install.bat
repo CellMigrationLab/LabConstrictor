@@ -184,15 +184,19 @@ IF ERRORLEVEL 1 (
 
 SET "ARP_KEY=HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\UNDERSCORED_PROJECT_NAME"
 SET "UNINSTALL_EXE=%PREFIX%\Uninstall-UNDERSCORED_PROJECT_NAME.exe"
-SET "DISPLAY_ICON=%PROJECT_ROOT%\logo.ico"
+REM Windows Apps list: the version of this installer (the version: line of the bundled construct.yaml, written by each release),
+REM and the app icon the installer copied (the first .ico in the app folder); no icon entry when there is none.
 SET "DISPLAY_VERSION=VERSION_NUMBER"
+IF EXIST "%PROJECT_ROOT%\construct.yaml" FOR /F "usebackq tokens=1,* delims=: " %%A IN (`findstr /B /C:"version:" "%PROJECT_ROOT%\construct.yaml"`) DO SET "DISPLAY_VERSION=%%~B"
+SET "DISPLAY_ICON="
+FOR %%I IN ("%PROJECT_ROOT%\*.ico") DO IF NOT DEFINED DISPLAY_ICON SET "DISPLAY_ICON=%%~fI"
 SET "PUBLISHER=GITHUB_OWNER"
 echo Registering PROJECT_NAME in Windows Apps list >> "%LOG_FILE%"
 reg add "%ARP_KEY%" /v DisplayName /d "PROJECT_NAME" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v DisplayVersion /d "%DISPLAY_VERSION%" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v Publisher /d "%PUBLISHER%" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v InstallLocation /d "%PREFIX%" /f >> "%LOG_FILE%" 2>&1
-reg add "%ARP_KEY%" /v DisplayIcon /d "%DISPLAY_ICON%" /f >> "%LOG_FILE%" 2>&1
+IF DEFINED DISPLAY_ICON reg add "%ARP_KEY%" /v DisplayIcon /d "%DISPLAY_ICON%" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v UninstallString /d "\"%UNINSTALL_EXE%\"" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v QuietUninstallString /d "\"%UNINSTALL_EXE%\" /S" /f >> "%LOG_FILE%" 2>&1
 reg add "%ARP_KEY%" /v NoModify /t REG_DWORD /d 1 /f >> "%LOG_FILE%" 2>&1
