@@ -12,6 +12,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_31 import before_0_1_31
+from _v0_1_36 import template_bytes
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_29_to_v0_1_30.py"
@@ -46,4 +47,4 @@ def before_0_1_30(relative: Path | str, data: bytes) -> bytes:
 
 def live_0_1_29(relative: Path | str) -> bytes:
     """The live template file at `relative` as template 0.1.29 had it."""
-    return before_0_1_30(relative, (ROOT / relative).read_bytes())
+    return before_0_1_30(relative, template_bytes(relative))

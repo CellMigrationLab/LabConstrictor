@@ -16,6 +16,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_35 import before_0_1_35
+from _v0_1_36 import before_0_1_36, template_bytes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,9 +41,14 @@ def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
 
 
+def live(relative: Path) -> bytes:
+    """The template file as 0.1.35 left it (later changes undone, tests/_v0_1_36.py and newer; a file removed later is its frozen copy)."""
+    return before_0_1_36(relative, template_bytes(relative))
+
+
 def old(relative: Path) -> bytes:
     """The 0.1.34 file: the live file without the 0.1.35 change."""
-    return before_0_1_35(relative, (ROOT / relative).read_bytes())
+    return before_0_1_35(relative, template_bytes(relative))
 
 
 def user_pages() -> list[Path]:
@@ -75,15 +81,15 @@ class TemplateTests(unittest.TestCase):
     def test_the_resources_are_the_live_page_and_the_0_1_34_one(self) -> None:
         for relative in MIGRATION.WHOLE_FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((MIGRATION.RESOURCE_ROOT / relative).read_bytes(), (ROOT / relative).read_bytes())
-                self.assertNotEqual(lf(MIGRATION.PREVIOUS_ROOT / relative), lf(ROOT / relative))
+                self.assertEqual((MIGRATION.RESOURCE_ROOT / relative).read_bytes(), live(relative))
+                self.assertNotEqual(lf(MIGRATION.PREVIOUS_ROOT / relative), live(relative).decode("utf-8"))
 
     def test_the_live_files_are_the_0_1_34_files_migrated(self) -> None:
         for relative in MIGRATION.EDITS:
             with self.subTest(file=str(relative)):
                 text, applied, missing = MIGRATION.apply_edits(old(relative).decode("utf-8"), MIGRATION.EDITS[relative])
                 self.assertEqual((applied, missing), (len(MIGRATION.EDITS[relative]), 0))
-                self.assertEqual(text, lf(ROOT / relative))
+                self.assertEqual(text, live(relative).decode("utf-8"))
 
     def test_install_says_how_to_uninstall_on_each_system(self) -> None:
         text = lf(ROOT / MIGRATION.INSTALL_DOC)
@@ -107,11 +113,11 @@ class TemplateTests(unittest.TestCase):
             with self.subTest(file=path.name):
                 self.assertNotIn("[uninstalling guide](./download_executable.md)", text)
                 self.assertNotIn(MIGRATION.AUTHORING_ON_GITHUB, text)
-        self.assertEqual(lf(ROOT / MIGRATION.TOOLS_DOC).count(f"]({MIGRATION.WRITING_TOOLS})"), 2)
+        self.assertEqual(live(MIGRATION.TOOLS_DOC).decode("utf-8").count(f"]({MIGRATION.WRITING_TOOLS})"), 2)
         self.assertIn("](install.md#uninstall-an-app)", lf(ROOT / MIGRATION.TROUBLESHOOTING_DOC))
 
     def test_use_cases_links_to_the_app_centre(self) -> None:
-        text = lf(ROOT / MIGRATION.USE_CASES_DOC)
+        text = live(MIGRATION.USE_CASES_DOC).decode("utf-8")
         self.assertIn(f"]({SITE}apps/)", text)
         self.assertNotIn("## VLab4Mic", text)
 
@@ -127,7 +133,7 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_links_of_the_changed_pages_resolve(self) -> None:
         for relative in MIGRATION.FILES:
-            for target, anchor in re.findall(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)", lf(ROOT / relative)):
+            for target, anchor in re.findall(r"\]\(([^)#\s]*)(?:#([^)\s]*))?\)", live(relative).decode("utf-8")):
                 if "://" in target:
                     continue
                 with self.subTest(file=str(relative), target=target, anchor=anchor):
@@ -161,11 +167,11 @@ class MigrationTests(unittest.TestCase):
 
     def test_an_app_of_0_1_34_gets_the_template_files_and_a_second_run_changes_nothing(self) -> None:
         for relative in MIGRATION.FILES:
-            self.assertNotEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes(), relative)
+            self.assertNotEqual((self.repo / relative).read_bytes(), live(relative), relative)
         log = self.run_migration()
         for relative in MIGRATION.FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), live(relative))
         self.assertIn(f"done: {len(MIGRATION.FILES)} file(s) changed", log)
         self.assertNotIn("SKIPPED", log)
         again = self.run_migration()
@@ -180,7 +186,7 @@ class MigrationTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 raw = (self.repo / relative).read_bytes()
                 self.assertNotIn(b"\n", raw.replace(b"\r\n", b""))
-                self.assertEqual(raw.replace(b"\r\n", b"\n"), (ROOT / relative).read_bytes())
+                self.assertEqual(raw.replace(b"\r\n", b"\n"), live(relative))
 
     def test_a_customised_use_cases_page_is_skipped(self) -> None:
         page = self.put(MIGRATION.USE_CASES_DOC, old(MIGRATION.USE_CASES_DOC) + b"\n## Our own app\n")
@@ -229,7 +235,7 @@ class MigrationTests(unittest.TestCase):
         self.assertIn("[migration 0.1.35]", result.stdout)
         for relative in MIGRATION.FILES:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes(), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes(), live(relative))
         again = subprocess.run(command, capture_output=True, text=True, env=env, check=False)
         self.assertIn("no repository changes were required", again.stdout)
 

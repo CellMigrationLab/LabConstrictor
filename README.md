@@ -42,9 +42,8 @@ The same guides, with pictures and a search box, are on the [website](https://ce
 ## Go further
 
 - [List your app in the App Centre](.tools/docs/app_manifest.md)
-- [Offer your app's functions in napari, Fiji and QuPath](.tools/docs/tools_bridge.md) (experimental)
+- [Offer your app's functions in napari, Fiji and QuPath](.tools/docs/tools_bridge.md)
 - [Write notebooks that run in both Colab and JupyterLab](.tools/docs/notebook_portability.md)
-- [See what others have built](.tools/docs/use_cases.md)
 - [All guides](.tools/docs/README.md)
 
 ## Contributing and questions
