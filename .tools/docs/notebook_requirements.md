@@ -2,6 +2,8 @@
 
 Every notebook you upload needs a `requirements.yaml` file: the Python version and the packages it uses, each with its exact version. The installer installs these packages on your users' computers.
 
+The upload form accepts only exact versions: every dependency must have the form `package==version`. Version ranges such as `numpy>=1.24` can only appear in a `requirements.yaml` that you edit directly in your repository on GitHub, without the form (see [When notebooks ask for different versions of a package](#when-notebooks-ask-for-different-versions-of-a-package)).
+
 There are two ways to make the file:
 
 * **Option 1 (automated):** the Requirements Generator notebook reads the packages from the Python environment where your notebook runs. Use it when you start from scratch.
@@ -34,7 +36,7 @@ Run its cells in order and follow the instructions in the notebook: choose your 
 
 Start from the [example requirements.yaml file](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/templates/requirements.yaml). It has three fields:
 
-* **`dependencies`:** every package the notebook uses, one per line, each starting with `- ` and fixed to one version with `==` (`pandas==2.2.2`). Optional extras are allowed (`colabfold[alphafold,openmm]==1.6.3`). The upload form refuses ranges such as `pandas>=2`.
+* **`dependencies`:** every package the notebook uses, one per line, each starting with `- ` and fixed to one version with `==` (`pandas==2.2.2`). Optional extras are allowed (`colabfold[alphafold,openmm]==1.6.3`).
 * **`python_version`:** the Python version the notebook runs with (for example `3.11.1`). All notebooks of an app must use the same one.
 * **`description`:** one sentence on what the notebook does.
 
@@ -81,7 +83,7 @@ The workflow then writes a **lock file** next to each requirements file (`requir
 
 ### When notebooks ask for different versions of a package
 
-The merge never changes a notebook's requirement silently. Requirements are kept as written (`numpy>=1.24` stays `numpy>=1.24`), and the requirements of several notebooks are combined (`numpy>=1.24,<2`). The workflow stops, and no requirements file is written, when:
+The merge never changes a notebook's requirement silently. Each requirement is kept as written in the notebook's `requirements.yaml`: a version range you wrote there directly on GitHub (`numpy>=1.24`) stays a range, and the requirements of several notebooks are combined (`numpy>=1.24,<2`). The workflow stops, and no requirements file is written, when:
 
 * two notebooks pin a package to different versions (`numpy==1.26.4` and `numpy==2.0.0`);
 * a pin does not meet another notebook's requirement (`numpy==2.0.0` and `numpy<2`);
