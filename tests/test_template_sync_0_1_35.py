@@ -140,7 +140,8 @@ class TemplateTests(unittest.TestCase):
                     page = ((ROOT / relative).parent / target).resolve() if target else ROOT / relative
                     self.assertTrue(page.exists())
                     if anchor:
-                        headings = [slug(line.lstrip("#")) for line in lf(page).splitlines() if line.startswith("#")]
+                        page_text = before_0_1_36(page.relative_to(ROOT), page.read_bytes()).decode("utf-8").replace("\r\n", "\n")
+                        headings = [slug(line.lstrip("#")) for line in page_text.splitlines() if line.startswith("#")]
                         self.assertIn(anchor, headings)
 
 

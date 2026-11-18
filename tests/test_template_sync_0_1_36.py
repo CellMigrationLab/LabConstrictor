@@ -15,6 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_36 import before_0_1_36, template_bytes
+from _v0_1_37 import before_0_1_37
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,6 +37,11 @@ MIGRATION = load(MIGRATION_PATH, "migration_0_1_36")
 
 def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
+
+
+def at_0_1_36(relative: Path) -> bytes:
+    """The 0.1.36 template file: the live file without the 0.1.37 change (tests/_v0_1_37.py)."""
+    return before_0_1_37(relative, (ROOT / relative).read_bytes())
 
 
 def old(relative: Path) -> bytes:
@@ -76,7 +82,7 @@ class TemplateTests(unittest.TestCase):
             with self.subTest(file=str(relative)):
                 text, applied, missing = MIGRATION.apply_edits(old(relative).decode("utf-8"), MIGRATION.EDITS[relative])
                 self.assertEqual((applied, missing), (len(MIGRATION.EDITS[relative]), 0))
-                self.assertEqual(text, lf(ROOT / relative))
+                self.assertEqual(text, at_0_1_36(relative).decode("utf-8"))
 
     def test_no_user_page_links_use_cases_or_calls_the_plugins_experimental(self) -> None:
         for path in user_pages():
@@ -91,7 +97,7 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_relative_links_of_the_changed_pages_resolve(self) -> None:
         for relative in MIGRATION.EDITS:
-            for target in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", lf(ROOT / relative)):
+            for target in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", at_0_1_36(relative).decode("utf-8")):
                 if "://" in target:
                     continue
                 with self.subTest(file=str(relative), target=target):
@@ -124,7 +130,7 @@ class MigrationTests(unittest.TestCase):
             self.assertFalse((self.repo / relative).exists(), relative)
         for relative in MIGRATION.EDITS:
             with self.subTest(file=str(relative)):
-                self.assertEqual((self.repo / relative).read_bytes().replace(b"\r\n", b"\n"), (ROOT / relative).read_bytes())
+                self.assertEqual((self.repo / relative).read_bytes().replace(b"\r\n", b"\n"), at_0_1_36(relative))
 
     def test_an_app_of_0_1_35_gets_the_template_files_and_a_second_run_changes_nothing(self) -> None:
         log = self.run_migration()

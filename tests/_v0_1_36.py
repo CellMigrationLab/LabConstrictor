@@ -15,6 +15,8 @@ import importlib.util
 from pathlib import Path
 from types import ModuleType
 
+from _v0_1_37 import before_0_1_37
+
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_35_to_v0_1_36.py"
 
@@ -38,6 +40,7 @@ def template_bytes(relative: Path | str) -> bytes:
 
 def before_0_1_36(relative: Path | str, data: bytes) -> bytes:
     """`data` (a live template file at `relative`) without the edits 0.1.36 made to it; any other file is returned as it is."""
+    data = before_0_1_37(relative, data)
     migration = _migration()
     relative = Path(relative)
     if relative not in migration.EDITS:

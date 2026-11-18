@@ -13,6 +13,8 @@ from io import StringIO
 from pathlib import Path
 from types import ModuleType
 
+from _v0_1_37 import before_0_1_37
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_25_to_v0_1_26.py"
@@ -38,6 +40,11 @@ def lf(path: Path) -> str:
     return path.read_bytes().decode("utf-8").replace("\r\n", "\n")
 
 
+def at_0_1_36(relative: Path | str) -> str:
+    """The template file at `relative` without the 0.1.37 change (tests/_v0_1_37.py), with LF line endings."""
+    return before_0_1_37(relative, (ROOT / relative).read_bytes()).decode("utf-8").replace("\r\n", "\n")
+
+
 def links(text_lf: str) -> str:
     """The Previous / Home / Next links of a page (the last ones)."""
     return list(MIGRATION.FOOTER.finditer(text_lf))[-1].group(0)
@@ -45,7 +52,7 @@ def links(text_lf: str) -> str:
 
 def without(relative: Path, heading: str) -> str:
     """A live page without the section that starts at the heading (it runs to the page's links)."""
-    live = lf(ROOT / relative)
+    live = at_0_1_36(relative)
     start = live.index(heading)
     footer = list(MIGRATION.FOOTER.finditer(live))[-1].start()
     return live[:start].rstrip("\n") + "\n\n" + live[footer:]
@@ -97,10 +104,10 @@ class TemplateConsistencyTests(unittest.TestCase):
 
     def test_the_migration_turns_the_0_1_24_pages_into_the_live_pages(self) -> None:
         # The frozen texts are exactly the template's sections, at the place the template has them.
-        self.assertEqual(MIGRATION.add_section(page_0_1_24(), SECTION), lf(ROOT / PAGE))
+        self.assertEqual(MIGRATION.add_section(page_0_1_24(), SECTION), at_0_1_36(PAGE))
         old = troubleshooting_0_1_24()
         self.assertFalse(old.endswith(links(old)))  # the links were in the middle
-        self.assertEqual(MIGRATION.add_section(old, ENTRY), lf(ROOT / TROUBLESHOOTING))
+        self.assertEqual(MIGRATION.add_section(old, ENTRY), at_0_1_36(TROUBLESHOOTING))
 
     def test_every_documentation_page_ends_with_its_links(self) -> None:
         for path in sorted((ROOT / ".tools/docs").glob("*.md")):
@@ -157,8 +164,8 @@ class MigrationBehaviourTests(MigrationCase):
         self.put(PAGE, page_0_1_24())
         self.put(TROUBLESHOOTING, troubleshooting_0_1_24())
         log = self.run_migration()
-        self.assertEqual(lf(self.repo / PAGE), lf(ROOT / PAGE))
-        self.assertEqual(lf(self.repo / TROUBLESHOOTING), lf(ROOT / TROUBLESHOOTING))
+        self.assertEqual(lf(self.repo / PAGE), at_0_1_36(PAGE))
+        self.assertEqual(lf(self.repo / TROUBLESHOOTING), at_0_1_36(TROUBLESHOOTING))
         self.assertIn("2 file(s) changed", log)
         self.assertIn("no repository changes were required", self.run_migration())
 
