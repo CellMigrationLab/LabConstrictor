@@ -1,19 +1,10 @@
 # Write notebooks that run in both Google Colab and JupyterLab
 
-LabConstrictor ships notebooks as desktop apps built on JupyterLab. At the same time, many collaborators and reviewers prefer Google Colab for quick, cloud-based runs. Writing your notebook to work in both environments makes it easier for users to:
-
-- **Choose their preferred platform** (Colab in the browser, JupyterLab locally or inside LabConstrictor).
-- **Collaborate and review quickly** without forcing everyone to install dependencies.
-- **Reproduce results** across cloud and local setups, reducing “works on my machine” issues.
-- **Avoid hidden environment assumptions** that only exist in one runtime.
-
-Below are practical patterns to keep notebooks portable and readable across both runtimes.
+A LabConstrictor app runs your notebooks in JupyterLab on your colleagues' computers, while a reviewer may open the same notebook in Google Colab without installing anything. These practices keep one notebook working in both.
 
 ## 1. Keep explanatory text visible when code is hidden
 
-LabConstrictor apps often hide code cells to present an app-like UI (see [Hide code cells in notebooks](code_hiding.md)). 
-
-If you place `# @title` **at the top of the cell** in Colab, it would give a header to the code cell on Google Colab while remaining visible in local JupyterLab sessions. Follow the example below to keep your notebook clear and user-friendly in both environments:
+LabConstrictor apps often hide code cells (see [Hide code cells in notebooks](code_hiding.md)). Put `# @title` on the first line of a cell: Colab shows it as the cell's header, and JupyterLab still shows it as the first line of the cell:
 
 ```python
 # @title Data input
@@ -21,11 +12,11 @@ If you place `# @title` **at the top of the cell** in Colab, it would give a hea
 # Rest of the cell...
 ```
 
-> **Note:** If you need an explanation longer than a line, please use a **Markdown cell** with the explanation. This way, the text is visible everywhere, regardless of code visibility.
+For an explanation longer than a line, use a Markdown cell: it stays visible everywhere, whether the code is hidden or not.
 
 ## 2. Guard Colab-only setup code
 
-Colab-specific setup (mounting Google Drive, installing GPU-only deps, `!pip` installs) should run **only** on Colab. To avoid failures when running locally, wrap it like this:
+Run Colab-only setup (mounting Google Drive, installing GPU-only packages, `!pip` installs) only on Colab, so the notebook does not fail on a local computer:
 
 ```python
 import sys
@@ -55,9 +46,9 @@ else:
 
 ## 4. Avoid Colab-only UI helpers
 
-Avoid using Colab forms (see [Google's guide to Colab forms](https://colab.research.google.com/notebooks/forms.ipynb)) as they won’t work in JupyterLab. Instead, we recommend using ipywidgets or simple input prompts that work in both environments. This ensures your notebook remains interactive and user-friendly regardless of where it’s run.
+Colab forms ([Google's guide](https://colab.research.google.com/notebooks/forms.ipynb)) do not work in JupyterLab. Use ipywidgets or simple input prompts instead: they work in both.
 
-For example, you could turn this Colab form:
+For example, turn this Colab form:
 
 ```python
 model_name = "Model A"  # @param ["Model A", "Model B", "Model C"]
@@ -66,7 +57,7 @@ print(f"You selected: {model_name}")
 
 ![Colab form example](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/colab_vs_local/colab.png)
 
-Into, for example an ipywidgets dropdown that works in both environments:
+into an ipywidgets dropdown:
 
 **Option A** - with an observable function:
 
@@ -114,11 +105,11 @@ display(model_dropdown, confirm_button, output)
 
 ![ipywidgets dropdown with button example](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/colab_vs_local/local_option2.png)
 
-As you can see the ipywidgets options require a bit more code, but they work in both environments and are much more versatile in functionality and visualization.
+These examples need more code than a Colab form, but they work in both Colab and JupyterLab.
 
 ## 5. Clearly label runtime-specific instructions
 
-To reduce confusion and keep the flow smooth in both environments, add small callouts in Markdown to guide the user, for example:
+When a step differs between the two, say so in a short Markdown note, for example:
 
 > **Colab users:** Run the `Colab setup` cell first to mount Google Drive.
 >
@@ -126,10 +117,10 @@ To reduce confusion and keep the flow smooth in both environments, add small cal
 
 ## 6. Test in both environments before release
 
-Testing both environments before making it public ensures a smooth experience for all users:
+Before you publish a notebook:
 
-1. Run the notebook end-to-end in **JupyterLab** (or local Jupyter) to validate the LabConstrictor experience.
-2. Run the same notebook in **Google Colab** to confirm cloud compatibility.
+1. Run it from start to end in **JupyterLab** (or local Jupyter), as the app will.
+2. Run the same notebook in **Google Colab**.
 
 ---
 

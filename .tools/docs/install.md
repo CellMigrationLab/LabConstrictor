@@ -54,9 +54,7 @@ Uninstalling deletes the app's install folder and everything in it: move anythin
 
 ## Where the app is listed
 
-If the app ships tools for napari, Fiji or QuPath, the installer registers them with LabConstrictor Tools, with the `hosts:` line of the app's `labconstrictor-app.yaml`. A program lists the app only if that line names it: with `hosts: [notebook, napari]` the app is listed in napari, and not in Fiji or QuPath. Without a `hosts:` line, every program lists the app, and `menuinst_debug.log` in the install folder says so (`'<app>' declares no hosts, so it is listed in every host; ...`).
-
-To run the tools, install the plugin for your image software once: see [Use apps inside napari, Fiji and QuPath](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/image-software/).
+Some apps also work inside napari, Fiji or QuPath: the app's page in the App Centre says which. To use them there, install the plugin for your image software once: see [Use apps inside napari, Fiji and QuPath](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/image-software/).
 
 ## Next
 

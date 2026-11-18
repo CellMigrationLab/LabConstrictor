@@ -13,7 +13,9 @@ GitHub Actions runs workflows in your repository: when a notebook or its require
 ## 2. How to debug a failure
 
 1. Click the failed run, then the red step: its log says what went wrong.
-2. If the run has an **Artifacts** section at the bottom of its page, download the log file there (a plain `.log` text file, nothing to unzip). It holds the error, the workflow and the script that failed, with instructions at the top for an AI assistant: paste the whole file into one (such as ChatGPT, Gemini or Claude) and it explains the error and how to fix your notebook or `requirements.yaml`.
+   The log usually names the command or the package that failed.
+2. If the run has an **Artifacts** section at the bottom of its page, download the log file there (a plain `.log` text file, nothing to unzip). It holds the error, the workflow and the script that failed.
+3. You can ask an AI assistant to help you read the log; the file starts with instructions for one. First remove tokens, private paths and anything else you would not share. Check any fix it suggests against the error, then run the workflow again.
 
 For known errors, see [Troubleshooting repository setup](troubleshooting.md).
 
