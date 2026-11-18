@@ -12,7 +12,7 @@ A web form sets up your repository (name, version, description, images) and uplo
 
 ### Cross-platform installers
 
-Publishing a release builds installers for Windows (`.exe`), macOS (`.pkg`) and Linux (`.sh`) with [conda constructor](https://github.com/conda/constructor).
+Publishing a release builds installers with [conda constructor](https://github.com/conda/constructor): Windows (`.exe`), macOS (`.pkg`) and Linux (`.sh`), or only the systems you list under `distribution.platforms` in [`labconstrictor-app.yaml`](app_manifest.md#distribution-how-people-get-the-app).
 
 ### Environment management
 
