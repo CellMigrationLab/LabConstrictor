@@ -1,26 +1,18 @@
 # Accept a pull request
 
-Follow these steps or watch the GIF at the end to learn how to accept a Pull Request (PR) on GitHub. LabConstrictor template updates are delivered this way after you complete the [automatic synchronization setup](template_synchronization.md).
+The repository initialiser, the notebook upload form and template updates all send their changes to your repository as a pull request. You accept a pull request by merging it.
 
-## 1. Go to the Pull Requests tab
+1. Open the **Pull requests** tab of your repository.
 
-Go to the **Pull Requests** tab in your GitHub repository to see a list of all Pull Requests. You can refer to the screenshot below.
+   ![Pull Request Tab](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/PR_tab.png)
 
-![Pull Request Tab](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/PR_tab.png)
-
-## 2. Select the Pull Request to review
-
-The most recent Pull Request is usually at the top. Click its title to open and review it.
-
-## 3. Merge the Pull Request
-
-Click the green **Merge pull request** button, then click **Confirm merge** to complete the process.
-
-## 4. Delete the branch (optional)
-
-Once you have merged, you can delete the related branch by clicking the **Delete branch** button.
+2. Click the title of the pull request to open it. The newest one is at the top. The **Files changed** tab shows what it changes.
+3. Click the green **Merge pull request** button, then **Confirm merge**.
+4. Optional: click **Delete branch** to remove the branch the pull request came from.
 
 ![Accept a Pull Request GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Accept_PR.gif)
+
+The merge can start a workflow in the **Actions** tab: see [Check the status of GitHub workflows](workflow_status.md). Template updates arrive this way once you have enabled [automatic template updates](template_synchronization.md).
 
 
 ---
