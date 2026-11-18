@@ -34,7 +34,7 @@ After installation, you can launch PROJECT_NAME from your desktop app or from th
 
 ![Launch PROJECT_NAME](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Windows_Launch.gif)
 
-Then, start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+Then, start using it following the instructions on the [Open and use an app](./notebook_usage.md) guide.
 
 ---
 </details>
@@ -80,7 +80,7 @@ bash PROJECT_NAME-VERSION_NUMBER-Linux-x86_64.sh
 
 ## 4. Launch PROJECT_NAME
 
-After installation, you can launch PROJECT_NAME from your applications menu and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+After installation, you can launch PROJECT_NAME from your applications menu and start using it following the instructions on the [Open and use an app](./notebook_usage.md) guide.
 
 ---
 </details>
@@ -133,7 +133,7 @@ Follow the guidelines shown on the following GIF or the instructions bellow:
 
 ## 4. Launch PROJECT_NAME
 
-After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Open and use an app](./notebook_usage.md) guide.
 
 </details>
 
@@ -177,7 +177,7 @@ Follow the guidelines shown on the following GIF or the instructions bellow:
 
 ## 4. Launch PROJECT_NAME
 
-After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Usage of Notebooks After Installation](./notebook_usage.md) guide.
+After installation, you can launch PROJECT_NAME from your Applications folder and start using it following the instructions on the [Open and use an app](./notebook_usage.md) guide.
 
 </details>
 
