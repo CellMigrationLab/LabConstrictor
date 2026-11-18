@@ -1,37 +1,25 @@
 # Create your repository
 
-To start, open the [LabConstrictor template on GitHub](https://github.com/CellMigrationLab/LabConstrictor) and click the `Use this template` button at the top of the page. This will let you create a new repository using the LabConstrictor template.
+Your app lives in its own GitHub repository, made from the LabConstrictor template.
 
+1. Open the [LabConstrictor template on GitHub](https://github.com/CellMigrationLab/LabConstrictor).
+2. Click the green **Use this template** button at the top right, then **Create a new repository**.
 
-1. Click the green **Use this template** button at the top right of the main repository page.
-2. Select **Create a new repository**.
+   ![Use template screenshot](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Use_Template.png)
 
-![Use template screenshot](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Use_Template.png)
+3. Fill in the details:
+   - **Include all branches:** leave it off.
+   - **Owner:** your personal account or your research group's organization.
+   - **Repository name:** a short name, for example `MyLabTools`. We recommend using it as your app's name when you initialise the repository.
+   - **Description** (optional): what your notebooks do, for example "Automated cell migration analysis".
+   - **Visibility:** **Public** to share your installers right away; **Private** to keep the code within your lab while you work on it. A private repository cannot be listed in the App Centre: make it public before you submit your app.
+4. Click **Create repository**.
 
-3. Next, you’ll need to fill in some details:
-
-* **Include all branches:**
-Please, let the default `Off` option.
-
-* **Owner:**
-Pick either your personal account or your research group’s organization.
-
-* **Repository Name:**
-Pick a short, memorable name (for example, `MyLabTools`).
-> **Note:** This name will be used as the default name for your application installer.
-
-* **Description** *(Optional)*:
-Write a brief description of what your notebooks do (for example, "Automated cell migration analysis").
-
-* **Visibility:**
-    * **Public:** Select this if you want to share your installer right away.
-    * **Private:** Select this if you’re still working on the tools or want to keep the code within your lab. A private repository cannot be listed in the App Centre: make it public before you submit your app.
-
-4. Click **Create repository**. 🎉 That’s it! Your repository is now set up and ready to go.
+Next: [Initialise your repository](initialise_repository.md).
 
 ## Template updates (optional, later)
 
-We recommend setting up automatic template updates after your first release. Without the update token, the weekly **Sync with Template Repository** run stops with the error "Synchronization setup required" as soon as a newer template version exists, and your repository receives no update pull request. See [Keep your app up to date](keep_app_up_to_date.md).
+The template keeps improving, and your repository can receive the changes as pull requests. Set this up after your first release: see [Keep your app up to date](keep_app_up_to_date.md). Until you do, the weekly **Sync with Template Repository** run stops with the error "Synchronization setup required" whenever a newer template version exists.
 
 ---
 

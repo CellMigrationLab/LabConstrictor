@@ -1,16 +1,21 @@
 # Add or update a notebook
 
-If you want to add or update a notebook in your project repository, just follow these steps to upload it smoothly.
+Upload a notebook and its `requirements.yaml` to your repository with the LabConstrictor web form. The form opens a pull request; when you merge it, GitHub checks that the notebook's packages can be installed together.
+
+## What you need
+
+- An initialised repository: see [Initialise your repository](initialise_repository.md).
+- Your notebook (`.ipynb`) and its requirements file: see [Generate the requirements of your notebook](notebook_requirements.md).
+- A GitHub personal access token (classic, it starts with `ghp_`): see [Generate a GitHub personal access token](personal_access_token.md).
 
 ## 1. Prepare your notebook
 
-To ensure your notebook works with the versioning tracking provided by the LabConstrictor application, please follow these three steps to prepare your notebook:
+The first cell of every notebook checks its version, so users see when a newer version exists.
 
-1. First, create a cell at the top of your notebook (see our [JupyterLab guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md) if you need help with that). 
-2. Then, copy and paste the code below into that cell.
-3. Finally, update the `current_version` variable with the version of your notebook (for example, "0.0.2") and the `notebook_name` variable with the name of your notebook file (without the .ipynb extension).
+1. Add a code cell at the top of your notebook (see this [JupyterLab guide](https://github.com/CellMigrationLab/docs-hub/blob/main/docs/JupyterLab/JupyterLab_Guide.md) if you need help), and paste the code below into it.
+2. Set `current_version` to the version of your notebook (for example `"0.0.2"`) and `notebook_name` to the name of the notebook file without `.ipynb`.
 
-> IMPORTANT NOTE: Each time you change the notebook's logic, update the version number on `current_version` variable so users can see there is a new version.
+> Each time you change what the notebook does, increase `current_version` so users can see there is a new version.
 
 ```python
 # @markdown Run this cell to check this notebook's version.
@@ -133,38 +138,48 @@ except ImportError:
     display(widgets.HTML('To check the notebook version, please go to the <a href="../Welcome.ipynb" target="_blank" style="color: #0066cc; text-decoration: underline;">Welcome notebook</a>.'))
 ```
 
+
 ## 2. Generate the requirements file
 
-Follow the steps in the [Obtain requirements of the notebook](notebook_requirements.md) guide to create the `requirements.yaml` file for your notebook.
+Create the `requirements.yaml` file of your notebook: see [Generate the requirements of your notebook](notebook_requirements.md).
 
 ## 3. Upload to the repository
 
-1. Open the [LabConstrictor website](https://labconstrictor-form.streamlit.app/). If you see a `Zzzz` message for inactivity, click `Yes, get this app back up!`.
-2.  Select **Upload/Update notebook**.
-3. Upload your notebook file (`.ipynb`) and the `requirements.yaml` file you created.
-4. Click **➕ Validate & Add Submission**. If the notebook and its requirements pass the checks, the notebook appears in the **📃 Submission list**. You can repeat steps 3 and 4 to add more notebooks to the list before uploading.
-5. In the **⬆️ Upload it to GitHub** section, enter your repository URL and your personal access token.
-    * *(Don't have a token? See [How to create a personal access token](personal_access_token.md))*
+1. Open the [LabConstrictor form](https://labconstrictor-form.streamlit.app/). If it shows a `Zzzz` message, click `Yes, get this app back up!` and wait.
+2. Click **Upload/Update notebook**.
+3. Upload your notebook file (`.ipynb`) and its requirements file.
+4. Click **➕ Validate & Add Submission**. If the notebook and its requirements pass the checks, the notebook appears in the **📃 Submission list**. Repeat steps 3 and 4 to add more notebooks to the same pull request.
+5. Under **⬆️ Upload it to GitHub**, enter your repository's address and your personal access token.
 6. Click **🚀 Create pull request**.
 
+## 4. Merge the pull request
 
-## 4. Merge and Verify
+The form opens a pull request titled "Upload/Update notebook" followed by the notebook's name. Merge it: see [Accept a pull request](accept_pull_request.md). The merge starts the workflow **Updates on notebook change**, which merges the requirements of all notebooks, hides the code cells (unless you disabled it) and checks that the packages can be installed.
 
-If you need help merging the pull request, see the [Accept a Pull Request](accept_pull_request.md) guide for instructions. An automatic workflow will check your notebook and its dependencies.
-* **Check Status:** See [How to check workflow status](workflow_status.md).
-* Failure Protocol: If the merged requirements cannot be installed, the system automatically undoes the merge. Check the logs, fix the problem in your local notebook or requirements, and upload again.
-* If notebooks ask for different versions of the same package, the workflow stops before anything is installed and the requirements files are not changed. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package).
+## Check that it worked
+
+- In the **Actions** tab, the run of **Updates on notebook change** has a green tick ([how to read a run](workflow_status.md)).
+- Your notebook is in `notebooks/<notebook name>/`, next to its `requirements.yaml`.
+- `notebooks/notebook_latest_versions.yaml` lists the notebook with its `current_version`.
+
+You can now [create the installers](executable_creation.md).
+
+## If something does not work
+
+- **The form refuses the requirements file.** The message names the line to fix. Each dependency must be `package==version`: see [Generate the requirements of your notebook](notebook_requirements.md).
+- **The workflow failed and your merge was undone.** When the merged requirements cannot be installed, the workflow reverts your merge automatically. Open the failed run, find the package that failed in the log, fix the notebook's requirements and upload again.
+- **The workflow stops with conflicting versions.** Notebooks ask for different versions of the same package; nothing is installed and the requirements files are not changed. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package).
+- **The version check says "This notebook is not listed in the version file".** `notebook_name` in the first cell does not match the notebook's file name.
 
 ---
 
 ## How to update an existing notebook
 
-Updating a notebook works the same way as adding a new one:
+Updating a notebook works the same way as adding one:
 
-1. Bump the version: In the top cell of your notebook, increase the `current_version` (for example, from '1.0.0' to '1.0.1').
-2. Regenerate requirements: Run the bottom cell to make sure `requirements.yaml` matches the new version number.
-3. Upload: Use the [LabConstrictor App](https://labconstrictor-form.streamlit.app/) to upload your file.
-    * *Ensure the filename matches the existing one in the repository exactly.*
+1. In the first cell of your notebook, increase `current_version` (for example from `1.0.0` to `1.0.1`).
+2. If the notebook now uses other packages or versions, generate its requirements file again.
+3. Upload the notebook and its requirements file with the [LabConstrictor form](https://labconstrictor-form.streamlit.app/), as above. Keep the notebook's file name exactly the same: a notebook with the same name replaces the old one.
 
 ---
     

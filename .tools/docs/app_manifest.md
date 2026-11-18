@@ -115,7 +115,7 @@ The App Centre asks for a few optional fields: `status`, `quickstart`, `screensh
 | `colab` | A list of Google Colab notebooks, each with a `label` and a `url` on `colab.research.google.com`. Only the notebooks you list are shown. |
 | `pip` | The name of your package on PyPI. |
 
-`platforms` also decides which installers your releases build (template 0.1.24 or later). Leave a system out when your app cannot run there. Without `platforms`, every installer is built: `windows-x86_64`, `linux-x86_64`, `macos-arm64` (Apple silicon) and `macos-x86_64` (Intel Macs). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
+`platforms` also decides which installers your releases build. Leave a system out when your app cannot run there. Without `platforms`, every installer is built: `windows-x86_64`, `linux-x86_64`, `macos-arm64` (Apple silicon) and `macos-x86_64` (Intel Macs). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
 
 ### `hosts`: where your tools are offered
 
@@ -142,7 +142,7 @@ host_requirements:
 - Name only `napari`, `fiji` or `qupath`: the notebook ships with your app and needs no plugin.
 - Each needs `min_version`, `features`, or both. `required: true` makes an older plugin refuse your tools instead of warning; use it only when they really fail there.
 - Write it as a block, as above. The installer passes this file to `labconstrictor-tools register`, which refuses a malformed block (a misspelt host or key, a version like `latest`); `labconstrictor-tools check --module <your>_lc_tools --app-manifest labconstrictor-app.yaml` shows what it read.
-- The feature ids and the rule are in the [LabConstrictor-Tools documentation](https://github.com/CellMigrationLab/LabConstrictor-Tools/blob/main/docs/PROTOCOL.md#host-requirements-which-plugin-an-app-needs).
+- The feature ids and the rule are in [the protocol reference](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/protocol/#host-requirements-which-plugin-an-app-needs).
 
 ## The automatic check
 
@@ -155,7 +155,7 @@ The **Check App Centre manifest** workflow runs when you change the file and whe
 
 ## Check it yourself
 
-To get an answer before you push, you have two more ways:
+To check the file before you push:
 
 1. **On your computer.** From the root of your repository:
 
@@ -188,13 +188,11 @@ The rules themselves are in the [schema](https://cellmigrationlab.github.io/LabC
 
 Having the file does not list your app by itself. To list it, [submit your repository](https://cellmigrationlab.github.io/LabConstrictor-Site/submit/) to the App Centre. You do this once: later releases appear by themselves.
 
-The technical rules for `hosts` and `host_requirements` are in the [LabConstrictor-Tools manifest reference](https://cellmigrationlab.github.io/LabConstrictor-Tools/MANIFEST/).
-
 ---
 
 <div align="center">
 
-[← Previous](initialise_repository.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[← Previous](installer_images.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [Next →](external_code_upload.md)
 

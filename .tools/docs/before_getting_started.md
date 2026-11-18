@@ -1,43 +1,43 @@
 # Before getting started with LabConstrictor
 
-Welcome to LabConstrictor! This guide will walk you through the basics and show you what you need to get started.
+What LabConstrictor does, and what you need before you create your repository.
 
 ## LabConstrictor in a nutshell
 
-LabConstrictor is a template repository that lets you turn Jupyter notebooks into desktop apps. It handles the setup for you via automated GitHub Actions. Here are its main features:
+LabConstrictor is a GitHub template repository that turns your Jupyter notebooks into a desktop app that people install with one installer. GitHub Actions workflows in your repository do the building.
 
 ### Easy configuration
 
-LabConstrictor has a web form that makes it easy to set up your repository, add your branding, and upload or update your notebooks and their dependencies.
+A web form sets up your repository (name, version, description, images) and uploads your notebooks with their requirements. You do not edit the workflows yourself.
 
 ### Cross-platform installers
 
-Automatic workflows create installers for Windows (.exe), macOS (.pkg), and Linux (.sh). This makes it simple for users on any platform to install and run your notebooks. The installers are created using [Conda Constructor](https://github.com/conda/constructor).
+Publishing a release builds installers for Windows (`.exe`), macOS (`.pkg`) and Linux (`.sh`) with [conda constructor](https://github.com/conda/constructor).
 
 ### Environment management
 
-LabConstrictor uses `requirements.yaml` files to manage dependencies. Automatic workflows ensure your notebooks run consistently across different systems. LabConstrictor also includes helper notebooks for generating and validating requirement files.
+Each notebook comes with a `requirements.yaml` file that lists its packages. The workflows merge the requirements of all notebooks and fix every package version, so each installation of a release gets the same packages. Helper notebooks generate and check these files for you.
 
 ### Version control
 
-LabConstrictor includes helper cells that track notebook versions and notify users when updates are available. This way, everyone can use the latest features and fixes.
+The first cell of each notebook checks its version. The app's Welcome notebook shows when a newer version of a notebook exists and updates it.
 
 ### User-friendly experience
 
-The installers take care of the setup, so users can open your notebooks with a desktop app. The app shows a Welcome Dashboard where users can check versions and pick notebooks. Notebooks have hidden code and a play button to run cells, giving a clean, app-like feel. Your repository can be private or public, giving you full control over who can access and use your notebooks.
+The installed app opens JupyterLab with a Welcome notebook that lists your notebooks. Code cells can be hidden and run with a play button, so a notebook looks like a simple app. Your repository can be public or private; a private repository cannot be listed in the App Centre.
 
 ### Offline usage
 
-If your notebooks don’t need internet access, users can run the desktop apps offline after they install them.
+Once installed, the app runs without internet access, unless your notebooks need it.
 
 ## LabConstrictor requirements
 
-To get started with LabConstrictor, you only need the following:
+- **A GitHub account**, to create your repository from the template.
+- **Your Jupyter notebooks.**
+- **A Python environment where your notebooks run without errors**, on your computer or in Google Colab. You use it to generate the requirements files. You can also write these files by hand.
+- **Optional: images** (logo, banner, header) to brand the installer: see [Customise the installer images](installer_images.md).
 
-- **🐙 GitHub Account:** You’ll need a GitHub account to make a new repository from the LabConstrictor template.
-- **📒 Jupyter Notebooks:** Have your Jupyter notebooks ready to package into desktop apps.
-- **🐍 Python Environment:** You’ll need a Python environment (local or online) where your notebooks run without errors. This is needed to create and check requirement files. Alternatively, you can create the requirement files yourself, but this may be prone to errors.
-- **(Optional) 🖼️ Images, logo and icons:** for branding your executable installer. We recommend following the [images guidelines](./installer_images.md) for further information and guidance.
+Next: [Create your repository](create_repository.md).
 
 
 ---

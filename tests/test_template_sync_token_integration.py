@@ -5,6 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from _v0_1_37 import before_0_1_37
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = (
@@ -142,7 +144,7 @@ class TokenIntegrationMigrationTests(unittest.TestCase):
             Path(".tools/docs/template_synchronization.md"),
         ):
             self.assertEqual(
-                (REPO_ROOT / relative).read_bytes(),
+                before_0_1_37(relative, (REPO_ROOT / relative).read_bytes()),
                 (resource_root / relative).read_bytes(),
                 relative,
             )
