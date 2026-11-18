@@ -1,12 +1,12 @@
 # Upload external code
 
-If you want to use your own Python modules or scripts in Jupyter notebooks, follow these steps to upload them easily.
+Put your own Python code in your repository so that every notebook of your app can import it.
 
 ## 1. Prepare your external code
 
-Organize your external code and follow Python packaging best practices. Set up the right folder structure, add an `__init__.py` file, and list any required dependencies.
+Put your functions in a package under `src/`: a folder with an `__init__.py` file, so notebooks can import it. List the packages your code needs in your notebooks' requirements.
 
-**Suggested Directory Structure:**
+**Suggested folder structure:**
 
 ```text
 src/
@@ -19,9 +19,7 @@ src/
 
 ### What goes in `__init__.py`?
 
-Think of `__init__.py` as the file that tells Python “this folder is a package”.
-
- If you leave it empty, that is perfectly fine—the package will still import correctly. When you want to make notebooks feel friendlier, you can re-export helper functions so users can discover them more easily:
+`__init__.py` tells Python that the folder is a package. It can stay empty. To let notebooks import your main functions directly from the package, re-export them:
 
 ```python
 # src/PYTHON_PROJ_NAME/__init__.py
@@ -32,16 +30,17 @@ __all__ = ["run_analysis", "load_config"]
 
 Each folder that you plan to import (for example, `src/subpackage/`) should also have its own `__init__.py`. Keep it empty unless you want to expose selected helpers from that subpackage.
 
-If you need further readings on `__init__.py`, check out this quick [Geeks for Geeks tutorial](https://www.geeksforgeeks.org/python/what-is-__init__-py-file-in-python/) or the [Real Python guide](https://realpython.com/python-init-py/).
+More on `__init__.py`: the [Real Python guide](https://realpython.com/python-init-py/).
+
 ## 2. Upload your external code to the repository
 
-Go to the src folder in your repository and upload your files or folders there.
+Open the `src` folder of your repository on GitHub and upload your files or folders there.
 
 ![Upload external code GIF](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Upload_src.gif)
 
 ## 3. How to import into your notebook
 
-Once uploaded, your external code will be available to your notebooks as a package. To use it, import it as shown in the examples below:
+Your notebooks import the code as a package:
 
 **Import the whole package:**
 ```python  
@@ -105,7 +104,7 @@ Then change the variable to `true`: the next release goes to PyPI.
 
 Delete the variable `PYPI_PUBLISH` (**Settings** > **Secrets and variables** > **Actions** > **Variables**). The workflow stays in the repository and is skipped at each release (a grey icon in the **Actions** tab, not a failure). What was published stays on PyPI.
 
-### Good to know
+### Limits and options
 
 - **A version can be uploaded only once**, even after it was deleted from PyPI. The workflow checks this before it builds anything and stops with a clear message; to publish a fix, make a new release with a higher version.
 - **The release writes its version into `setup.py`** (the "Update version" commit of the release workflow), so the file and PyPI agree.

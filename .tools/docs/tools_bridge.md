@@ -1,6 +1,6 @@
 # Expose your app's tools to napari, Fiji and QuPath
 
-Turn functions of your app's Python package into **tools** that people run in napari, Fiji and QuPath, and from the command line. Each tool gets a form made from its function signature. You declare the tools in your repository; the installer registers them on the user's computer. Apps that declare no tools are not affected.
+Turn functions of your app's Python package into **tools** that people run in napari, Fiji and QuPath, and from the command line. Each tool gets a form made from its function signature. You declare the tools in your repository; the installer registers them on the user's computer.
 
 To expose your app's tools:
 
@@ -51,7 +51,7 @@ When someone installs your app, the installer:
 4. registers the app (`labconstrictor-tools register ...`) with the version from the `version:` line of `construct.yaml` and the hosts of
    `labconstrictor-app.yaml`.
 
-When the app is uninstalled, it is unregistered.
+When the app is uninstalled, it is unregistered. An app that declares no tools is not affected by any of this.
 
 If step 2 or 4 fails, the installer writes a `WARNING` to `menuinst_debug.log` in the install folder, skips the registration and finishes
 the installation. The exception is a package that imports `labconstrictor_tools` at the top: then the import check of step 3 fails.
