@@ -115,7 +115,7 @@ The App Centre asks for a few optional fields: `status`, `quickstart`, `screensh
 | `colab` | A list of Google Colab notebooks, each with a `label` and a `url` on `colab.research.google.com`. Only the notebooks you list are shown. |
 | `pip` | The name of your package on PyPI. |
 
-`platforms` also decides which installers your releases build. Leave a system out when your app cannot run there. Without `platforms`, every installer is built: `windows-x86_64`, `linux-x86_64`, `macos-arm64` (Apple silicon) and `macos-x86_64` (Intel Macs). `windows-arm64` and `linux-arm64` are accepted, but no installer is built for them.
+`platforms` also decides which installers your releases build. Leave a system out when your app cannot run there. Without `platforms`, every installer is built: `windows-x86_64`, `linux-x86_64`, `macos-arm64` (Apple silicon) and `macos-x86_64` (Intel Macs). `windows-arm64` and `linux-arm64` are accepted, but they build nothing yet: no installer is made for them, and a list with only these two stops the release.
 
 ### `hosts`: where your tools are offered
 

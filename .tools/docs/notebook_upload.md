@@ -23,7 +23,7 @@ The first cell of every notebook checks its version, so users see when a newer v
 current_version = "0.0.1"
 notebook_name = "Notebook_template"  # Replace with the actual notebook name
 
-# First of all check if ipywidgets is installed, if not through an informative error
+# First of all check if ipywidgets is installed, if not throw an informative error
 try:
     import ipywidgets as widgets
 except ImportError:
