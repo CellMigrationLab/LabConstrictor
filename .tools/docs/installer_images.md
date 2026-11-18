@@ -1,16 +1,16 @@
 # Customise the installer images
 
-The generated installer and desktop app can be customised with you own images. This will help to give your app a more professional look and feel. This customisation is optional and can be done when initialising your repository or at any time later. 
+You can brand the installer and the app's shortcut with your own images. This is optional. Upload them when you [initialise your repository](initialise_repository.md); the form resizes them to the sizes below.
 
-You can provide the following images for customisation:
+You can provide these images:
 
-| Image Type | Recommended Size | Format | Description |
+| Image | Recommended size | Format | Where it appears |
 |------------|------------------|--------|-------------|
-| Logo       | 256x256 pixels   | PNG    | This image will be used in the executable installer and on the created desktop app. |
-| Banner     | 164x314 pixels   | PNG    | This vertical image will be used as a banner in the installer. |
-| Header       | 150x57 pixels    | PNG    | This image will be used as the header in the installer. |
+| Logo       | 256x256 pixels   | PNG    | The installer and the app's shortcut. |
+| Banner     | 164x314 pixels   | PNG    | The vertical banner of the installer. |
+| Header       | 150x57 pixels    | PNG    | The header of the installer. |
 
-When preparing your images, please ensure they meet the recommended size and format for optimal display. Here are some examples of custom images used in an installer:
+Images in the recommended size display best. Here are the images of the LabConstrictor installer as examples:
 
 ## Logo
 ![LabConstrictor Logo](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/LabConstrictor_Logo.png)
@@ -23,13 +23,13 @@ When preparing your images, please ensure they meet the recommended size and for
 
 ## Default installer
 
-In case you do not provide any images during the initialisation of your repository, default placeholder images will be used:
+Without your own images, the installer uses default images:
 
 ![Default Installer Images](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Customisation_Default.png)
 
 ## Customised installer
 
-When you provide your own images, the installer will reflect your custom branding:
+With your own images:
 
 ![Customised Installer Images](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/Customisation_Custom.png)
 

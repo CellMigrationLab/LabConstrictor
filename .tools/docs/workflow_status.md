@@ -1,36 +1,25 @@
 # Check the status of GitHub workflows
 
-When you upload a notebook or make a release, GitHub Actions starts a workflow to check your code and build the installers. The template synchronization workflow additionally requires the one-time [`LABCONSTRICTOR_SYNC_TOKEN` setup](template_synchronization.md).
+GitHub Actions runs workflows in your repository: when a notebook or its requirements change (**Updates on notebook change**), when the code in `src/` changes (**Updates on external code change**), when you publish a release (**Build Release Installers**) and every week for template updates (**Sync with Template Repository**, which needs the one-time [`LABCONSTRICTOR_SYNC_TOKEN` setup](template_synchronization.md)).
 
 ## 1. Monitor the progress
 
-1.  Go to the **Actions** tab in your GitHub repository.
-2. You’ll see a list of recent workflows. Find the one that matches your latest commit or release.
-3.  Check the status icon next to the workflow name:
+1. Go to the **Actions** tab of your repository.
+2. Find the run that matches your latest change or release.
+3. Check its status icon:
 
 ![GitHub Actions Status Icons](https://github.com/CellMigrationLab/LabConstrictor/blob/doc_source/actions_status_icons.png)
 
 ## 2. How to debug a failure
 
-If the workflow fails, don’t worry. The system creates an error log that’s ready for you to use.
+1. Click the failed run, then the red step: its log says what went wrong.
+2. If the run has an **Artifacts** section at the bottom of its page, download the log file there (a plain `.log` text file, nothing to unzip). It holds the error, the workflow and the script that failed, with instructions at the top for an AI assistant: paste the whole file into one (such as ChatGPT, Gemini or Claude) and it explains the error and how to fix your notebook or `requirements.yaml`.
 
-1.  **Download the Log:**
-    * Click on the failed workflow run.
-    * Scroll down to the bottom of the page to the **Artifacts** section.
-    * Download the log file listed there (it is a plain `.log` text file, nothing to unzip).
-
-2.  **Copy & Paste into AI:**
-    * Open the log file in any text editor.
-    * **This file is already formatted as a prompt.** It includes all the context and error details you need.
-    * Just **copy all the text** and paste it into your preferred AI tool (like ChatGPT, Gemini, or Claude). The AI will explain the error and show you how to fix your notebook or `requirements.yaml`.
-
----
+For known errors, see [Troubleshooting repository setup](troubleshooting.md).
 
 ### Best practice for large updates
 
-If you’re planning a big update, like changing several notebooks or adding complex dependencies, don’t push straight to the main branch.
-
-Instead, **create a new branch**, make your changes there, and check that the workflows pass (✅) before merging into the main branch. This helps keep your live app working.
+The workflows run only on your main branch, so a change is checked once it is merged. For a big update, such as several notebooks or new dependencies, upload one notebook at a time and wait for the green tick before the next: a failure then points to one change.
 
 ---
 
