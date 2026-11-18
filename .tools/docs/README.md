@@ -25,8 +25,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 ## Keep your app up to date (optional)
 
-- [Keep your app up to date](keep_app_up_to_date.md)
-- [Enable automatic template updates](template_synchronization.md)
+- [Keep your app up to date](template_synchronization.md)
 
 ## Notebook authoring tips
 

@@ -150,7 +150,7 @@ The **Check App Centre manifest** workflow runs when you change the file and whe
 
 - If the file is missing, it shows a warning and passes.
 - If the file is invalid, it fails and says what to fix. This never stops your installers from being built.
-- It rejects fields it does not know (this catches typos, so the schema is not loosened); the template keeps its copy of the schema in step with the App Centre, see [Keep your app up to date](keep_app_up_to_date.md).
+- It rejects fields it does not know (this catches typos, so the schema is not loosened); the template keeps its copy of the schema in step with the App Centre, see [Keep your app up to date](template_synchronization.md).
 - It also checks that the icon and screenshots you name exist in the repository.
 
 ## Check it yourself

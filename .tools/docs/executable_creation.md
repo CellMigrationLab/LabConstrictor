@@ -40,7 +40,7 @@ Click **Publish release**. This starts the workflow **Build Release Installers**
 
 - Try your installer yourself: [Install an app](install.md), then [Open and use an app](notebook_usage.md).
 - List your app in the App Centre: [Describe your app for the App Centre](app_manifest.md).
-- Receive future template improvements as pull requests: [Keep your app up to date](keep_app_up_to_date.md).
+- Receive future template improvements as pull requests: [Keep your app up to date](template_synchronization.md).
 
 
 ---

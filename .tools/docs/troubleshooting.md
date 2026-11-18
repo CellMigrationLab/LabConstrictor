@@ -4,7 +4,7 @@ Problems with your repository on GitHub. For problems with an installed app on y
 
 ## Synchronisation is failing on GitHub Actions
 
-The **Sync with Template Repository** workflow needs the repository secret `LABCONSTRICTOR_SYNC_TOKEN`, because template updates can change files in `.github/workflows/`. The setup is in [Enable automatic LabConstrictor template updates](template_synchronization.md).
+The **Sync with Template Repository** workflow needs the repository secret `LABCONSTRICTOR_SYNC_TOKEN`, because template updates can change files in `.github/workflows/`. The setup is in [Keep your app up to date](template_synchronization.md).
 
 ### "Synchronization setup required": the token is missing
 

@@ -119,7 +119,7 @@ Delete the variable `PYPI_PUBLISH` (**Settings** > **Secrets and variables** > *
 
 [← Previous](app_manifest.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-[Next →](keep_app_up_to_date.md)
+[Next →](tools_bridge.md)
 
 
 </div>
