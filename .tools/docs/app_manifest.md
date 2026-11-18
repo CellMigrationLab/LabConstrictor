@@ -142,7 +142,7 @@ host_requirements:
 - Name only `napari`, `fiji` or `qupath`: the notebook ships with your app and needs no plugin.
 - Each needs `min_version`, `features`, or both. `required: true` makes an older plugin refuse your tools instead of warning; use it only when they really fail there.
 - Write it as a block, as above. The installer passes this file to `labconstrictor-tools register`, which refuses a malformed block (a misspelt host or key, a version like `latest`); `labconstrictor-tools check --module <your>_lc_tools --app-manifest labconstrictor-app.yaml` shows what it read.
-- The feature ids and the rule are in the [LabConstrictor-Tools documentation](https://github.com/CellMigrationLab/LabConstrictor-Tools/blob/main/docs/PROTOCOL.md#host-requirements-which-plugin-an-app-needs).
+- The feature ids and the rule are in [the protocol reference](https://cellmigrationlab.github.io/LabConstrictor-Site/guides/protocol/#host-requirements-which-plugin-an-app-needs).
 
 ## The automatic check
 
@@ -192,7 +192,7 @@ Having the file does not list your app by itself. To list it, [submit your repos
 
 <div align="center">
 
-[← Previous](initialise_repository.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+[← Previous](installer_images.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [🏠 Home](README.md) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 [Next →](external_code_upload.md)
 

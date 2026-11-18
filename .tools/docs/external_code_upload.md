@@ -110,7 +110,7 @@ Delete the variable `PYPI_PUBLISH` (**Settings** > **Secrets and variables** > *
 - **A version can be uploaded only once**, even after it was deleted from PyPI. The workflow checks this before it builds anything and stops with a clear message; to publish a fix, make a new release with a higher version.
 - **The release writes its version into `setup.py`** (the "Update version" commit of the release workflow), so the file and PyPI agree.
 - **To approve each upload by hand**, open **Settings** > **Environments** > **pypi** (GitHub creates it at the first run) and add **Required reviewers**.
-- **A repository that already publishes to PyPI with a workflow of its own** does not get `publish_pypi.yml` from the template update, so nothing is uploaded twice. See [the design note of template 0.1.25](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_25.md).
+- **A repository that already publishes to PyPI with a workflow of its own** does not get `publish_pypi.yml` from the template update, so nothing is uploaded twice.
 - If the workflow fails, see [Troubleshooting](troubleshooting.md#publishing-to-pypi-fails).
 
 ---

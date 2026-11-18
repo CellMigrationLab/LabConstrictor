@@ -61,7 +61,7 @@ The workflow **Publish the Python package to PyPI** (`publish_pypi.yml`) runs at
 | `setup.py still has the template placeholder ...` | Replace the placeholder in `setup.py` (the log says which), commit, and publish a new release. |
 | The upload job waits | The `pypi` environment has required reviewers (Settings > Environments > pypi): one of them approves the upload in the run. |
 
-After a fix, re-run the failed jobs of the run if nothing in the repository changed (a publisher fixed on pypi.org); otherwise publish a new release. See [the design note of template 0.1.25](https://github.com/CellMigrationLab/LabConstrictor/blob/main/.tools/docs/migration_0_1_25.md).
+After a fix, re-run the failed jobs of the run if nothing in the repository changed (a publisher fixed on pypi.org); otherwise publish a new release.
 
 ---
 
