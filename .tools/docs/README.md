@@ -13,7 +13,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Create executable installers](executable_creation.md)
 - [Install an app](install.md)
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
-- [Notebook usage after installation](notebook_usage.md)
+- [Open and use an app](notebook_usage.md)
 - [Troubleshooting an installed app](troubleshooting_installed_app.md)
 
 ## Customise and share (optional)
