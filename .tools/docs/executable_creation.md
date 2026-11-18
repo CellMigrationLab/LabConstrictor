@@ -1,6 +1,6 @@
 # Create installer files
 
-Publishing a GitHub release builds the installers of your app for Windows (`.exe`), macOS (`.pkg`, Apple Silicon and Intel) and Linux (`.sh`) and attaches them to the release.
+Publishing a GitHub release builds the installers of your app and attaches them to the release: Windows (`.exe`), macOS (`.pkg`, Apple Silicon and Intel) and Linux (`.sh`), or only the systems you list under `distribution.platforms` in [`labconstrictor-app.yaml`](app_manifest.md#distribution-how-people-get-the-app).
 
 ## What you need
 
