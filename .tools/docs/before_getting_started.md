@@ -35,6 +35,7 @@ Once installed, the app runs without internet access, unless your notebooks need
 - **A GitHub account**, to create your repository from the template.
 - **Your Jupyter notebooks.**
 - **A Python environment where your notebooks run without errors**, on your computer or in Google Colab. You use it to generate the requirements files. You can also write these files by hand.
+- **A GitHub personal access token** (classic, with the **repo** scope), which the web forms use to open pull requests in your repository: see [Generate a GitHub personal access token](personal_access_token.md).
 - **Optional: images** (logo, banner, header) to brand the installer: see [Customise the installer images](installer_images.md).
 
 Next: [Create your repository](create_repository.md).
