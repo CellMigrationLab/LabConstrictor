@@ -4,9 +4,9 @@ Problems with your repository on GitHub. For problems with an installed app on y
 
 ## Synchronisation is failing on GitHub Actions
 
-The **Sync with Template Repository** workflow needs the encrypted repository secret `LABCONSTRICTOR_SYNC_TOKEN` because template migrations can update files in `.github/workflows/`. Follow the [automatic template synchronization guide](template_synchronization.md) for the complete beginner-friendly setup.
+The **Sync with Template Repository** workflow needs the repository secret `LABCONSTRICTOR_SYNC_TOKEN`, because template updates can change files in `.github/workflows/`. The setup is in [Enable automatic LabConstrictor template updates](template_synchronization.md).
 
-### The synchronization token is missing
+### "Synchronization setup required": the token is missing
 
 Create the token and save it under **Settings → Secrets and variables → Actions** with this exact name:
 
@@ -16,33 +16,33 @@ LABCONSTRICTOR_SYNC_TOKEN
 
 ### GitHub refuses to update a workflow file
 
-If the error says GitHub is refusing to create or update a workflow without `workflows` permission, ensure the token has all of these repository permissions:
+If the error says GitHub refuses to create or update a workflow without `workflows` permission, check that the token has all of these repository permissions:
 
 - **Contents:** Read and write
 - **Pull requests:** Read and write
 - **Workflows:** Read and write
 
-Repositories created before template version `0.1.12` also need the one-time workflow edit described in the synchronization guide so the existing workflow starts using the secret.
+Repositories created before template version `0.1.12` also need the one-time workflow edit described in the synchronization guide, so that the workflow uses the secret.
 
 ### Bad credentials or authentication failed
 
-The token may have expired or been revoked. Create a replacement token and update the existing `LABCONSTRICTOR_SYNC_TOKEN` secret.
+The token has expired or was revoked. Create a new token and update the `LABCONSTRICTOR_SYNC_TOKEN` secret: see [Renewing an expired token](template_synchronization.md#renewing-an-expired-token).
 
 ## The release stops at "check_placeholders.py"
 
-The release workflow checks, before it builds the installers, that no template placeholder (`PROJECT_NAME`, `PYTHON_PROJ_NAME`, `UNDERSCORED_PROJECT_NAME`, ...) is left in a file the installer ships. An installer built with one would fail on the users' computers (for example `No module named 'PYTHON_PROJ_NAME'` at the end of the installation).
+Before it builds the installers, the release workflow checks that no template placeholder (`PROJECT_NAME`, `PYTHON_PROJ_NAME`, `UNDERSCORED_PROJECT_NAME`, ...) is left in a file the installer ships. An installer with one would fail on your users' computers (for example `No module named 'PYTHON_PROJ_NAME'` at the end of the installation).
 
-The log of the failed step lists each file and line. Replace the placeholder there with your app's value: `PYTHON_PROJ_NAME` is the Python package of the app (usually its folder in `src/`), `PROJECT_NAME` the app name. For `app/menuinst/Welcome.ipynb`, edit `.tools/templates/Welcome_template.ipynb` instead: the Welcome notebook is made from it at every release. Commit, then publish the release again. See [migration_0_1_23.md](migration_0_1_23.md).
+The log of the failed step lists each file and line. Replace the placeholder there with your app's value: `PYTHON_PROJ_NAME` is the Python package of the app (usually its folder in `src/`), `PROJECT_NAME` the app name. For `app/menuinst/Welcome.ipynb`, edit `.tools/templates/Welcome_template.ipynb` instead: the Welcome notebook is made from it at every release. Commit, then publish the release again.
 
 ## The release stops at "Installers to build"
 
-The `platforms` job of the release workflow reads `distribution.platforms` in `labconstrictor-app.yaml` to decide which installers to build. It stops when the file is not valid YAML, when `platforms` is not a list, or when it lists none of the systems the release builds installers for: `windows-x86_64`, `linux-x86_64`, `macos-arm64` and `macos-x86_64`. The log of the step says which. Fix `labconstrictor-app.yaml` (see [App Centre manifest](app_manifest.md)), commit, then publish the release again. See [migration_0_1_24.md](migration_0_1_24.md).
+The release reads `distribution.platforms` in `labconstrictor-app.yaml` to decide which installers to build. It stops when the file is not valid YAML, when `platforms` is not a list, or when it lists none of the systems the release can build: `windows-x86_64`, `linux-x86_64`, `macos-arm64` and `macos-x86_64`. The log of the step says which. Fix `labconstrictor-app.yaml` (see [Describe your app for the App Centre](app_manifest.md)), commit, then publish the release again.
 
 ## "The notebooks ask for incompatible package versions"
 
-The **Run merge script** step of **Updates on notebook change**, or the `merge_requirements.py --check` command of a release, stops when notebooks pin a package to different versions, or ask for versions that no single version meets. Its log lists the package, each notebook and its requirement. Make the notebooks agree, or decide in `requirements_overrides.yaml` which requirement every notebook gets and why, then push it: the workflow runs again. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package) and [migration_0_1_31.md](migration_0_1_31.md).
+The **Run merge script** step of **Updates on notebook change**, or the `merge_requirements.py --check` step of a release, stops when notebooks pin a package to different versions, or ask for versions that no single version meets. Its log lists the package, each notebook and its requirement. Make the notebooks agree, or decide in `requirements_overrides.yaml` which requirement every notebook gets and why, then push it: the workflow runs again. See [When notebooks ask for different versions of a package](notebook_requirements.md#when-notebooks-ask-for-different-versions-of-a-package).
 
-If the template synchronization to 0.1.31 created `requirements_overrides.yaml`, its entries keep the versions your app installed until now (the newest of the pins). Check each one with every notebook that uses the package, and replace its reason with yours.
+If a template update created `requirements_overrides.yaml` for you, its entries keep the versions your app installed until then (the newest of the pins). Check each one with every notebook that uses the package, and replace its reason with yours.
 
 ## Publishing to PyPI fails
 
