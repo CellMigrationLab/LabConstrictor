@@ -1,4 +1,4 @@
-template_version: 0.1.38
+template_version: 0.1.39
 migrations:
   - from: 0.0.0
     to: 0.0.1
@@ -120,3 +120,6 @@ migrations:
   - from: 0.1.37
     to: 0.1.38
     script: migrations/v0_1_37_to_v0_1_38.py
+  - from: 0.1.38
+    to: 0.1.39
+    script: migrations/v0_1_38_to_v0_1_39.py
