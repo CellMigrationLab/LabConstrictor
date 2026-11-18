@@ -15,6 +15,7 @@ from pathlib import Path
 from types import ModuleType
 
 from _v0_1_36 import before_0_1_36
+from _v0_1_38 import before_0_1_38
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,7 +43,8 @@ def lf(path: Path) -> str:
 
 
 def live(relative: Path) -> bytes:
-    return (ROOT / relative).read_bytes()
+    """The 0.1.37 template file: the live file without the 0.1.38 change (tests/_v0_1_38.py)."""
+    return before_0_1_38(relative, (ROOT / relative).read_bytes())
 
 
 def previous(relative: Path) -> bytes:
