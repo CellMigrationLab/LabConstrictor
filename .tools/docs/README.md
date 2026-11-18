@@ -13,7 +13,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 - [Create executable installers](executable_creation.md)
 - [Install an app](install.md)
 - [Download and install the application](download_executable.md) (this file will be available after creating executables)
-- [Notebook usage after installation](notebook_usage.md)
+- [Open and use an app](notebook_usage.md)
 - [Troubleshooting an installed app](troubleshooting_installed_app.md)
 
 ## Customise and share (optional)
@@ -25,8 +25,7 @@ This file temporarily lists all internal LabConstrictor documentation. After you
 
 ## Keep your app up to date (optional)
 
-- [Keep your app up to date](keep_app_up_to_date.md)
-- [Enable automatic template updates](template_synchronization.md)
+- [Keep your app up to date](template_synchronization.md)
 
 ## Notebook authoring tips
 

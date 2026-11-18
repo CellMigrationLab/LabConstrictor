@@ -13,6 +13,8 @@ from io import StringIO
 from pathlib import Path
 from types import ModuleType
 
+from _v0_1_38 import before_0_1_38
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION_PATH = ROOT / ".template_sync/migrations/v0_1_20_to_v0_1_21.py"
@@ -59,7 +61,9 @@ class TemplateConsistencyTests(unittest.TestCase):
         # the design note is linked from its migration (DOCS_URL); since 0.1.29 the docs README no longer lists design notes
         self.assertIn(".tools/docs/migration_0_1_21.md", (ROOT / ".template_sync/migrations/v0_1_20_to_v0_1_21.py").read_text(encoding="utf-8"))
         self.assertTrue((ROOT / ".tools/docs/migration_0_1_21.md").is_file())
-        self.assertIn("(migration_0_1_21.md)", (ROOT / ".tools/docs/troubleshooting_installed_app.md").read_text(encoding="utf-8"))
+        # 0.1.38 drops template versions from the app users' page (tests/_v0_1_38.py): the 0.1.37 page links the note.
+        page = Path(".tools/docs/troubleshooting_installed_app.md")
+        self.assertIn(b"(migration_0_1_21.md)", before_0_1_38(page, (ROOT / page).read_bytes()))
 
     def test_the_live_script_holds_the_new_block_once_and_pins_26_9_3(self) -> None:
         text = live_text()

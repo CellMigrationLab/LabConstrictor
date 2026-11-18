@@ -19,6 +19,7 @@ from unittest import mock
 import yaml
 
 from _v0_1_24 import before_0_1_24
+from _v0_1_38 import before_0_1_38
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,7 +103,9 @@ class TemplateConsistencyTests(unittest.TestCase):
         self.assertEqual(bump.count(MIGRATION.BUMP_SNIPPET + MIGRATION.BUMP_FUNCTION_ANCHOR), 1)
         self.assertEqual(bump.count(MIGRATION.BUMP_CALL_NEW), 1)
         self.assertIn(MIGRATION.UV_PIN, lf(ROOT / MIGRATION.TOOLS_REQUIREMENTS).splitlines())
-        self.assertIn(MIGRATION.USAGE_NEW, lf(ROOT / MIGRATION.USAGE_DOC))
+        # 0.1.38 rewrites the usage guide whole (tests/_v0_1_38.py): the 0.1.37 page holds the 0.1.20 sentence.
+        usage = before_0_1_38(MIGRATION.USAGE_DOC, (ROOT / MIGRATION.USAGE_DOC).read_bytes()).decode("utf-8").replace("\r\n", "\n")
+        self.assertIn(MIGRATION.USAGE_NEW, usage)
 
     def test_the_menu_shortcut_closes_the_windows_terminal_after_enter(self) -> None:
         data = json.loads(lf(ROOT / MIGRATION.MENU))

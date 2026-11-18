@@ -19,7 +19,7 @@ Next: [Initialise your repository](initialise_repository.md).
 
 ## Template updates (optional, later)
 
-The template keeps improving, and your repository can receive the changes as pull requests. Set this up after your first release: see [Keep your app up to date](keep_app_up_to_date.md). Until you do, the weekly **Sync with Template Repository** run stops with the error "Synchronization setup required" whenever a newer template version exists.
+The template keeps improving, and your repository can receive the changes as pull requests. Set this up after your first release: see [Keep your app up to date](template_synchronization.md). Until you do, the weekly **Sync with Template Repository** run stops with the error "Synchronization setup required" whenever a newer template version exists.
 
 ---
 

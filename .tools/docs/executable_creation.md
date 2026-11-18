@@ -7,9 +7,10 @@ Publishing a GitHub release builds the installers of your app for Windows (`.exe
 - At least one notebook uploaded and merged: see [Add or update a notebook](notebook_upload.md).
 - A version number for the release, in the form `MAJOR.MINOR.PATCH` (for example `0.0.1`).
 
-## Please check before proceeding
+## Check before you release
 
-Open the **Actions** tab of your repository and check that no workflow is running. If one is in progress, wait until it finishes: a release started while another workflow runs may build from files that are about to change.
+- **The systems you build for.** The release builds only the systems listed under `distribution.platforms` in `labconstrictor-app.yaml`, or every system when that line is missing: see [`distribution` in Describe your app](app_manifest.md#distribution-how-people-get-the-app). Check that the list holds every system your app should run on.
+- **Every workflow run is green.** Open the **Actions** tab of your repository. No workflow may still be running: a release started while another workflow runs may build from files that are about to change. The latest run of each workflow must have a green tick, not only have finished: a red cross means its changes, for example your notebook's requirements, did not make it into the repository ([how to read a run](workflow_status.md)).
 
 ## 1. Draft a new release
 
@@ -38,9 +39,9 @@ Click **Publish release**. This starts the workflow **Build Release Installers**
 
 ## 3. After the release
 
-- Try your installer yourself: [Install an app](install.md), then [Use notebooks after installation](notebook_usage.md).
-- List your app in the App Centre: [Describe your app for the App Centre](app_manifest.md).
-- Receive future template improvements as pull requests: [Keep your app up to date](keep_app_up_to_date.md).
+- Try your installer yourself: [Install an app](install.md), then [Open and use an app](notebook_usage.md).
+- List your app in the App Centre: [Describe your app for the App Centre](app_manifest.md), then [Submit your app](https://cellmigrationlab.github.io/LabConstrictor-Site/submit/).
+- Receive future template improvements as pull requests: [Keep your app up to date](template_synchronization.md).
 
 
 ---

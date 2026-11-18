@@ -28,7 +28,7 @@ The app is then removed from the list.
 
 ## Windows asks for administrator rights for python.exe while uninstalling
 
-Uninstalling an app made with template 0.1.20 or earlier may show a User Account Control prompt: "Do you want to allow this app from an unknown publisher to make changes to your device? python.exe", with the program location `"<app folder>\python.exe" -m conda.core.initialize ...`.
+Uninstalling an older release of an app may show a User Account Control prompt: "Do you want to allow this app from an unknown publisher to make changes to your device? python.exe", with the program location `"<app folder>\python.exe" -m conda.core.initialize ...`.
 
 1. Click **No**. The prompt is not needed.
 2. The uninstaller then shows a "Failed to clean AutoRun" error with Abort, Retry and Ignore: click **Ignore**.
@@ -37,13 +37,15 @@ The uninstall then finishes normally, and nothing outside the app folder is chan
 
 Do not click **Abort**, even though it is the default button: it stops the uninstall halfway and leaves the app folder on disk. If that happened, run `Uninstall-<AppName>.exe` in the app folder again.
 
-Installers built with template 0.1.21 or later do not have this problem ([details](migration_0_1_21.md)).
+Newer releases of the app do not have this problem: install the newest release of the app.
 
 ## The notebook fails with "No module named ..." although the installation finished
 
-The first cell that imports the app fails with `ModuleNotFoundError: No module named '<app>'`. This happens with apps made with template 0.1.23 or earlier when someone once ran `python -m ipykernel install --user` on the computer (common with Anaconda or pip setups). Jupyter then has a personal "python3" kernel, and the app's notebooks run in that other Python instead of the app's own.
+The first cell that imports the app fails with `ModuleNotFoundError: No module named '<app>'`. This can happen with an older release of an app when someone once ran `python -m ipykernel install --user` on the computer (common with Anaconda or pip setups). Jupyter then has a personal "python3" kernel, and the app's notebooks run in that other Python instead of the app's own.
 
-Install a release made with template 0.1.24 or later: it always uses the app's own Python. Until then, you can delete the personal kernel folder, but the other Jupyter installations on the computer that use it lose it too:
+Install the newest release of the app: newer releases always use the app's own Python.
+
+Advanced, if you cannot install a newer release: delete the personal kernel folder. The other Jupyter installations on the computer that use it lose it too.
 
 - Linux: `~/.local/share/jupyter/kernels/python3`
 - macOS: `~/Library/Jupyter/kernels/python3`
@@ -51,7 +53,7 @@ Install a release made with template 0.1.24 or later: it always uses the app's o
 
 ## My changes to a notebook are gone after an update
 
-The **Update** button of the Welcome notebook keeps your copy before it replaces a notebook: look for `<notebook>.backup-<date>.ipynb` in the same folder and open it in JupyterLab. Apps made with template 0.1.30 or earlier replace the notebook without keeping a copy.
+The **Update** button of the Welcome notebook keeps your copy before it replaces a notebook: look for `<notebook>.backup-<date>.ipynb` in the same folder and open it in JupyterLab. Older releases of some apps replace the notebook without keeping a copy: install the newest release of the app to get this backup.
 
 ## JupyterLab does not start because Windows reports an ASN.1 certificate error
 

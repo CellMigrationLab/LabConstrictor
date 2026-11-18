@@ -1,4 +1,4 @@
-# Expose your app's tools to napari, Fiji and QuPath (optional)
+# Expose your app's tools to napari, Fiji and QuPath
 
 Turn functions of your app's Python package into **tools** that people run in napari, Fiji and QuPath, and from the command line. Each tool gets a form made from its function signature. You declare the tools in your repository; the installer registers them on the user's computer. Apps that declare no tools are not affected.
 

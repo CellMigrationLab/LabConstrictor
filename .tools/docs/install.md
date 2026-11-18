@@ -33,7 +33,7 @@ Download the installer for your system from the app's page in the [App Centre](h
 
 ## Check that it worked
 
-Open the app. A terminal window opens, then JupyterLab opens in your web browser with the app's Welcome notebook. What to do next: [Use notebooks after installation](notebook_usage.md).
+Open the app. A terminal window opens, then JupyterLab opens in your web browser with the app's Welcome notebook. What to do next: [Open and use an app](notebook_usage.md).
 
 ## If something does not work
 
@@ -60,4 +60,4 @@ To run the tools, install the plugin for your image software once: see [Use apps
 
 ## Next
 
-Open the app and start working: [Use notebooks after installation](notebook_usage.md).
+Open the app and start working: [Open and use an app](notebook_usage.md).
